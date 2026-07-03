@@ -131,6 +131,51 @@ td .v{font-family:var(--mono);font-size:12.5px}
   padding:4px 12px;font-size:12px;cursor:pointer;color:var(--sub);font-family:inherit;
 }
 .tools button:hover{background:#F3F4EF}
+
+/* クイックインデックス */
+.idx{
+  background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:12px 14px 14px;margin-bottom:16px;
+}
+.idx-hint{font-size:11.5px;color:var(--sub);margin-bottom:10px;line-height:1.5}
+.idx-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+@media(max-width:640px){.idx-cols{grid-template-columns:1fr}}
+.idx-grp{margin-bottom:10px}
+.idx-grp:last-child{margin-bottom:0}
+.idx-h{
+  font-size:11px;font-weight:700;letter-spacing:.1em;
+  color:var(--sub);margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.idx-h::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--navy)}
+.idx-h.rub::before{background:var(--amber)}
+.idx-chips{display:flex;flex-wrap:wrap;gap:6px}
+.idx-chip{
+  font-size:12.5px;padding:4px 11px;border-radius:15px;cursor:pointer;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-family:inherit;line-height:1.35;transition:background .1s,border-color .1s;
+}
+.idx-chip:hover{background:var(--navy-soft);border-color:#B9C6E2}
+.idx-chip.mat:hover{background:var(--green-soft);border-color:#ABD3C6}
+.idx-chip.rub:hover{background:var(--amber-soft);border-color:#E3C98E}
+.idx-chart{
+  margin-top:2px;font-size:12.5px;padding:4px 12px;border-radius:15px;cursor:pointer;
+  border:1px solid #B9C6E2;background:var(--navy-soft);color:var(--navy);
+  font-weight:600;font-family:inherit;
+}
+.idx-chart:hover{background:#DCE4F3}
+
+/* 上に戻る */
+#toTop{
+  position:fixed;right:18px;bottom:18px;z-index:30;
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;color:var(--navy);
+  font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.16);
+  display:none;align-items:center;justify-content:center;
+}
+#toTop:hover{background:var(--navy-soft)}
+#toTop.show{display:flex}
+
 mark{background:#FCE58A;padding:0 1px;border-radius:2px}
 footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:var(--sub)}
 @media(max-width:640px){
@@ -140,7 +185,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 @media print{
   header{position:static}
   .card-body{display:block!important}
-  .tools,.seg{display:none}
+  .tools,.seg,.idx,#toTop{display:none}
 }
 </style>
 </head>
@@ -168,8 +213,11 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
     <button id="openAll">すべて展開</button>
     <button id="closeAll">すべて閉じる</button>
   </div>
+  <div id="idx"></div>
   <div id="list"></div>
 </main>
+
+<button id="toTop" title="上に戻る" aria-label="上に戻る">▲</button>
 
 <footer>
   ※ 本ツールは実務上の早見用の要約です。数値・寸法・条件の正式な適用にあたっては、必ず最新版の該当JIS/ISO規格原文を確認してください。代表値（Tm・Tg・密度など）はグレードにより変動します。ゴムの数値は加硫系・配合（カーボンブラック量等）で特に大きく変動します。
@@ -199,7 +247,7 @@ const TESTS = [
   ["状態調節・試験雰囲気","23 ± 2 ℃ / 50 ± 10 %RH（JIS K 7100）"]
  ],
  note:"弾性率をクロスヘッド変位から求める場合は装置コンプライアンスの影響が大きい。降伏を示す材料は降伏応力を「引張強さ」として報告する場合があるため、応力の定義（降伏/破断/最大）を明記する。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle","peek","lcp"]
 },
 {
  id:"film-tensile", name:"引張特性（フィルム・シート）", jis:"JIS K 7127", iso:"ISO 527-3",
@@ -235,7 +283,7 @@ const TESTS = [
   ["たわみ測定","中央たわみ。クロスヘッド変位使用時はコンプライアンス補正を考慮"]
  ],
  note:"曲げ弾性率はたわみの小さい領域を使うため、装置コンプライアンス・接触部のなじみ（トー）の影響が特に大きい。たわみ計の使用または補正の実施を推奨。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle","peek","lcp"]
 },
 {
  id:"compress", name:"圧縮特性", jis:"JIS K 7181", iso:"ISO 604",
@@ -270,7 +318,7 @@ const TESTS = [
   ["結果表示","kJ/m²（ノッチ底断面積基準）＋破壊形態（C/H/P/N）"]
  ],
  note:"ノッチ品質（先端半径・仕上げ）が結果を大きく左右する。GF強化材や再生材はノッチ感度・ばらつきが大きく、破壊形態の記録が重要。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pvc","gf","recycle"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pvc","gf","recycle","peek","lcp"]
 },
 {
  id:"izod", name:"アイゾット衝撃強さ", jis:"JIS K 7110", iso:"ISO 180",
@@ -286,7 +334,7 @@ const TESTS = [
   ["結果表示","kJ/m²（ノッチ底断面積基準）"]
  ],
  note:"シャルピー（両端支持・中央打撃）とアイゾット（片持ち・自由端打撃）は値が一致しない。データシート比較時は方式の確認を。",
- mats:["pp","abs","pc","pa6","pa66","pom","pbt","gf"]
+ mats:["pp","abs","pc","pa6","pa66","pom","pbt","gf","peek","lcp"]
 },
 {
  id:"hdt", name:"荷重たわみ温度（HDT）", jis:"JIS K 7191-1 / -2", iso:"ISO 75-1 / -2",
@@ -303,7 +351,7 @@ const TESTS = [
   ["熱媒","シリコーン油などの伝熱媒体に浸漬"]
  ],
  note:"結晶性樹脂はA法（1.80 MPa）でTgとTmの間の値になりやすく、GF強化で大幅に上昇する。非晶性樹脂はTg近傍の値。アニール処理の有無で変わるため成形履歴を記録。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","peek","lcp"]
 },
 {
  id:"vicat", name:"ビカット軟化温度（VST）", jis:"JIS K 7206", iso:"ISO 306",
@@ -338,7 +386,7 @@ const TESTS = [
   ["事前乾燥","吸湿性樹脂（PC・PBT・PET・PA）は必須。加水分解でMFRが見かけ上増大"]
  ],
  note:"再生材の劣化度評価にはバージン材とのMFR比較が簡便で有効（PPは分子切断でMFR増、PEは架橋でMFR減の傾向）。荷重・温度条件が異なる値同士は比較不可。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","recycle"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","recycle","peek","lcp","gf"]
 },
 {
  id:"density", name:"密度・比重", jis:"JIS K 7112", iso:"ISO 1183",
@@ -355,7 +403,7 @@ const TESTS = [
   ["結果","g/cm³ または kg/m³"]
  ],
  note:"結晶性樹脂は密度が結晶化度の指標になる（例：PEの密度分類、PETの結晶化度推定）。発泡・ボイド・フィラー量の影響を受けるため、再生材では組成把握と併用する。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","recycle"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","recycle","peek","lcp","gf"]
 },
 {
  id:"dsc", name:"転移温度（DSC）", jis:"JIS K 7121（転移温度）/ K 7122（転移熱）", iso:"ISO 11357",
@@ -372,7 +420,7 @@ const TESTS = [
   ["読み取り","Tg：中間点ガラス転移温度 / Tm：融解ピーク温度 / Tc：結晶化ピーク温度"]
  ],
  note:"再生材・混合材では異樹脂の混入がDSCの融解ピークで検出できる（例：PP中のPE混入 125〜130 ℃付近のピーク）。融解熱ΔHから結晶化度の推定も可能（完全結晶の理論値との比）。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","recycle"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","recycle","peek","lcp"]
 },
 {
  id:"hardness-r", name:"ロックウェル硬さ", jis:"JIS K 7202-2", iso:"ISO 2039-2",
@@ -388,7 +436,7 @@ const TESTS = [
   ["結果","スケール記号を付して報告（例：HRR 100）"]
  ],
  note:"スケールが異なる値同士は換算・比較できない。",
- mats:["ps","abs","pmma","pc","pa66","pom","pbt","gf"]
+ mats:["ps","abs","pmma","pc","pa66","pom","pbt","gf","peek","lcp"]
 },
 {
  id:"hardness-d", name:"デュロメータ硬さ", jis:"JIS K 7215", iso:"ISO 868",
@@ -420,7 +468,7 @@ const TESTS = [
   ["結果","質量増加率（%）で報告。方法・時間を明記"]
  ],
  note:"PA系は吸水で寸法・機械物性が大きく変わるため、機械試験前の状態調節（絶乾か調湿平衡か）を必ず定義・記録する。",
- mats:["pa6","pa66","pc","pbt","pmma"]
+ mats:["pa6","pa66","pc","pbt","pmma","pet"]
 },
 {
  id:"tg", name:"熱重量測定（TG）", jis:"JIS K 7120", iso:"ISO 11358",
@@ -436,7 +484,7 @@ const TESTS = [
   ["読み取り","分解開始温度・各段の質量減少率・残渣（灰分・無機フィラー量）"]
  ],
  note:"GF・タルク等の無機フィラー含有率の定量に実用的（残渣質量%）。再生材の組成推定・グレード照合にも使える。",
- mats:["pp","pa6","pbt","gf","recycle"]
+ mats:["pp","pa6","pbt","gf","recycle","peek","lcp"]
 },
 {
  id:"molding", name:"試験片の射出成形", jis:"JIS K 7152-1（成形）/ K 7139（試験片）", iso:"ISO 294-1 / ISO 20753",
@@ -470,7 +518,7 @@ const TESTS = [
   ["解析","温度範囲を明示して平均線膨張率を算出。Tg前後で傾きが変わる（α₁ / α₂）"]
  ],
  note:"1st runは成形ひずみの緩和・吸水の影響が乗るため、一度昇温して履歴を消した2nd runで材料固有値を取るのが基本。GF強化材はMD/TDで数倍の差が出る。",
- mats:["pc","pom","pbt","pa66","gf"]
+ mats:["pc","pom","pbt","pa66","gf","peek","lcp"]
 },
 {
  id:"cp", name:"比熱容量（DSC）", jis:"JIS K 7123", iso:"ISO 11357-4",
@@ -505,6 +553,144 @@ const TESTS = [
  ],
  note:"酸化防止剤の残存量の実用的な指標。再生ポリオレフィンではリサイクル履歴とともにOITが短くなる傾向があり、バージン材との対比で劣化度・再安定化の要否を判断できる。",
  mats:["pp","pe","recycle"]
+},
+{
+ id:"tensile-impact", name:"引張衝撃強さ", jis:"JIS K 7160", iso:"ISO 8256",
+ kw:"引張衝撃 tensile impact 振り子 薄物 延性 破断しにくい",
+ specimen:{label:"短冊状・小型ダンベル状試験片（可動つかみ具に片端を固定）", fig:null,
+  rows:[
+   ["形状","タイプ1（長さ 80 mm 前後）／タイプ2 など規格の小型片"],
+   ["ノッチ","無ノッチ／ノッチ付きを選択（材料・目的による）"],
+   ["厚さ","2〜4 mm 程度（薄物・フィルムにも適用可）"]
+  ]},
+ cond:[
+  ["方式","振り子式。一端を固定つかみ、他端を可動つかみ（クロスヘッド）に取付け引張衝撃"],
+  ["ハンマー容量","吸収エネルギーが容量の 10〜80 % に入るよう選択"],
+  ["補正","可動つかみ具（クロスヘッド）の運動エネルギー補正を行う"],
+  ["結果","kJ/m²（断面積基準）＋破壊形態"]
+ ],
+ note:"シャルピー・アイゾットでは破断しにくい延性材・薄肉・フィルムの衝撃評価に有効。可動部の運動エネルギー補正の有無で値が変わるため方式を明記する。",
+ mats:["pp","pe","ps","abs","pc","recycle"]
+},
+{
+ id:"puncture", name:"高速面衝撃（計装化パンクチャー）", jis:"JIS K 7211-2", iso:"ISO 6603-2",
+ kw:"面衝撃 パンクチャー 落錘 計装化 instrumented puncture 平板 荷重変位 延性脆性",
+ specimen:{label:"平板状試験片（円形支持リング上に固定）", fig:null,
+  rows:[
+   ["形状・寸法","60 × 60 mm 角板 または φ60 mm 円板が代表的"],
+   ["厚さ","2 mm 代表（用途により変更、厚さを必ず記録）"],
+   ["支持リング内径","40 mm"],
+   ["ストライカー","先端 φ20 mm 半球"]
+  ]},
+ cond:[
+  ["試験速度","4.4 m/s（標準）。低速条件も選択可"],
+  ["計測","荷重-変位曲線を計装化計測し、最大荷重・全吸収エネルギーを算出"],
+  ["結果","最大荷重（N）・破壊エネルギー（J）＋破壊形態（延性/脆性）"],
+  ["前処理","23 ℃ / 50 %RH 状態調節"]
+ ],
+ note:"実使用に近い面方向の衝撃を評価。ゲート位置・配向・ウェルドライン・低温で延性→脆性遷移が起こる。JIS K 7211-1 は非計装の落錘（破壊エネルギー階段法）。",
+ mats:["pp","pe","abs","pc","recycle"]
+},
+{
+ id:"creep-tensile", name:"引張クリープ", jis:"JIS K 7115", iso:"ISO 899-1",
+ kw:"クリープ creep 長期 一定荷重 クリープコンプライアンス 等時応力ひずみ クリープ破断",
+ specimen:{label:"多目的試験片 1A形／1B形（引張試験と共通）", fig:"dumbbell",
+  rows:[
+   ["形状","多目的試験片 1A / 1B（標線間 L₀ で伸びを測定）"],
+   ["厚さ","4 mm"]
+  ]},
+ cond:[
+  ["負荷","一定の引張応力（荷重）を負荷し続け、時間-ひずみを記録"],
+  ["温度","恒温槽で一定に保持（使用温度・耐熱評価に応じて選択）"],
+  ["時間","1000 h 等の長時間。等時応力-ひずみ線図の作成に複数応力水準で実施"],
+  ["結果","クリープコンプライアンス、等時応力-ひずみ、クリープ破断時間"]
+ ],
+ note:"長期荷重下の設計データ。応力・温度で大きく変化し、外挿には注意。曲げクリープは JIS K 7116。GF強化材・PBT・POM等の高温クリープ評価で重要。",
+ mats:["pp","pe","pc","pbt","pa66","pom","gf","peek","lcp"]
+},
+{
+ id:"shrinkage", name:"成形収縮率", jis:"JIS K 7152-4", iso:"ISO 294-4",
+ kw:"成形収縮率 収縮 後収縮 mold shrinkage 異方性 MD TD 金型設計",
+ specimen:{label:"規定の角板を射出成形（金型寸法既知）", fig:null,
+  rows:[
+   ["形状","60 × 60 × 2 mm 角板が代表的"],
+   ["測定方向","流動方向（MD）と直角方向（TD）の両方を測定"]
+  ]},
+ cond:[
+  ["成形収縮率","成形後 16〜24 h の寸法から算出＝(金型寸法−成形品寸法)/金型寸法"],
+  ["後収縮","規定時間後（例 48 h 以降）またはアニール後の追加収縮を測定"],
+  ["状態調節","23 ℃ / 50 %RH で管理"],
+  ["結果","MD・TD それぞれ %（成形条件も併記）"]
+ ],
+ note:"結晶性樹脂（PP・PA・POM・PBT）は収縮が大きく異方性も大。GF強化で流動方向の収縮が減り、方向差（反り）が生じやすい。金型設計・寸法精度の基礎データ。",
+ mats:["pp","pe","pa6","pa66","pom","pbt","pet","gf","recycle","peek","lcp"]
+},
+{
+ id:"ash", name:"灰分・強熱残分（充填材／ガラス含有率）", jis:"JIS K 7250-1", iso:"ISO 3451-1",
+ kw:"灰分 強熱残分 強熱減量 ガラス含有率 GF フィラー 充填材 ash 焼却",
+ specimen:{label:"樹脂片・ペレット（数 g）", fig:null,
+  rows:[
+   ["試料量","2〜5 g 程度（灰分量に応じて調整）"],
+   ["容器","白金または磁製るつぼ（恒量化しておく）"]
+  ]},
+ cond:[
+  ["方法A（直接灰化）","電気炉で強熱（材料規定の温度、例 600〜625 ℃）し有機分を灰化"],
+  ["ガラス含有率","無機フィラーが主の場合、強熱残分をガラス（無機）含有率とみなす"],
+  ["結果","強熱残分（質量 %）。灰化温度・時間を併記"],
+  ["注意","ハロゲン含有樹脂（PVC等）や炭酸塩フィラーは規定条件・補正に注意"]
+ ],
+ note:"GF強化材のガラス含有率確認、無機フィラー量把握の定番。カーボンブラック等の有機系添加剤は灰化で消失する点に注意。TG（熱重量）でも代替・補完評価が可能。",
+ mats:["pp","pa6","pa66","pbt","gf","recycle","peek","lcp"]
+},
+{
+ id:"flammability", name:"燃焼性（水平・垂直燃焼／UL94相当）", jis:"JIS C 60695-11-10", iso:"IEC 60695-11-10",
+ kw:"燃焼性 難燃 難燃性 UL94 V-0 V-1 V-2 HB 水平燃焼 垂直燃焼 flammability",
+ specimen:{label:"短冊状試験片（厚さは代表厚を選定）", fig:null,
+  rows:[
+   ["寸法","長さ 125 × 幅 13 mm、厚さは代表厚（例 1.5 / 3.0 mm）"],
+   ["本数","各条件 5 本（＋予備）"]
+  ]},
+ cond:[
+  ["水平法（HB）","規定標線間の燃焼速度で判定"],
+  ["垂直法（V）","接炎 10 s×2 回の残炎・残じん時間、綿着火（ドリップ）で V-0 / V-1 / V-2 を判定"],
+  ["前処理","23 ℃ / 50 %RH（48 h）と 70 ℃ / 168 h の 2 条件"],
+  ["結果","区分（HB / V-0〜V-2）＋厚さを必ず併記"]
+ ],
+ note:"UL94 相当の材料区分試験。厚さ依存が大きいため厚さ併記が必須。難燃剤の種類・量に依存し、再生材は難燃性能が低下しやすい。製品認証は別途 UL 等の認証が必要。",
+ mats:["abs","pc","pbt","pa66","pvc","gf","peek","lcp"]
+},
+{
+ id:"loi", name:"酸素指数（LOI）", jis:"JIS K 7201-2", iso:"ISO 4589-2",
+ kw:"酸素指数 LOI OI limiting oxygen index 難燃 燃焼 自消性",
+ specimen:{label:"規定形状の棒状・フィルム状試験片", fig:null,
+  rows:[
+   ["形状","棒状（形I）など規格の形状。上端を点火"],
+   ["本数","濃度探索のため複数本"]
+  ]},
+ cond:[
+  ["方式","酸素/窒素の混合上昇気流中で試験片上端を点火"],
+  ["判定","規定の時間または長さ燃焼を維持できる最小酸素濃度（%）＝酸素指数"],
+  ["結果","OI 値（%）。気流条件を併記"]
+ ],
+ note:"OI が高いほど燃えにくい（空気中酸素は約 21 %、目安として概ね 26 % 超で自消性の傾向）。難燃設計の相対比較に有効。UL94 区分とは別指標なので併用・使い分けを。",
+ mats:["pp","abs","pc","pbt","pa66","pvc","gf","peek","lcp"]
+},
+{
+ id:"haze", name:"全光線透過率・ヘーズ", jis:"JIS K 7361-1（透過率）/ K 7136（ヘーズ）", iso:"ISO 13468-1 / ISO 14782",
+ kw:"全光線透過率 ヘーズ haze 透明性 曇価 拡散 積分球 光学 透明",
+ specimen:{label:"平板・シート・フィルム（平滑・無傷）", fig:null,
+  rows:[
+   ["形状","平滑な板／フィルム（傷・異物・気泡のないもの）"],
+   ["厚さ","記録必須（透過率は厚さに依存）"]
+  ]},
+ cond:[
+  ["装置","積分球式ヘーズメータ"],
+  ["全光線透過率 Tt","透過光束/入射光束（%）"],
+  ["ヘーズ","拡散透過率/全光線透過率（%）＝曇りの度合い"],
+  ["光源","規定の標準光（D65 等）"]
+ ],
+ note:"透明材料（PMMA・PC・PS・PET・透明PP）の外観品質評価。傷・異物・結晶化・フィラーでヘーズ増大。再生透明材の黄変は色差（YI）評価と併用するとよい。",
+ mats:["pmma","pc","ps","pet","pp"]
 },
 {
  id:"r-tensile", name:"引張特性（加硫ゴム）", jis:"JIS K 6251", iso:"ISO 37", cat:"rubber",
@@ -603,7 +789,7 @@ const TESTS = [
   ["評価","所定時間ごとに亀裂の有無・大きさ・数を拡大鏡で観察し等級付け"]
  ],
  note:"主鎖に二重結合をもつジエン系（NR・SBR・NBR・CR）が主対象。EPDM・IIR・VMQ・FKMは実質的に耐オゾン性良好。老化防止剤・ワックス処方の比較評価に多用される。",
- mats:["nr","sbr","nbr","cr","epdm"]
+ mats:["nr","sbr","nbr","cr","epdm","iir"]
 },
 {
  id:"r-rebound", name:"反発弾性", jis:"JIS K 6255", iso:"ISO 4662", cat:"rubber",
@@ -636,7 +822,7 @@ const MATS = [
   ["density","0.90〜0.91。タルク・GF入りは上昇"]
  ],
  note:"事前乾燥は原則不要。再生PPは熱酸化劣化による分子切断でMFR増加・伸び低下が典型的（カルボニル指数・OITでの劣化評価と併用）。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","film-tensile","tg","oit","cp"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","film-tensile","tg","oit","cp","tensile-impact","puncture","creep-tensile","shrinkage","ash","loi","haze","compress","hardness-d","molding"]
 },
 {
  id:"pe", name:"PE（ポリエチレン）", abbr:"PE / HDPE / LDPE / LLDPE",
@@ -650,7 +836,7 @@ const MATS = [
   ["vicat","軟化温度評価に常用"]
  ],
  note:"乾燥不要。再生PEはゲル化・架橋によりMFRが低下する傾向（PPと逆）。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","film-tensile","hardness-d","oit","cp"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","film-tensile","hardness-d","oit","cp","tensile-impact","puncture","creep-tensile","shrinkage","molding"]
 },
 {
  id:"ps", name:"PS（ポリスチレン）", abbr:"PS / GPPS / HIPS",
@@ -663,7 +849,7 @@ const MATS = [
   ["vicat","B50 が代表的な耐熱指標"]
  ],
  note:"乾燥は原則不要。ケミカルクラック（応力＋薬品）に敏感。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r","tensile-impact","haze","molding"]
 },
 {
  id:"abs", name:"ABS樹脂", abbr:"ABS",
@@ -677,7 +863,7 @@ const MATS = [
   ["dsc","ゴム相のTg（約 −80 ℃）とSAN相のTg（約 105 ℃）"]
  ],
  note:"吸湿性があり成形前乾燥（80 ℃ / 2〜4 h 目安）推奨。再生ABSは衝撃値の低下が劣化指標として鋭敏。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","tensile-impact","puncture","flammability","loi","molding"]
 },
 {
  id:"pmma", name:"PMMA（アクリル樹脂）", abbr:"PMMA",
@@ -690,7 +876,7 @@ const MATS = [
   ["water","吸湿により寸法・光学特性が変化。乾燥（80 ℃ / 4 h以上目安）"]
  ],
  note:"成形前乾燥必須（気泡・シルバー防止）。応力クラックと溶剤クラックに敏感。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r","water"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r","water","haze","molding"]
 },
 {
  id:"pvc", name:"PVC（塩化ビニル樹脂）", abbr:"PVC（硬質/軟質）",
@@ -703,7 +889,7 @@ const MATS = [
   ["mfr","熱安定性が低く一般に測定しない（分解によるHCl発生・装置腐食に注意）"]
  ],
  note:"加熱試験全般で熱分解（HCl発生）に注意。可塑剤配合で物性レンジが極めて広い。",
- tests:["tensile","flex","charpy","hdt","vicat","density","hardness-d"]
+ tests:["tensile","flex","charpy","hdt","vicat","density","hardness-d","flammability","loi","molding"]
 },
 {
  id:"pc", name:"PC（ポリカーボネート）", abbr:"PC",
@@ -717,7 +903,7 @@ const MATS = [
   ["water","加水分解性あり。高温多湿環境・薬品との組合せで分子量低下"]
  ],
  note:"未乾燥での溶融加工・MFR測定は加水分解による分子量低下→MFR見かけ増大を招く。残留応力とケミカルクラックにも注意。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","water","tma","cp"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","water","tma","cp","tensile-impact","puncture","creep-tensile","flammability","loi","haze","compress","molding"]
 },
 {
  id:"pa6", name:"PA6（ナイロン6）", abbr:"PA6",
@@ -731,7 +917,7 @@ const MATS = [
   ["charpy","吸水で衝撃値が大きく向上（可塑化効果）"]
  ],
  note:"「絶乾（dry as molded）」と「調湿後」でデータシート値が別物になる。試験報告には状態調節条件（温湿度・時間）を必ず記載。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","tg"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","tg","shrinkage","ash","molding"]
 },
 {
  id:"pa66", name:"PA66（ナイロン66）", abbr:"PA66",
@@ -745,7 +931,7 @@ const MATS = [
   ["hdt","GF30グレードはA法で 240 ℃超（Tm直下）まで上昇"]
  ],
  note:"PA6との判別はDSCのTm差（220 ℃ vs 260 ℃）が簡便。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","hardness-r","tma","cp"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","hardness-r","tma","cp","creep-tensile","shrinkage","ash","flammability","loi","molding"]
 },
 {
  id:"pom", name:"POM（ポリアセタール）", abbr:"POM",
@@ -758,7 +944,7 @@ const MATS = [
   ["vicat","B50 常用"]
  ],
  note:"加熱でホルムアルデヒドが発生するため、熱分析・溶融試験時は換気・温度上限に注意（分解が急激）。乾燥は軽度でよい。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","compress","tma"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","compress","tma","creep-tensile","shrinkage","molding"]
 },
 {
  id:"pbt", name:"PBT（ポリブチレンテレフタレート）", abbr:"PBT",
@@ -772,7 +958,7 @@ const MATS = [
   ["water","加水分解性あり。高温高湿試験（PCT等）で分子量低下を評価"]
  ],
  note:"未乾燥溶融は加水分解による物性低下に直結。GF30 PBTの高温クリープ・表面押込み評価では130 ℃等の実使用温度での長期挙動確認が有効。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","hardness-r","tg","tma"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","hardness-r","tg","tma","creep-tensile","shrinkage","ash","flammability","loi","molding"]
 },
 {
  id:"pet", name:"PET（ポリエチレンテレフタレート）", abbr:"PET",
@@ -786,7 +972,38 @@ const MATS = [
   ["water","加水分解しやすい。再生PETはIV（固有粘度）低下の管理が定番"]
  ],
  note:"再生PETの品質指標はIV低下・黄変・アセトアルデヒド。乾燥不足での溶融は急激なIV低下を招く。",
- tests:["tensile","film-tensile","flex","hdt","mfr","density","dsc","water"]
+ tests:["tensile","film-tensile","flex","hdt","mfr","density","dsc","water","shrinkage","haze","molding"]
+},
+{
+ id:"peek", name:"PEEK（ポリエーテルエーテルケトン）", abbr:"PEEK",
+ kw:"PEEK ポリエーテルエーテルケトン polyetheretherketone スーパーエンプラ 芳香族 PAEK 耐熱 耐薬品 耐摩耗",
+ props:[["区分","結晶性（芳香族スーパーエンプラ）"],["Tm","340〜343 ℃"],["Tg","143〜150 ℃"],["密度","1.30〜1.32 g/cm³"],["引張強さ","90〜100 MPa（非強化）"],["曲げ弾性率","3.6〜4.0 GPa（非強化）"],["連続使用温度","約 250 ℃"],["難燃性","UL94 V-0（自己消火・低発煙）"]],
+ conds:[
+  ["mfr","380 ℃ / 5 kg（グレードにより 400 ℃条件も）。高温対応の炉・ダイが必須"],
+  ["dsc","Tm 340〜343 ℃。金型温度が低いと非晶（Tgのみ）となり、昇温中に冷結晶化ピーク（Tcc 約170〜180 ℃）が現れることがある"],
+  ["hdt","非強化A法で約150〜160 ℃。GF/CF強化で300 ℃超に上昇"],
+  ["tensile","高温域でも物性保持率が高い。Tg（約145 ℃）を境に剛性が段階的に低下"],
+  ["tma","Tg以上で線膨張が増大。CF強化で低CTE化"],
+  ["water","吸水率は低い（約0.1〜0.5 %）。耐加水分解・耐熱水性に優れる"]
+ ],
+ note:"耐熱・耐薬品・耐摩耗・耐加水分解に優れる代表的スーパーエンプラ（濃硫酸には侵される）。成形・熱分析とも高温対応装置が必須で、結晶化には高金型温度（概ね180 ℃以上）が要る。実用はGF/CF強化グレードが主。LCP等と同じく高温摺動部でのトライボ評価対象になりやすい。",
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","hardness-r","creep-tensile","shrinkage","ash","flammability","loi"]
+},
+{
+ id:"lcp", name:"LCP（液晶ポリマー）", abbr:"LCP",
+ kw:"LCP 液晶ポリマー liquid crystal polymer サーモトロピック 芳香族ポリエステル 自己補強 スーパーエンプラ 異方性 ベクトラ",
+ props:[["区分","結晶性（サーモトロピック液晶・自己補強）"],["Tm","280〜350 ℃（グレードで大きく異なる）"],["Tg","明瞭に出にくい（検出困難なことが多い）"],["密度","1.40〜1.80 g/cm³（フィラーで変動）"],["引張強さ","流動方向で高い（100〜200 MPa）／異方性大"],["曲げ弾性率","高い（強化で 10〜20 GPa 程度）"],["難燃性","UL94 V-0（多くのグレード・低発煙）"],["特徴","極低溶融粘度・低吸水・低ガス・寸法安定"]],
+ conds:[
+  ["tensile","流動方向（MD）と直角方向（TD）で強度・弾性率が大きく異なる。試験片の配向・採取方向を必ず記録"],
+  ["dsc","Tm はグレード依存（280〜350 ℃）。液晶相のため転移がブロード・複数ピークになることがある"],
+  ["flex","スキン層のフィブリル配向が支配。実成形品との対応に注意"],
+  ["charpy","層状剥離（デラミネーション）で破壊しやすい。ウェルド部の強度低下が顕著"],
+  ["hdt","非常に高い（グレード/フィラーで 200〜340 ℃）"],
+  ["mfr","極低粘度で薄肉流動性が高い。実用評価は溶融粘度（キャピラリー）が向く"],
+  ["tma","異方性大。MD は低〜負、TD は大きく、方向で線膨張が大きく異なる"]
+ ],
+ note:"芳香族ポリエステル系スーパーエンプラ。分子鎖が流動方向に高配向して自己補強するため異方性が極めて大きく、ウェルド強度・TD強度が大幅に低下する。薄肉・微細成形（コネクタ等）に多用。高温摺動部のトライボや、充填材（GF等）によるスクリュー・金型の摩耗/腐食も評価対象になりやすい。成形用の第2部規格は未整備でメーカー資料に依拠。",
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","hardness-r","creep-tensile","shrinkage","ash","flammability","loi"]
 },
 {
  id:"gf", name:"GF強化材（共通の注意点）", abbr:"GF強化グレード全般",
@@ -801,7 +1018,7 @@ const MATS = [
   ["mfr","測定中の繊維折損・目詰まりに注意。参考値扱いが無難"]
  ],
  note:"ウェルド部は繊維が並行配向し強度が大幅低下（非強化より低下率が大きい）。再生（再ペレット化）のたびに繊維長が短くなり衝撃・強度が低下する。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","tg","compress","hardness-r","tma"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","tg","compress","hardness-r","tma","creep-tensile","shrinkage","ash","flammability","loi","molding"]
 },
 {
  id:"recycle", name:"再生材（共通の評価ポイント)", abbr:"リサイクル材全般",
@@ -816,7 +1033,7 @@ const MATS = [
   ["tg","無機分（フィラー・顔料）定量、組成推定"]
  ],
  note:"ロット間変動が本質的な課題。単発値でなく分布（平均±SD、n≥5）での管理と、IR（カルボニル指数）・OIT・GPC等の劣化分析の併用が有効。",
- tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding"]
+ tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding","tensile-impact","puncture","shrinkage","ash"]
 },
 {
  id:"nr", name:"NR（天然ゴム）", abbr:"NR", cat:"rubber", rubber:true,
@@ -926,7 +1143,7 @@ const MATS = [
   ["r-cset","80 ℃超で急速に悪化。高温シールには不向き"]
  ],
  note:"AU（エステル系）は高温多湿・温水での加水分解に注意。EU（エーテル系）は耐水性が改善される。注型・ミラブル・熱可塑の3系統があり物性が異なるため、系統の記録が重要。",
- tests:["r-tensile","r-hardness","r-tear","r-cset","r-rebound"]
+ tests:["r-tensile","r-hardness","r-tear","r-cset","r-rebound","r-aging"]
 }
 ];
 
@@ -944,6 +1161,8 @@ const MOLD = {
  pom:[["溶融樹脂温度","ホモ 215 ℃ / コポ 205 ℃（衝撃改良ホモ 210）"],["金型温度","90 ℃（コポ衝撃改良 80 / ホモ衝撃改良 60）"],["平均射出速度","140〜300 ± 100 mm/s（グレードで区分）"],["事前乾燥","一般に前処理不要"],["出典","JIS K 7364-2 表1（ISO 9988-2）"]],
  pbt:[["溶融樹脂温度","260 ℃（耐衝撃・難燃処方は 250）"],["金型温度","80 ℃"],["平均射出速度","200 ± 100 mm/s"],["保圧時間","20 ± 5 s"],["全サイクル時間","40 ± 5 s"],["事前乾燥","水分率 0.02 %以下"],["出典","JIS K 6937-2 表1（ISO 7792-2）"]],
  pet:[["溶融樹脂温度","275〜285 ℃（非晶 285 / 半結晶 275。充てん 285）"],["金型温度","20 ℃（非晶）/ 135 ℃（結晶化。造核処方 110）"],["平均射出速度","200 ± 100 mm/s"],["保圧時間","20 ± 5 s"],["全サイクル時間","40 ± 5 s"],["事前乾燥","水分率 0.02 %以下"],["出典","JIS K 6937-2 表1（ISO 7792-2）"]],
+ peek:[["溶融樹脂温度","360〜400 ℃"],["金型温度","170〜200 ℃（結晶化に高金型温度が必須。低いと非晶化・寸法不安定）"],["平均射出速度","200 ± 100 mm/s 目安"],["事前乾燥","150 ℃ / 3 h 以上（水分 0.02 %以下目安）"],["後処理","非晶成形品はアニール（約200 ℃）で結晶化・寸法安定化"],["出典","メーカー技術資料（成形用の第2部規格は未整備）。装置は高温仕様が必要"]],
+ lcp:[["溶融樹脂温度","290〜350 ℃（グレード＝Tmで選定。Tm+10〜30 ℃目安）"],["金型温度","40〜120 ℃（グレードによる）"],["平均射出速度","高速（薄肉充填。過度なせん断配向に注意）"],["事前乾燥","150 ℃ / 3〜4 h（吸湿は低いが推奨）"],["備考","極低粘度でバリが出やすい。ウェルド・スキン/コアの配向構造が顕著"],["出典","メーカー技術資料（成形用の第2部規格は未整備）"]],
  gf:[["溶融樹脂温度","ベース樹脂の各第2部 表1に準拠"],["金型温度","ベース樹脂の第2部による（例：PC-GF 110 ℃、PA66-GF 100 ℃、PET-GF 135 ℃）"],["平均射出速度","200 ± 100 mm/s 目安"],["備考","背圧・スクリュー回転は低めにして繊維折損を抑制"],["出典","ベース樹脂の各第2部 表1"]],
  recycle:[["基本方針","バージン材の標準条件を基準に、粘度変化（MFR）に応じて微調整"],["管理","乾燥条件・成形条件をロットごとに記録し、比較は同一条件で"],["備考","揮発分・臭気・ガス焼けが出やすい場合は溶融温度を下げ滞留を短く"]]
 ,
@@ -1028,6 +1247,20 @@ const IR = {
   ["1240 / 1095","C–O伸縮（テレフタレート）"],
   ["720","芳香環面外変角"],
   ["970 / 1340","エチレングリコール鎖trans配座。結晶化・延伸配向で増大（結晶性・配向の指標）"]
+ ],
+ peek:[
+  ["1652","ジアリールケトン C=O 伸縮（PEEKの主要バンド）"],
+  ["1595 / 1488","芳香環 C=C 骨格振動"],
+  ["1305 / 1280 / 1225","芳香族エーテル C–O–C 伸縮"],
+  ["1157 / 1011","芳香環 面内 C–H 変角"],
+  ["注意","ケトン(1652)＋エーテル(1280付近)＋芳香環の組合せが指標。結晶化度で一部バンド形状が変化"]
+ ],
+ lcp:[
+  ["1730付近","芳香族エステル C=O 伸縮"],
+  ["1600 / 1500","芳香環 C=C 骨格振動"],
+  ["1260 / 1160 / 1070","芳香族エステル C–O 伸縮"],
+  ["760付近（HNA系）","ナフタレン環由来バンド（共重合組成で差）"],
+  ["注意","グレード（モノマー組成）・フィラーでスペクトルが変化。芳香族エステルの組合せが指標"]
  ],
  gf:[
   ["約1000（幅広）","ガラスのSi–O–Si伸縮。ベース樹脂スペクトルに重畳"],
@@ -1162,6 +1395,18 @@ const IDENT = {
   ["燃焼","黄色炎・黒煙・甘い芳香族臭"],
   ["外観","ボトル・シートは高透明（非晶）。白濁品は結晶化"],
   ["確定判別","DSC：Tm 255 ℃・非晶品は昇温時に冷結晶化ピーク（約130 ℃）が出るのが特徴的"]
+ ],
+ peek:[
+  ["水浮沈","沈む（密度 約1.30）"],
+  ["燃焼","難燃・自己消火（V-0）。接炎しても燃え広がりにくく黒煙は少ない。芳香族系の弱い臭い"],
+  ["感触・外観","琥珀色〜灰褐色（結晶グレード）。非常に硬く耐傷性が高い。多くの溶剤で不変（濃硫酸には侵される）"],
+  ["確定判別","DSC Tm 340 ℃前後という高融点が決め手。IRのケトン1652・高い耐熱/耐薬品性で識別"]
+ ],
+ lcp:[
+  ["水浮沈","沈む（密度 1.4以上）"],
+  ["燃焼","難燃・自己消火（V-0）。炎を離すと消え、黒煙はわずか。芳香族臭"],
+  ["感触・外観","破断面が繊維状（フィブリル）・層状に剥離するのが最大の特徴。非常に硬く薄肉成形品が多い"],
+  ["確定判別","破断面のフィブリル/デラミネーションと大きな異方性が決め手。DSC Tm（高温）・低吸水・IRの芳香族エステルで確定"]
  ],
  gf:[
   ["折損断面","折ると断面に白い繊維が見える（ルーペ・実体顕微鏡）"],
@@ -1415,14 +1660,14 @@ const tlbl=(a,b)=>(b!=null&&b>a)?`${a}〜${b}`:`${a}`;
 const CHARTS = [
  {key:"tensile", title:"引張強さ（JIS K 7161 / 23 ℃・代表値）", unit:"MPa",
   rows:[
-   ["PA66（絶乾）","pa66",80,90],["PA6（絶乾）","pa6",75,85],["PMMA","pmma",60,75],
+   ["PEEK","peek",90,100],["PA66（絶乾）","pa66",80,90],["PA6（絶乾）","pa6",75,85],["PMMA","pmma",60,75],
    ["PC","pc",60,65],["POM","pom",60,70],["PET","pet",55,80],["PVC（硬質）","pvc",50,60],
    ["PBT","pbt",50,60],["ABS","abs",40,50],["GPPS","ps",35,50],["PP（ホモ）","pp",30,40],
    ["HIPS","ps",20,30],["HDPE","pe",20,30],["LDPE","pe",8,15]
   ]},
  {key:"flex", title:"曲げ弾性率（JIS K 7171 / 23 ℃・代表値）", unit:"GPa",
   rows:[
-   ["GPPS","ps",3.0,3.4],["PMMA","pmma",3.0,3.3],["PET","pet",2.8,3.1],
+   ["PEEK","peek",3.6,4.0],["GPPS","ps",3.0,3.4],["PMMA","pmma",3.0,3.3],["PET","pet",2.8,3.1],
    ["PA66（絶乾）","pa66",2.8,3.2],["PVC（硬質）","pvc",2.7,3.0],["POM","pom",2.6,3.1],
    ["PA6（絶乾）","pa6",2.6,3.0],["PBT","pbt",2.3,2.6],["PC","pc",2.3,2.4],
    ["ABS","abs",2.0,2.7],["HIPS","ps",1.8,2.3],["PP（ホモ）","pp",1.2,1.8],
@@ -1432,13 +1677,13 @@ const CHARTS = [
   note:"LDPE・軟質PVC等は非破断（NB）となることが多く未掲載。HDPEは部分破断・非破断を含む。PCは厚肉・低温で脆性破壊に転移する点に注意。",
   rows:[
    ["PC","pc",60,80],["ABS","abs",15,30],["HDPE","pe",6,30],["PP（コポ）","pp",6,15],
-   ["HIPS","ps",6,12],["POM","pom",6,10],["PVC（硬質）","pvc",3,10],["PA6（絶乾）","pa6",5,6],
+   ["HIPS","ps",6,12],["POM","pom",6,10],["PVC（硬質）","pvc",3,10],["PEEK","peek",3,7],["PA6（絶乾）","pa6",5,6],
    ["PA66（絶乾）","pa66",4,6],["PBT","pbt",4,6],["PP（ホモ）","pp",3,6],["PET","pet",2,5],
    ["GPPS","ps",2,2],["PMMA","pmma",1.5,2]
   ]},
  {key:"density", title:"密度（代表値）", unit:"g/cm³",
   rows:[
-   ["PVC（硬質）","pvc",1.35,1.45],["POM","pom",1.41,1.42],["PET","pet",1.34,1.40],
+   ["LCP","lcp",1.40,1.80],["PVC（硬質）","pvc",1.35,1.45],["PEEK","peek",1.30,1.32],["POM","pom",1.41,1.42],["PET","pet",1.34,1.40],
    ["PBT","pbt",1.31,1.31],["PC","pc",1.20,1.20],["PMMA","pmma",1.19,1.19],
    ["PA66","pa66",1.14,1.14],["PA6","pa6",1.13,1.13],["ABS","abs",1.04,1.07],
    ["PS","ps",1.04,1.05],["PE","pe",0.91,0.96],["PP","pp",0.90,0.91]
@@ -1467,6 +1712,7 @@ const RUBBER_CHARTS = [
 ];
 const THERMAL = [
  // [表示名, matId, Tg_min, Tg_max, Tm_min, Tm_max]（Tmなし=非晶性）
+ ["PEEK","peek",143,150,340,343],
  ["PA66","pa66",50,60,255,260],["PET","pet",75,80,250,255],["PA6","pa6",50,50,218,222],
  ["PBT","pbt",45,60,220,225],["POM","pom",-60,-60,165,175],["PP","pp",0,0,160,165],
  ["HDPE","pe",-120,-120,125,135],["LDPE","pe",-120,-120,105,115],
@@ -1513,10 +1759,10 @@ function rangeChart(c){
 function thermalChart(){
   const L=110, R=20, ROWH=27, TOP=30, W=720;
   const n=THERMAL.length, H=TOP+n*ROWH+16;
-  const xmin=-140, xmax=290;
+  const xmin=-140, xmax=360;
   const x=v=>L+(W-L-R)*(v-xmin)/(xmax-xmin);
   let g="";
-  for(let v=-100;v<=250;v+=50){
+  for(let v=-100;v<=350;v+=50){
     const xx=x(v);
     g+=`<line x1="${xx}" y1="${TOP-6}" x2="${xx}" y2="${H-14}" stroke="#E3E5DD"/>`;
     g+=`<text x="${xx}" y="${TOP-10}" font-size="10" text-anchor="middle" fill="#5B6373">${v}</text>`;
@@ -1550,6 +1796,8 @@ function thermalChart(){
 /* ---- 成形条件チャート（溶融温度＋金型温度＋乾燥） ---- */
 const MOLD_CHART = [
  // [名, id, 溶融lo, 溶融hi, 金型範囲(複数可), 乾燥表示]
+ ["PEEK","peek",360,400,[[170,200]],"150 ℃ / 3 h"],
+ ["LCP","lcp",290,350,[[40,120]],"150 ℃ / 3〜4 h"],
  ["PC","pc",280,310,[[80,90]],"120 ℃ / 5 h（0.02 %）"],
  ["PA66","pa66",290,300,[[80,100]],"水分 0.2 %未満"],
  ["PET","pet",275,285,[[20,20],[110,135]],"水分 0.02 %以下"],
@@ -1566,10 +1814,10 @@ const MOLD_CHART = [
 function moldChart(){
   const L=110, R=150, ROWH=27, TOP=30, W=760;
   const n=MOLD_CHART.length, H=TOP+n*ROWH+18;
-  const xmin=0, xmax=320;
+  const xmin=0, xmax=420;
   const x=v=>L+(W-L-R)*(v-xmin)/(xmax-xmin);
   let g="";
-  for(let v=0;v<=300;v+=50){
+  for(let v=0;v<=400;v+=50){
     g+=`<line x1="${x(v)}" y1="${TOP-6}" x2="${x(v)}" y2="${H-16}" stroke="#E3E5DD"/>`;
     g+=`<text x="${x(v)}" y="${TOP-10}" font-size="10" text-anchor="middle" fill="#5B6373">${v}</text>`;
   }
@@ -1592,6 +1840,7 @@ function moldChart(){
 
 /* ---- MFR測定条件チャート（温度×荷重） ---- */
 const MFR_CHART = [
+ ["PEEK","peek",380,5,"高温対応の炉・ダイが必要"],
  ["PC","pc",300,1.2],["PET","pet",280,2.16],["PBT","pbt",250,2.16],
  ["PP","pp",230,2.16],["PMMA","pmma",230,3.8],["ABS","abs",220,10],
  ["PS","ps",200,5],["PE","pe",190,2.16,"HLMFR: 190 ℃ / 21.6 kg"],["POM","pom",190,2.16]
@@ -1599,11 +1848,11 @@ const MFR_CHART = [
 function mfrChart(){
   const L=110, R=190, ROWH=28, TOP=30, W=760;
   const n=MFR_CHART.length, H=TOP+n*ROWH+16;
-  const xmin=170, xmax=315;
+  const xmin=170, xmax=410;
   const x=v=>L+(W-L-R)*(v-xmin)/(xmax-xmin);
   const rad=w=>4+2.2*Math.log(w);
   let g="";
-  for(let v=180;v<=300;v+=20){
+  for(let v=180;v<=400;v+=20){
     g+=`<line x1="${x(v)}" y1="${TOP-6}" x2="${x(v)}" y2="${H-14}" stroke="#E3E5DD"/>`;
     g+=`<text x="${x(v)}" y="${TOP-10}" font-size="10" text-anchor="middle" fill="#5B6373">${v}</text>`;
   }
@@ -1640,6 +1889,70 @@ function renderCharts(){
   return html;
 }
 
+/* ================= クイックインデックス ================= */
+/* プラスチック試験の分類（ナビゲーション用・未分類は「その他」へ） */
+const TEST_GROUPS = [
+  {label:"力学特性", ids:["tensile","film-tensile","flex","compress","charpy","izod","tensile-impact","puncture","creep-tensile","hardness-r","hardness-d"]},
+  {label:"熱的特性", ids:["hdt","vicat","dsc","tg","tma","cp","oit"]},
+  {label:"流動・物理・成形", ids:["mfr","density","water","molding","shrinkage","ash"]},
+  {label:"難燃・光学", ids:["flammability","loi","haze"]}
+];
+
+function idxChip(id, label, cls){
+  return `<button class="idx-chip ${cls||""}" data-go="${id}" title="${esc(label)}">${esc(label)}</button>`;
+}
+function matLabel(m){ return m.name.split("（")[0]; }
+
+function renderIndex(){
+  const pT = TESTS.filter(t=>t.cat!=="rubber"), rT = TESTS.filter(t=>t.cat==="rubber");
+  const pM = MATS.filter(m=>m.cat!=="rubber"), rM = MATS.filter(m=>m.cat==="rubber");
+  const grouped = new Set();
+
+  let testCol = "";
+  if(view!=="mat"){
+    for(const g of TEST_GROUPS){
+      const items = g.ids.map(id=>pT.find(t=>t.id===id)).filter(Boolean);
+      items.forEach(t=>grouped.add(t.id));
+      if(!items.length) continue;
+      testCol += `<div class="idx-grp"><div class="idx-h">${esc(g.label)}</div><div class="idx-chips">`
+        + items.map(t=>idxChip("t-"+t.id, t.name)).join("") + `</div></div>`;
+    }
+    const other = pT.filter(t=>!grouped.has(t.id));
+    if(other.length){
+      testCol += `<div class="idx-grp"><div class="idx-h">その他</div><div class="idx-chips">`
+        + other.map(t=>idxChip("t-"+t.id, t.name)).join("") + `</div></div>`;
+    }
+    if(rT.length){
+      testCol += `<div class="idx-grp"><div class="idx-h rub">ゴム試験</div><div class="idx-chips">`
+        + rT.map(t=>idxChip("t-"+t.id, t.name, "rub")).join("") + `</div></div>`;
+    }
+  }
+
+  let matCol = "";
+  if(view!=="test"){
+    if(pM.length){
+      matCol += `<div class="idx-grp"><div class="idx-h">材料：プラスチック</div><div class="idx-chips">`
+        + pM.map(m=>idxChip("m-"+m.id, matLabel(m), "mat")).join("") + `</div></div>`;
+    }
+    if(rM.length){
+      matCol += `<div class="idx-grp"><div class="idx-h rub">材料：ゴム</div><div class="idx-chips">`
+        + rM.map(m=>idxChip("m-"+m.id, matLabel(m), "rub")).join("") + `</div></div>`;
+    }
+  }
+
+  const cols = [matCol, testCol].filter(Boolean);
+  const grid = cols.length===2
+    ? `<div class="idx-cols"><div>${matCol}</div><div>${testCol}${
+        `<div class="idx-grp"><div class="idx-h">グラフ</div><button class="idx-chart" data-view="chart">物性・条件の比較グラフを見る →</button></div>`}</div></div>`
+    : `<div class="idx-cols" style="grid-template-columns:1fr">${cols.join("")}`
+      + `<div class="idx-grp"><div class="idx-h">グラフ</div><button class="idx-chart" data-view="chart">物性・条件の比較グラフを見る →</button></div></div>`;
+
+  return `<div class="idx">
+    <div class="idx-hint">項目名をクリックすると該当カードを開いて移動します。上部の検索窓でキーワード（規格番号・略称・試験名）による絞り込みもできます。</div>
+    ${grid}
+  </div>`;
+}
+
 function render(){
   const qn = norm(query);
   rawWords = query.trim().split(/[\s　]+/).filter(Boolean);
@@ -1648,35 +1961,37 @@ function render(){
   const matchM = MATS.filter(m => !qn || matHay(m).includes(qn) || rawWords.every(w=>matHay(m).includes(norm(w))));
 
   if(view==="chart"){
+    $("#idx").innerHTML = "";
     $("#list").innerHTML = renderCharts();
     $("#count").textContent = `グラフ： ${CHARTS.length+RUBBER_CHARTS.length+3} 図（代表値ベース）`;
     document.querySelector(".tools").style.display = "none";
     return;
   }
   document.querySelector(".tools").style.display = "";
+  $("#idx").innerHTML = query ? "" : renderIndex();
 
   const pT = matchT.filter(t=>t.cat!=="rubber"), rT = matchT.filter(t=>t.cat==="rubber");
   const pM = matchM.filter(m=>m.cat!=="rubber"), rM = matchM.filter(m=>m.cat==="rubber");
   const sect = (label, arr, fn) => arr.length ? `<div class="sec-label">${label}（${arr.length}）</div>` + arr.map(fn).join("") : "";
 
   let html = "";
-  if(view!=="mat"){
-    html += sect("試験方法：プラスチック", pT, renderTest);
-    html += sect("試験方法：ゴム", rT, renderTest);
-    if(!matchT.length) html += `<div class="sec-label">試験方法（0）</div><div class="empty" style="padding:16px 0">該当する試験方法はありません</div>`;
-  }
   if(view!=="test"){
     html += sect("材料：プラスチック", pM, renderMat);
     html += sect("材料：ゴム", rM, renderMat);
     if(!matchM.length) html += `<div class="sec-label">材料（0）</div><div class="empty" style="padding:16px 0">該当する材料はありません</div>`;
+  }
+  if(view!=="mat"){
+    html += sect("試験方法：プラスチック", pT, renderTest);
+    html += sect("試験方法：ゴム", rT, renderTest);
+    if(!matchT.length) html += `<div class="sec-label">試験方法（0）</div><div class="empty" style="padding:16px 0">該当する試験方法はありません</div>`;
   }
   if(!matchT.length && !matchM.length){
     html = `<div class="empty">「${esc(query)}」に一致する項目がありません。<br>別のキーワード（規格番号・略称・試験名など）を試してください。</div>`;
   }
   $("#list").innerHTML = html;
   $("#count").textContent = query
-    ? `検索「${query}」： 試験方法 ${matchT.length} 件 / 材料 ${matchM.length} 件`
-    : `収録： 試験方法 ${TESTS.length} 件 / 材料 ${MATS.length} 件`;
+    ? `検索「${query}」： 材料 ${matchM.length} 件 / 試験方法 ${matchT.length} 件`
+    : `収録： 材料 ${MATS.length} 件 / 試験方法 ${TESTS.length} 件`;
 
   // 検索時は自動展開
   if(query) document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
@@ -1692,32 +2007,49 @@ $("#seg").addEventListener("click", e=>{
   render();
 });
 
+function goToCard(id){
+  // 移動先が現在のビューに無い場合は「すべて」に切替
+  let el = document.getElementById(id);
+  if(!el){
+    view = "all"; query = ""; $("#q").value = "";
+    document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v==="all"));
+    render();
+    el = document.getElementById(id);
+  }
+  if(el){
+    el.classList.add("open","hit-flash");
+    el.scrollIntoView({behavior:"smooth", block:"start"});
+    setTimeout(()=>el.classList.remove("hit-flash"), 1700);
+  }
+}
+
 $("#list").addEventListener("click", e=>{
   const go = e.target.closest("[data-go]");
-  if(go){
-    const id = go.dataset.go;
-    // 移動先が現在のビューに無い場合は「すべて」に切替
-    let el = document.getElementById(id);
-    if(!el){
-      view = "all"; query = ""; $("#q").value = "";
-      document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v==="all"));
-      render();
-      el = document.getElementById(id);
-    }
-    if(el){
-      el.classList.add("open","hit-flash");
-      el.scrollIntoView({behavior:"smooth", block:"start"});
-      setTimeout(()=>el.classList.remove("hit-flash"), 1700);
-    }
-    e.stopPropagation();
-    return;
-  }
+  if(go){ goToCard(go.dataset.go); e.stopPropagation(); return; }
   const hd = e.target.closest(".card-hd");
   if(hd) hd.parentElement.classList.toggle("open");
 });
 
+$("#idx").addEventListener("click", e=>{
+  const v = e.target.closest("[data-view]");
+  if(v){
+    view = v.dataset.view;
+    document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v===view));
+    render();
+    window.scrollTo({top:0, behavior:"smooth"});
+    return;
+  }
+  const go = e.target.closest("[data-go]");
+  if(go) goToCard(go.dataset.go);
+});
+
 $("#openAll").addEventListener("click", ()=>document.querySelectorAll(".card").forEach(c=>c.classList.add("open")));
 $("#closeAll").addEventListener("click", ()=>document.querySelectorAll(".card").forEach(c=>c.classList.remove("open")));
+
+/* 上に戻る */
+const toTop = $("#toTop");
+window.addEventListener("scroll", ()=>{ toTop.classList.toggle("show", window.scrollY > 400); }, {passive:true});
+toTop.addEventListener("click", ()=>window.scrollTo({top:0, behavior:"smooth"}));
 
 render();
 </script>
