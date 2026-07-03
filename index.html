@@ -200,8 +200,8 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
     <input id="q" type="search" placeholder="検索：試験名 / JIS番号 / 材料名（例: K 7171、曲げ、PP、K 6251、EPDM、硬さ）" autocomplete="off">
     <div class="seg" id="seg">
       <button data-v="all" class="on">すべて</button>
-      <button data-v="test">試験方法から</button>
       <button data-v="mat">材料から</button>
+      <button data-v="test">試験方法から</button>
       <button data-v="chart">グラフ</button>
     </div>
   </div>
@@ -852,7 +852,7 @@ const MATS = [
  tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r","tensile-impact","haze","molding"]
 },
 {
- id:"abs", name:"ABS樹脂", abbr:"ABS",
+ id:"abs", name:"ABS（アクリロニトリル・ブタジエン・スチレン）", abbr:"ABS",
  kw:"ABS アクリロニトリル ブタジエン スチレン",
  props:[["区分","非晶性"],["Tg","約 105 ℃（SANマトリックス）"],["密度","1.04〜1.07 g/cm³"],["引張強さ","40〜50 MPa"],["曲げ弾性率","2.0〜2.7 GPa"],["シャルピー衝撃強さ（ノッチ付）","15〜30 kJ/m²"]],
  conds:[
