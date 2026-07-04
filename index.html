@@ -179,9 +179,24 @@ td .v{font-family:var(--mono);font-size:12.5px}
 
 mark{background:#FCE58A;padding:0 1px;border-radius:2px}
 footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:var(--sub)}
+/* JIS一覧テーブル */
+.jis-tbl th.w-no{width:30%}
+.jis-tbl th.w-iso{width:22%}
+.jis-tbl td.jis-no,.jis-tbl td.jis-iso{white-space:nowrap;font-family:var(--mono)}
+.jis-tbl .lk{margin:0;text-align:left;white-space:normal}
 @media(max-width:640px){
   th{width:8em;white-space:normal}
   main{padding:14px 12px 60px}
+  .seg{width:100%;flex-wrap:wrap}
+  .seg button{flex:1 1 auto;padding:7px 6px;font-size:12px;white-space:nowrap}
+  /* JIS一覧：行をカード型に縦積み */
+  .jis-tbl{border:none}
+  .jis-tbl tr{display:block;border:1px solid var(--line);border-radius:6px;margin-bottom:8px;overflow:hidden;background:#fff}
+  .jis-tbl tr:first-child{display:none}
+  .jis-tbl td{display:block;border:none;padding:5px 10px}
+  .jis-tbl td.jis-no{background:#F3F4EF;font-weight:600;white-space:normal;font-size:12.5px}
+  .jis-tbl td.jis-iso{padding-top:0;font-size:12px;color:var(--sub);white-space:normal}
+  .jis-tbl td.jis-iso::before{content:"対応ISO： ";font-family:inherit}
 }
 @media print{
   header{position:static}
@@ -724,6 +739,63 @@ const TESTS = [
   ["試験片数","5個以上"]
  ],
  note:"剥離強さは剥離角度・速度・被着材の剛性（曲げ変形）に強く依存し、方式間の互換はない。剛性＋たわみ性の組合せは90°剥離（K 6854-1）・180°剥離（K 6854-2）、剥離角を機構的に一定化する浮動ローラー法はK 6854-4。粘着テープ類はJIS Z 0237側の体系。",
+ mats:[]
+},
+{
+ id:"ad-90peel", name:"90°剥離接着強さ", jis:"JIS K 6854-1", iso:"ISO 8510-1", cat:"adhesive",
+ kw:"接着 接着剤 剥離 はく離 90度 90° ピール peel スライド治具 移動テーブル 剛性 たわみ性",
+ specimen:{label:"たわみ性被着材を剛性被着材に接着し、90°方向へ剥離（スライド治具使用）", fig:null,
+  rows:[
+   ["被着材","剛性板（金属板など）＋ たわみ性材料（薄金属板・フィルム・布など）の組合せ"],
+   ["寸法","幅 25 mm。剛性板 長さ 200 mm 程度、接着長 150 mm ＋ 未接着つかみ部 の構成が代表"],
+   ["治具","剥離角を90°に保つため、剛性板を水平移動テーブル（スライドキャリッジ）に固定"]
+  ]},
+ cond:[
+  ["試験速度","100 mm/min（つかみ移動速度）"],
+  ["評価区間","剥離初期のピークを除いた安定域の平均剥離力を記録線図から求める"],
+  ["算出","剥離接着強さ ＝ 平均剥離力 ÷ 試験片幅（N/mm）"],
+  ["破壊状態","界面/凝集/被着材破壊の別を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"剛性＋たわみ性の組合せで剥離角を90°に固定したい場合の方式。テーブルの追従でつかみ移動速度＝ほぼ剥離点の進行速度になる。同じ試験片構成で180°剥離（K 6854-2）とは値が異なり互換はない。たわみ性被着材の曲げ剛性が高いと角度が乱れやすい。",
+ mats:[]
+},
+{
+ id:"ad-180peel", name:"180°剥離接着強さ", jis:"JIS K 6854-2", iso:"ISO 8510-2", cat:"adhesive",
+ kw:"接着 接着剤 剥離 はく離 180度 180° ピール peel 折返し 剛性 たわみ性",
+ specimen:{label:"たわみ性被着材を剛性被着材に接着し、180°に折返して剥離",fig:null,
+  rows:[
+   ["被着材","剛性板 ＋ たわみ性材料（180°に折返せる十分なたわみ性が必要）"],
+   ["寸法","幅 25 mm。接着長 150 mm 程度 ＋ 未接着つかみ部"],
+   ["組立","未接着部を180°折返し、剛性板と たわみ性被着材端をそれぞれつかみ具に固定"]
+  ]},
+ cond:[
+  ["試験速度","100 mm/min（つかみ移動速度。剥離点の進行は約 50 mm/min）"],
+  ["評価区間","安定域の平均剥離力を採用（初期ピーク除外）"],
+  ["算出","剥離接着強さ ＝ 平均剥離力 ÷ 試験片幅（N/mm）"],
+  ["破壊状態","界面/凝集/被着材破壊の別を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"治具が単純（標準つかみ具のみ）で実施しやすいが、たわみ性被着材に大きな曲げが加わるため、被着材の塑性変形が剥離力に上乗せされやすい。折返しできない硬めの被着材は90°剥離（K 6854-1）か浮動ローラー法（K 6854-4）を選ぶ。",
+ mats:[]
+},
+{
+ id:"ad-roller", name:"浮動ローラー剥離接着強さ", jis:"JIS K 6854-4", iso:"ISO 4578", cat:"adhesive",
+ kw:"接着 接着剤 剥離 はく離 浮動ローラー フローティングローラー floating roller ピール 構造用接着剤",
+ specimen:{label:"たわみ性被着材を浮動ローラー治具に沿わせて剛性被着材から剥離（剥離角を機構的に一定化）",fig:null,
+  rows:[
+   ["被着材","剛性板 ＋ たわみ性金属薄板（構造用接着剤の金属接着評価が代表）"],
+   ["寸法","幅 25 mm。剛性板と たわみ性板を部分的に重ねて接着"],
+   ["治具","たわみ性被着材をローラーに巻き付けるように通し、剥離角と曲げ半径を治具が規定"]
+  ]},
+ cond:[
+  ["試験速度","100 mm/min（つかみ移動速度）"],
+  ["評価区間","安定域の平均剥離力を採用（初期ピーク除外）"],
+  ["算出","剥離接着強さ ＝ 平均剥離力 ÷ 試験片幅（N/mm）"],
+  ["破壊状態","界面/凝集/被着材破壊の別を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"剥離角・曲げ半径が治具で固定されるため、T形・90°・180°より被着材のたわみ方の影響を受けにくく、ばらつきが小さい。構造用接着剤（航空機・車体用エポキシ等）の品質管理で多用。試験機側に治具（浮動ローラージグ）の準備が必要。",
  mats:[]
 },
 {
@@ -1999,6 +2071,45 @@ function renderIndex(){
 
 /* ================= JIS一覧 ================= */
 /* 収録カードのある規格はTESTSから自動生成（リンク付き）。カード未収録の主要規格はJIS_EXTRAに手動登録（リンクなし） */
+/* カード収録規格の正式名称（JIS一覧のリンク表示用） */
+const JIS_OFFICIAL = {
+ "tensile":"プラスチック — 引張特性の求め方 — 第1部：通則 ／ 第2部：型成形、押出成形及び注型プラスチックの試験条件",
+ "film-tensile":"プラスチック — 引張特性の試験方法 — 第3部：フィルム及びシートの試験条件",
+ "flex":"プラスチック — 曲げ特性の求め方",
+ "compress":"プラスチック — 圧縮特性の求め方",
+ "charpy":"プラスチック — シャルピー衝撃特性の求め方 — 第1部：非計装化衝撃試験",
+ "izod":"プラスチック — アイゾット衝撃強さの試験方法",
+ "hdt":"プラスチック — 荷重たわみ温度の求め方 — 第1部：通則 ／ 第2部：プラスチック及びエボナイト",
+ "vicat":"プラスチック — 熱可塑性プラスチック — ビカット軟化温度（VST）試験方法",
+ "mfr":"プラスチック — 熱可塑性プラスチックのメルトマスフローレイト（MFR）及びメルトボリュームフローレイト（MVR）の求め方 — 第1部：標準的試験方法",
+ "density":"プラスチック — 非発泡プラスチックの密度及び比重の測定方法",
+ "dsc":"プラスチックの転移温度測定方法（K 7121）／ プラスチックの転移熱測定方法（K 7122）",
+ "hardness-d":"プラスチックのデュロメータ硬さ試験方法",
+ "water":"プラスチック — 吸水率の求め方",
+ "tg":"プラスチックの熱重量測定方法",
+ "molding":"プラスチック — 熱可塑性プラスチック材料の射出成形試験片 — 第1部：一般原則、多目的試験片及び短冊形試験片の成形 ／ プラスチック — 試験片（K 7139）",
+ "tma":"プラスチックの熱機械分析による線膨張率試験方法",
+ "cp":"プラスチックの比熱容量測定方法",
+ "oit":"プラスチック — 示差走査熱量測定（DSC）— 第6部：酸化誘導時間（等温OIT）及び酸化誘導温度（動的OIT）の求め方",
+ "tensile-impact":"プラスチック — 引張衝撃強さの試験方法",
+ "shrinkage":"プラスチック — 熱可塑性プラスチック材料の射出成形試験片 — 第4部：成形収縮率の測定",
+ "ash":"プラスチック — 灰分の求め方 — 第1部：通則",
+ "haze":"プラスチック — 透明材料の全光線透過率の試験方法 — 第1部：シングルビーム法 ／ 透明材料のヘーズの求め方（K 7136）",
+ "ad-shear":"接着剤 — 剛性被着材の引張せん断接着強さ試験方法",
+ "ad-tensile":"接着剤 — 引張接着強さ試験方法",
+ "ad-90peel":"接着剤 — はく離接着強さ試験方法 — 第1部：90度はく離",
+ "ad-180peel":"接着剤 — はく離接着強さ試験方法 — 第2部：180度はく離",
+ "ad-tpeel":"接着剤 — はく離接着強さ試験方法 — 第3部：T形はく離",
+ "ad-roller":"接着剤 — はく離接着強さ試験方法 — 第4部：浮動ローラー法",
+ "ad-flex":"接着剤 — 曲げ接着強さ試験方法",
+ "r-tensile":"加硫ゴム及び熱可塑性ゴム — 引張特性の求め方",
+ "r-hardness":"加硫ゴム及び熱可塑性ゴム — 硬さの求め方 — 第3部：デュロメータ硬さ ／ 第2部：国際ゴム硬さ（IRHD）",
+ "r-tear":"加硫ゴム及び熱可塑性ゴム — 引裂強さの求め方 — 第1部：トラウザ形、アングル形及びクレセント形試験片",
+ "r-cset":"加硫ゴム及び熱可塑性ゴム — 常温、高温及び低温における圧縮永久ひずみの求め方",
+ "r-aging":"加硫ゴム及び熱可塑性ゴム — 熱老化特性の求め方",
+ "r-rebound":"加硫ゴム及び熱可塑性ゴム — 反発弾性の求め方",
+};
+
 const JIS_EXTRA = [
  /* --- プラスチック：一般・試験方法 --- */
  {cat:"p", jis:"JIS K 6899-1", name:"プラスチック — 記号及び略語（基本ポリマー）", iso:"ISO 1043-1"},
@@ -2045,26 +2156,25 @@ const JIS_EXTRA = [
  {cat:"a", jis:"JIS K 6851", name:"木材の引張せん断接着強さ", iso:"—"},
  {cat:"a", jis:"JIS K 6852", name:"圧縮せん断接着強さ", iso:"—"},
  {cat:"a", jis:"JIS K 6853", name:"割裂接着強さ", iso:"—"},
- {cat:"a", jis:"JIS K 6854-1 / -2 / -4", name:"剥離接着強さ（90°／180°／浮動ローラー法）", iso:"ISO 8510 / 4578"},
  {cat:"a", jis:"JIS K 6855", name:"衝撃接着強さ", iso:"—"},
  {cat:"a", jis:"JIS K 6865", name:"高速衝撃剥離（くさび衝撃法）", iso:"ISO 11343"},
 ];
 
 /* 材料規格（第1部：呼び方の基礎／第2部：試験片作製・特性測定） */
 const MATERIAL_STDS = [
- {jis:"JIS K 6717-1 / -2", name:"PMMA成形用材料（ISO 8257）", go:"m-pmma"},
- {jis:"JIS K 6719-1 / -2", name:"ポリカーボネート成形用材料（ISO 7391）", go:"m-pc"},
- {jis:"JIS K 6720-1 / -2", name:"ポリ塩化ビニル樹脂（ISO 1060）", go:"m-pvc"},
- {jis:"JIS K 6920-1 / -2", name:"ポリアミド成形用材料（PA6・PA66、ISO 1874）", go:"m-pa6"},
- {jis:"JIS K 6921-1 / -2", name:"ポリプロピレン成形用材料", go:"m-pp"},
- {jis:"JIS K 6922-1 / -2", name:"ポリエチレン成形用材料", go:"m-pe"},
- {jis:"JIS K 6923-1 / -2", name:"ポリスチレン成形用材料（HIPSは K 6926）", go:"m-ps"},
- {jis:"JIS K 6934-1 / -2", name:"ABS成形用材料", go:"m-abs"},
- {jis:"JIS K 6937-1 / -2", name:"熱可塑性ポリエステル成形用材料（PBT・PET、ISO 7792）", go:"m-pbt"},
- {jis:"JIS K 7364-1 / -2", name:"ポリアセタール成形用材料（ISO 9988）", go:"m-pom"},
+ {jis:"JIS K 6717-1 / -2", name:"プラスチック — ポリ（メタクリル酸メチル）（PMMA）成形用及び押出用材料", go:"m-pmma"},
+ {jis:"JIS K 6719-1 / -2", name:"プラスチック — ポリカーボネート（PC）成形用及び押出用材料", go:"m-pc"},
+ {jis:"JIS K 6720-1 / -2", name:"プラスチック — ポリ塩化ビニル（PVC）樹脂", go:"m-pvc"},
+ {jis:"JIS K 6920-1 / -2", name:"プラスチック — ポリアミド（PA）成形用及び押出用材料", go:"m-pa6"},
+ {jis:"JIS K 6921-1 / -2", name:"プラスチック — ポリプロピレン（PP）成形用及び押出用材料", go:"m-pp"},
+ {jis:"JIS K 6922-1 / -2", name:"プラスチック — ポリエチレン（PE）成形用及び押出用材料", go:"m-pe"},
+ {jis:"JIS K 6923-1 / -2", name:"プラスチック — ポリスチレン（PS）成形用及び押出用材料（HIPSは K 6926）", go:"m-ps"},
+ {jis:"JIS K 6934-1 / -2", name:"プラスチック — アクリロニトリル・ブタジエン・スチレン（ABS）成形用及び押出用材料", go:"m-abs"},
+ {jis:"JIS K 6937-1 / -2", name:"プラスチック — 熱可塑性ポリエステル（TP）成形用及び押出用材料（PBT・PET）", go:"m-pbt"},
+ {jis:"JIS K 7364-1 / -2", name:"プラスチック — ポリアセタール（POM）成形用及び押出用材料", go:"m-pom"},
  {jis:"JIS K 6915", name:"フェノール樹脂成形材料", go:null},
  {jis:"JIS K 6919", name:"繊維強化プラスチック用液状不飽和ポリエステル樹脂", go:null},
- {jis:"JIS K 6250", name:"ゴム — 物理試験方法通則（試験片作製・状態調節）", go:null},
+ {jis:"JIS K 6250", name:"ゴム — 物理試験方法通則", go:null},
 ];
 
 function jisSortKey(s){
@@ -2080,18 +2190,18 @@ function renderJisList(matchT){
 
   /* 収録カード（リンク付き）＋未収録規格（リンクなし）を統合 */
   const linked = t => ({jis:t.jis, iso:t.iso||"—",
-    body:`<button class="lk to-test" data-go="t-${t.id}" style="margin:0">${esc(t.name)}</button>`});
+    body:`<button class="lk to-test jis-lk" data-go="t-${t.id}">${esc(JIS_OFFICIAL[t.id]||t.name)}</button>`});
   const plain  = x => ({jis:x.jis, iso:x.iso||"—", body:hl(x.name)});
   const merge = (catKey, testFilter) =>
     sortJ([...matchT.filter(testFilter).map(linked),
            ...JIS_EXTRA.filter(x=>x.cat===catKey && hitX(x)).map(plain)]);
 
   const row = r => `<tr>
-    <td style="white-space:nowrap;font-family:var(--mono)">${hl(r.jis)}</td>
+    <td class="jis-no">${hl(r.jis)}</td>
     <td>${r.body}</td>
-    <td style="font-family:var(--mono)">${hl(r.iso)}</td></tr>`;
-  const tbl = arr => `<div class="card open"><div class="card-body" style="display:block;border-top:none;padding:8px 16px 12px"><table>
-    <tr><th style="width:30%">JIS規格</th><th>規格名称・試験名（青字はカードへリンク）</th><th style="width:22%">対応ISO</th></tr>
+    <td class="jis-iso">${hl(r.iso)}</td></tr>`;
+  const tbl = arr => `<div class="card open"><div class="card-body" style="display:block;border-top:none;padding:8px 16px 12px"><table class="jis-tbl">
+    <tr><th class="w-no">JIS規格</th><th>規格名称・試験名（青字はカードへリンク）</th><th class="w-iso">対応ISO</th></tr>
     ${arr.map(row).join("")}</table></div></div>`;
 
   const pR = merge("p", t=>!t.cat);
@@ -2099,10 +2209,10 @@ function renderJisList(matchT){
   const rR = merge("r", t=>t.cat==="rubber");
   const mS = MATERIAL_STDS.filter(hitX);
   const mRow = s => `<tr>
-    <td style="white-space:nowrap;font-family:var(--mono)">${hl(s.jis)}</td>
-    <td>${s.go ? `<button class="lk to-mat" data-go="${s.go}" style="margin:0">${esc(s.name)}</button>` : hl(s.name)}</td></tr>`;
-  const mTbl = arr => `<div class="card open"><div class="card-body" style="display:block;border-top:none;padding:8px 16px 12px"><table>
-    <tr><th style="width:30%">JIS規格</th><th>規格名称（青字は材料カードへリンク）</th></tr>
+    <td class="jis-no">${hl(s.jis)}</td>
+    <td>${s.go ? `<button class="lk to-mat jis-lk" data-go="${s.go}">${esc(s.name)}</button>` : hl(s.name)}</td></tr>`;
+  const mTbl = arr => `<div class="card open"><div class="card-body" style="display:block;border-top:none;padding:8px 16px 12px"><table class="jis-tbl">
+    <tr><th class="w-no">JIS規格</th><th>規格名称（青字は材料カードへリンク）</th></tr>
     ${arr.map(mRow).join("")}</table></div></div>`;
 
   let html = "";
