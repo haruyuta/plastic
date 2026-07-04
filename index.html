@@ -79,6 +79,7 @@ main{max-width:1080px;margin:0 auto;padding:18px 20px 80px}
 .t-badge{background:var(--navy-soft);color:var(--navy);border:1px solid #B9C6E2}
 .m-badge{background:var(--green-soft);color:var(--green);border:1px solid #ABD3C6}
 .r-badge{background:var(--amber-soft);color:var(--amber);border:1px solid #E3C98E}
+.a-badge{background:#F1EAF8;color:#6B3FA0;border:1px solid #CDB5E6}
 .card-title{font-size:15px;font-weight:700}
 .card-iso{font-size:11.5px;color:var(--sub);font-family:var(--mono)}
 .chev{margin-left:auto;color:var(--sub);font-size:12px;transition:transform .15s}
@@ -197,12 +198,13 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
     <span class="hd-sub">試験片形状・測定条件リファレンス（オフライン・単一ファイル）</span>
   </div>
   <div class="hd-controls">
-    <input id="q" type="search" placeholder="検索：試験名 / JIS番号 / 材料名（例: K 7171、曲げ、PP、K 6251、EPDM、硬さ）" autocomplete="off">
+    <input id="q" type="search" placeholder="検索：試験名 / JIS番号 / 材料名（例: K 7171、曲げ、PP、K 6251、K 6850、接着、硬さ）" autocomplete="off">
     <div class="seg" id="seg">
       <button data-v="all" class="on">すべて</button>
       <button data-v="mat">材料から</button>
       <button data-v="test">試験方法から</button>
       <button data-v="chart">グラフ</button>
+      <button data-v="jis">JIS一覧</button>
     </div>
   </div>
 </header>
@@ -237,7 +239,8 @@ const TESTS = [
    ["平行部の幅 b₁","10.0 ± 0.2 mm"],
    ["厚さ h","4.0 ± 0.2 mm"],
    ["標線間距離 L₀","75 mm（1A）/ 50 mm（1B）"],
-   ["つかみ具間距離 L","115 mm（1A）/ 115 mm（1B）目安"]
+   ["つかみ具間距離 L","115 mm（1A）/ 115 mm（1B）目安"],
+   ["小形試験片","1BA・1BB・5A・5B形（成形品からの切出し等）。寸法比が異なり1A/1Bとの値の互換性はない"]
   ]},
  cond:[
   ["試験速度（弾性率）","1 mm/min"],
@@ -245,6 +248,11 @@ const TESTS = [
   ["引張弾性率の算出","ひずみ 0.05〜0.25 % 区間の割線または回帰"],
   ["ひずみ測定","伸び計・ひずみゲージ推奨（クロスヘッド変位のみは要コンプライアンス配慮）"],
   ["状態調節・試験雰囲気","23 ± 2 ℃ / 50 ± 10 %RH（JIS K 7100）"]
+,
+  ["応力の定義","σy: 降伏応力 / σm: 引張強さ（最大応力）/ σb: 破壊応力。いずれも初期断面積基準の公称応力"],
+  ["ひずみの定義","降伏前の破壊：標線間基準のひずみ ε。降伏を伴う場合：降伏後は呼びひずみ εt（つかみ具間変位基準）で報告"],
+  ["ポアソン比","縦・横ひずみの同時測定から算出（試験速度 1 mm/min）"],
+  ["試験片数","5個以上（異方性材料は方向別に5個以上）"]
  ],
  note:"弾性率をクロスヘッド変位から求める場合は装置コンプライアンスの影響が大きい。降伏を示す材料は降伏応力を「引張強さ」として報告する場合があるため、応力の定義（降伏/破断/最大）を明記する。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle","peek","lcp"]
@@ -262,6 +270,10 @@ const TESTS = [
   ["試験速度","5〜500 mm/min（材料・目的により選択。伸びの大きいフィルムは200〜500）"],
   ["厚さ測定","各試験片で実測（マイクロメータ）し断面積算出"],
   ["方向性","MD / TD 両方向で採取・報告"]
+,
+  ["試験速度（弾性率）","1 mm/min（引張弾性率を求める場合）"],
+  ["標線間距離","50 mm（伸び測定の代表値）"],
+  ["試験片数","各方向（MD/TD）5個以上"]
  ],
  note:"フィルムは異方性（MD/TD）とつかみ部での滑り・切れに注意。エアチャック等の使用やタブ補強が有効。",
  mats:["pp","pe","pet"]
@@ -281,6 +293,10 @@ const TESTS = [
   ["曲げ弾性率の算出","ひずみ 0.05〜0.25 % 区間"],
   ["測定終点","破壊、または曲げひずみ 3.5 %（そこまでに破壊しない場合）"],
   ["たわみ測定","中央たわみ。クロスヘッド変位使用時はコンプライアンス補正を考慮"]
+,
+  ["曲げ応力の算出","σf = 3FL/(2bh²)（F: 荷重, L: スパン, b: 幅, h: 厚さ）"],
+  ["曲げひずみの算出","εf = 6sh/L²（s: 中央たわみ）。3.5 %相当たわみは h=4・L=64 で約 2.4 mm"],
+  ["試験片数","5個以上"]
  ],
  note:"曲げ弾性率はたわみの小さい領域を使うため、装置コンプライアンス・接触部のなじみ（トー）の影響が特に大きい。たわみ計の使用または補正の実施を推奨。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle","peek","lcp"]
@@ -297,6 +313,9 @@ const TESTS = [
   ["試験速度（弾性率）","1 mm/min"],
   ["試験速度（強さ）","1〜5 mm/min（材料区分による）"],
   ["端面","平行・平滑に仕上げる（偏心荷重を避ける）"]
+,
+  ["圧縮弾性率の算出","ひずみ 0.05〜0.25 % 区間（初期断面積基準の公称応力）"],
+  ["試験片数","5個以上"]
  ],
  note:"細長い試験片は座屈しやすい。弾性率用と強さ用で試験片寸法が異なる点に注意。",
  mats:["pp","pc","pom","gf"]
@@ -309,13 +328,17 @@ const TESTS = [
    ["寸法","長さ 80 × 幅 10 × 厚さ 4 mm"],
    ["ノッチ","A形：先端半径 0.25 ± 0.05 mm、ノッチ底残り幅 8.0 ± 0.2 mm"],
    ["支点間距離","62 mm"],
-   ["打撃方向","エッジワイズ（e）が標準。フラットワイズ（f）もあり"]
+   ["打撃方向","エッジワイズ（e）が標準。フラットワイズ（f）もあり"],
+   ["ノッチ種類","A形（r = 0.25 mm）が標準。ほかにB形（r = 1.0 mm）・C形（r = 0.1 mm）"]
   ]},
  cond:[
   ["ハンマー容量","吸収エネルギーが容量の 10〜80 % に入るよう選択（0.5〜50 J）"],
   ["打撃速度","2.9 m/s（容量 ≤5 J）/ 3.8 m/s（容量 ≥7.5 J）"],
   ["ノッチ加工","ブローチ・フライス等。加工発熱・むしれに注意"],
   ["結果表示","kJ/m²（ノッチ底断面積基準）＋破壊形態（C/H/P/N）"]
+,
+  ["破壊形態の記号","C: 完全破壊 / H: ヒンジ破壊 / P: 部分破壊 / N: 非破壊。C・Hは同一集計とし、Nの試験片は数値評価に含めない"],
+  ["試験片数","10個が原則（ばらつきが小さい場合は5個も可）"]
  ],
  note:"ノッチ品質（先端半径・仕上げ）が結果を大きく左右する。GF強化材や再生材はノッチ感度・ばらつきが大きく、破壊形態の記録が重要。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pvc","gf","recycle","peek","lcp"]
@@ -332,6 +355,10 @@ const TESTS = [
  cond:[
   ["ハンマー容量","吸収エネルギーが容量の 10〜80 % に入るよう選択"],
   ["結果表示","kJ/m²（ノッチ底断面積基準）"]
+,
+  ["打撃速度","3.5 m/s"],
+  ["結果の呼称","例：ISO 180/A（ノッチ形状を併記）"],
+  ["試験片数","10個が原則"]
  ],
  note:"シャルピー（両端支持・中央打撃）とアイゾット（片持ち・自由端打撃）は値が一致しない。データシート比較時は方式の確認を。",
  mats:["pp","abs","pc","pa6","pa66","pom","pbt","gf","peek","lcp"]
@@ -349,6 +376,9 @@ const TESTS = [
   ["昇温速度","120 ℃/h（2 ℃/min）"],
   ["判定","規定たわみ量（4 mm厚フラットワイズで 0.34 mm ＝ ひずみ0.2 %相当）到達温度"],
   ["熱媒","シリコーン油などの伝熱媒体に浸漬"]
+,
+  ["規定たわみの根拠","曲げひずみ 0.2 % 相当のたわみをスパン・厚さから算出（h=4 mm・L=64 mm で 0.34 mm）"],
+  ["負荷方向","フラットワイズ負荷が標準（K 7191-2）"]
  ],
  note:"結晶性樹脂はA法（1.80 MPa）でTgとTmの間の値になりやすく、GF強化で大幅に上昇する。非晶性樹脂はTg近傍の値。アニール処理の有無で変わるため成形履歴を記録。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","peek","lcp"]
@@ -366,6 +396,8 @@ const TESTS = [
   ["荷重","A法：10 N / B法：50 N"],
   ["昇温速度","50 ℃/h または 120 ℃/h（→ A50 / A120 / B50 / B120）"],
   ["判定","針が 1 mm 侵入した温度"]
+,
+  ["結果表示","例：VST/B50（荷重50 N・昇温50 ℃/h）のように方法を併記"]
  ],
  note:"非晶性樹脂の耐熱指標として常用（B50が代表的）。結晶性樹脂ではTm直下まで高い値が出るため、HDTとの併記が実用的。",
  mats:["pe","ps","abs","pmma","pc","pvc","pom"]
@@ -384,6 +416,9 @@ const TESTS = [
   ["予熱時間","5 min（装入完了から測定開始まで）"],
   ["方法","A法：切り取り質量法（g/10 min）/ B法：ピストン移動距離法（MVR: cm³/10 min）"],
   ["事前乾燥","吸湿性樹脂（PC・PBT・PET・PA）は必須。加水分解でMFRが見かけ上増大"]
+,
+  ["切取り時間間隔（A法）","MFR値に応じて設定（目安：0.1〜0.5 → 240 s / 0.5〜1 → 120 s / 1〜3.5 → 60 s / 3.5〜10 → 30 s / 10超 → 5〜15 s）"],
+  ["適用範囲","MFR 0.1〜100 g/10 min 程度が目安（範囲外は誤差が大きい）"]
  ],
  note:"再生材の劣化度評価にはバージン材とのMFR比較が簡便で有効（PPは分子切断でMFR増、PEは架橋でMFR減の傾向）。荷重・温度条件が異なる値同士は比較不可。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","recycle","peek","lcp","gf"]
@@ -401,6 +436,9 @@ const TESTS = [
   ["試験温度","23 ℃（勾配管は 23.0 ± 0.1 ℃ で管理）"],
   ["浸液","水（＋界面活性剤微量）またはエタノール水溶液など。試料を溶解・膨潤させないこと"],
   ["結果","g/cm³ または kg/m³"]
+,
+  ["天びん","0.1 mg まで読み取れる化学天びん（A法・B法）"],
+  ["C法","浮沈法（液密度を調整し試料の浮沈で判定）も規定あり"]
  ],
  note:"結晶性樹脂は密度が結晶化度の指標になる（例：PEの密度分類、PETの結晶化度推定）。発泡・ボイド・フィラー量の影響を受けるため、再生材では組成把握と併用する。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","recycle","peek","lcp","gf"]
@@ -418,25 +456,13 @@ const TESTS = [
   ["雰囲気","窒素気流（例 50 mL/min）"],
   ["熱履歴","1st run＝成形履歴込み、2nd run＝規定冷却後の材料固有値。目的に応じ報告を区別"],
   ["読み取り","Tg：中間点ガラス転移温度 / Tm：融解ピーク温度 / Tc：結晶化ピーク温度"]
+,
+  ["温度の定義","融解：補外開始 Tim・ピーク Tpm・補外終了 Tem / ガラス転移：補外開始 Tig・中間点 Tmg・補外終了 Teg"],
+  ["2nd run前の冷却","10 ℃/min の規定冷却で熱履歴を統一"],
+  ["校正","インジウム等の標準物質による温度・熱量校正を実施"]
  ],
  note:"再生材・混合材では異樹脂の混入がDSCの融解ピークで検出できる（例：PP中のPE混入 125〜130 ℃付近のピーク）。融解熱ΔHから結晶化度の推定も可能（完全結晶の理論値との比）。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","recycle","peek","lcp"]
-},
-{
- id:"hardness-r", name:"ロックウェル硬さ", jis:"JIS K 7202-2", iso:"ISO 2039-2",
- kw:"ロックウェル 硬さ 硬度 rockwell Rスケール Mスケール",
- specimen:{label:"平板状試験片", fig:null,
-  rows:[
-   ["厚さ","6 mm 以上を確保（薄い場合は重ねず、十分な厚さの成形品で）"],
-   ["表面","平滑・平行。測定点は端部・相互に十分離す"]
-  ]},
- cond:[
-  ["スケール","R・L・M・E（鋼球径と荷重の組合せ）。硬質プラスチックはR・Mが一般的"],
-  ["手順","基準荷重→試験荷重15 s→基準荷重に戻し15 s後に読み取り"],
-  ["結果","スケール記号を付して報告（例：HRR 100）"]
- ],
- note:"スケールが異なる値同士は換算・比較できない。",
- mats:["ps","abs","pmma","pc","pa66","pom","pbt","gf","peek","lcp"]
 },
 {
  id:"hardness-d", name:"デュロメータ硬さ", jis:"JIS K 7215", iso:"ISO 868",
@@ -450,6 +476,9 @@ const TESTS = [
   ["タイプ選択","タイプA（軟質）/ タイプD（硬質）。A硬度が90を超える場合はDへ、D硬度が20未満はAへ"],
   ["読み取り","押針接触直後（瞬時値）または加圧15 s後。どちらかを明記して報告"],
   ["結果表示","例：デュロメータ硬さ A70/15（タイプ・値・読取時間）"]
+,
+  ["ばね力（最大）","タイプA：約 8.06 N / タイプD：約 44.5 N"],
+  ["測定数","位置を変えて5回測定し平均"]
  ],
  note:"軟質PVC・エラストマー・TPEの硬さ評価の定番。読み取り時間で値が変わる（クリープ）ため条件併記が必須。",
  mats:["pvc","pe","pp"]
@@ -466,6 +495,9 @@ const TESTS = [
   ["方法1","23 ℃水中・24 h 浸漬後の質量増加率（%）"],
   ["その他","飽和吸水（恒量到達まで）、沸騰水浸漬、湿度雰囲気（23 ℃/50 %RH平衡）など"],
   ["結果","質量増加率（%）で報告。方法・時間を明記"]
+,
+  ["試験片例","60 × 60 × 1 mm 角板、直径 50 × 3 mm 円板など（規格の規定形状）"],
+  ["恒量の判定","連続する秤量値の差が規定値以下になるまで乾燥・浸漬を継続"]
  ],
  note:"PA系は吸水で寸法・機械物性が大きく変わるため、機械試験前の状態調節（絶乾か調湿平衡か）を必ず定義・記録する。",
  mats:["pa6","pa66","pc","pbt","pmma","pet"]
@@ -482,6 +514,9 @@ const TESTS = [
   ["昇温速度","10 ℃/min（代表的。目的により変更）"],
   ["雰囲気","窒素（熱分解挙動）→ 空気切替（炭化分燃焼・灰分定量）の2段が実用的"],
   ["読み取り","分解開始温度・各段の質量減少率・残渣（灰分・無機フィラー量）"]
+,
+  ["読み取り温度の定義","質量減少開始温度、1 %・5 %質量減少温度、変曲点温度などを目的に応じて報告"],
+  ["校正","キュリー点標準物質等による温度校正、標準分銅による質量校正"]
  ],
  note:"GF・タルク等の無機フィラー含有率の定量に実用的（残渣質量%）。再生材の組成推定・グレード照合にも使える。",
  mats:["pp","pa6","pbt","gf","recycle","peek","lcp"]
@@ -499,6 +534,8 @@ const TESTS = [
   ["管理項目","溶融（樹脂）温度・金型温度・平均射出速度（流動先端速度）・保持圧・冷却時間を設定値と実測で記録"],
   ["事前乾燥","吸湿性樹脂は材料規格の条件で乾燥（下記の各材料カード参照）"],
   ["成形後の状態調節","23 ℃ / 50 %RH で規定時間（通常 ≥88 h、JIS K 7100）後に試験"]
+,
+  ["平均射出速度","流動先端速度として規定（多くの材料規格で 200 mm/s。各材料規格第2部の値に従う）"]
  ],
  note:"成形条件（金型温度・冷却）の差は結晶化度・残留応力・配向を通じて機械物性やHDTに直結する。再生材とバージン材の比較は必ず同一成形条件で行う。",
  mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","gf","recycle"]
@@ -550,6 +587,8 @@ const TESTS = [
   ["等温温度","OITが10〜60 min程度に収まるよう選択（ポリオレフィンで200 ℃が代表的）"],
   ["ガス流量","例 50 mL/min（窒素・酸素とも同一流量）"],
   ["結果","OIT（min）。等温温度を必ず併記"]
+,
+  ["読み取り","酸化発熱の立ち上がりを接線法で補外し、ガス切替からの時間をOITとする"]
  ],
  note:"酸化防止剤の残存量の実用的な指標。再生ポリオレフィンではリサイクル履歴とともにOITが短くなる傾向があり、バージン材との対比で劣化度・再安定化の要否を判断できる。",
  mats:["pp","pe","recycle"]
@@ -573,42 +612,6 @@ const TESTS = [
  mats:["pp","pe","ps","abs","pc","recycle"]
 },
 {
- id:"puncture", name:"高速面衝撃（計装化パンクチャー）", jis:"JIS K 7211-2", iso:"ISO 6603-2",
- kw:"面衝撃 パンクチャー 落錘 計装化 instrumented puncture 平板 荷重変位 延性脆性",
- specimen:{label:"平板状試験片（円形支持リング上に固定）", fig:null,
-  rows:[
-   ["形状・寸法","60 × 60 mm 角板 または φ60 mm 円板が代表的"],
-   ["厚さ","2 mm 代表（用途により変更、厚さを必ず記録）"],
-   ["支持リング内径","40 mm"],
-   ["ストライカー","先端 φ20 mm 半球"]
-  ]},
- cond:[
-  ["試験速度","4.4 m/s（標準）。低速条件も選択可"],
-  ["計測","荷重-変位曲線を計装化計測し、最大荷重・全吸収エネルギーを算出"],
-  ["結果","最大荷重（N）・破壊エネルギー（J）＋破壊形態（延性/脆性）"],
-  ["前処理","23 ℃ / 50 %RH 状態調節"]
- ],
- note:"実使用に近い面方向の衝撃を評価。ゲート位置・配向・ウェルドライン・低温で延性→脆性遷移が起こる。JIS K 7211-1 は非計装の落錘（破壊エネルギー階段法）。",
- mats:["pp","pe","abs","pc","recycle"]
-},
-{
- id:"creep-tensile", name:"引張クリープ", jis:"JIS K 7115", iso:"ISO 899-1",
- kw:"クリープ creep 長期 一定荷重 クリープコンプライアンス 等時応力ひずみ クリープ破断",
- specimen:{label:"多目的試験片 1A形／1B形（引張試験と共通）", fig:"dumbbell",
-  rows:[
-   ["形状","多目的試験片 1A / 1B（標線間 L₀ で伸びを測定）"],
-   ["厚さ","4 mm"]
-  ]},
- cond:[
-  ["負荷","一定の引張応力（荷重）を負荷し続け、時間-ひずみを記録"],
-  ["温度","恒温槽で一定に保持（使用温度・耐熱評価に応じて選択）"],
-  ["時間","1000 h 等の長時間。等時応力-ひずみ線図の作成に複数応力水準で実施"],
-  ["結果","クリープコンプライアンス、等時応力-ひずみ、クリープ破断時間"]
- ],
- note:"長期荷重下の設計データ。応力・温度で大きく変化し、外挿には注意。曲げクリープは JIS K 7116。GF強化材・PBT・POM等の高温クリープ評価で重要。",
- mats:["pp","pe","pc","pbt","pa66","pom","gf","peek","lcp"]
-},
-{
  id:"shrinkage", name:"成形収縮率", jis:"JIS K 7152-4", iso:"ISO 294-4",
  kw:"成形収縮率 収縮 後収縮 mold shrinkage 異方性 MD TD 金型設計",
  specimen:{label:"規定の角板を射出成形（金型寸法既知）", fig:null,
@@ -621,6 +624,8 @@ const TESTS = [
   ["後収縮","規定時間後（例 48 h 以降）またはアニール後の追加収縮を測定"],
   ["状態調節","23 ℃ / 50 %RH で管理"],
   ["結果","MD・TD それぞれ %（成形条件も併記）"]
+,
+  ["寸法測定","23 ℃で規定精度の測定器（測定顕微鏡・ノギス等）により金型基準寸法と比較"]
  ],
  note:"結晶性樹脂（PP・PA・POM・PBT）は収縮が大きく異方性も大。GF強化で流動方向の収縮が減り、方向差（反り）が生じやすい。金型設計・寸法精度の基礎データ。",
  mats:["pp","pe","pa6","pa66","pom","pbt","pet","gf","recycle","peek","lcp"]
@@ -638,42 +643,11 @@ const TESTS = [
   ["ガラス含有率","無機フィラーが主の場合、強熱残分をガラス（無機）含有率とみなす"],
   ["結果","強熱残分（質量 %）。灰化温度・時間を併記"],
   ["注意","ハロゲン含有樹脂（PVC等）や炭酸塩フィラーは規定条件・補正に注意"]
+,
+  ["方法B（硫酸灰化）","硫酸を加えてから灰化する方法も規定（灰分が揮散しやすい場合）"]
  ],
  note:"GF強化材のガラス含有率確認、無機フィラー量把握の定番。カーボンブラック等の有機系添加剤は灰化で消失する点に注意。TG（熱重量）でも代替・補完評価が可能。",
  mats:["pp","pa6","pa66","pbt","gf","recycle","peek","lcp"]
-},
-{
- id:"flammability", name:"燃焼性（水平・垂直燃焼／UL94相当）", jis:"JIS C 60695-11-10", iso:"IEC 60695-11-10",
- kw:"燃焼性 難燃 難燃性 UL94 V-0 V-1 V-2 HB 水平燃焼 垂直燃焼 flammability",
- specimen:{label:"短冊状試験片（厚さは代表厚を選定）", fig:null,
-  rows:[
-   ["寸法","長さ 125 × 幅 13 mm、厚さは代表厚（例 1.5 / 3.0 mm）"],
-   ["本数","各条件 5 本（＋予備）"]
-  ]},
- cond:[
-  ["水平法（HB）","規定標線間の燃焼速度で判定"],
-  ["垂直法（V）","接炎 10 s×2 回の残炎・残じん時間、綿着火（ドリップ）で V-0 / V-1 / V-2 を判定"],
-  ["前処理","23 ℃ / 50 %RH（48 h）と 70 ℃ / 168 h の 2 条件"],
-  ["結果","区分（HB / V-0〜V-2）＋厚さを必ず併記"]
- ],
- note:"UL94 相当の材料区分試験。厚さ依存が大きいため厚さ併記が必須。難燃剤の種類・量に依存し、再生材は難燃性能が低下しやすい。製品認証は別途 UL 等の認証が必要。",
- mats:["abs","pc","pbt","pa66","pvc","gf","peek","lcp"]
-},
-{
- id:"loi", name:"酸素指数（LOI）", jis:"JIS K 7201-2", iso:"ISO 4589-2",
- kw:"酸素指数 LOI OI limiting oxygen index 難燃 燃焼 自消性",
- specimen:{label:"規定形状の棒状・フィルム状試験片", fig:null,
-  rows:[
-   ["形状","棒状（形I）など規格の形状。上端を点火"],
-   ["本数","濃度探索のため複数本"]
-  ]},
- cond:[
-  ["方式","酸素/窒素の混合上昇気流中で試験片上端を点火"],
-  ["判定","規定の時間または長さ燃焼を維持できる最小酸素濃度（%）＝酸素指数"],
-  ["結果","OI 値（%）。気流条件を併記"]
- ],
- note:"OI が高いほど燃えにくい（空気中酸素は約 21 %、目安として概ね 26 % 超で自消性の傾向）。難燃設計の相対比較に有効。UL94 区分とは別指標なので併用・使い分けを。",
- mats:["pp","abs","pc","pbt","pa66","pvc","gf","peek","lcp"]
 },
 {
  id:"haze", name:"全光線透過率・ヘーズ", jis:"JIS K 7361-1（透過率）/ K 7136（ヘーズ）", iso:"ISO 13468-1 / ISO 14782",
@@ -688,9 +662,88 @@ const TESTS = [
   ["全光線透過率 Tt","透過光束/入射光束（%）"],
   ["ヘーズ","拡散透過率/全光線透過率（%）＝曇りの度合い"],
   ["光源","規定の標準光（D65 等）"]
+,
+  ["試験片寸法","装置開口部を十分覆う大きさ（直径 50 mm 程度以上が目安）"]
  ],
  note:"透明材料（PMMA・PC・PS・PET・透明PP）の外観品質評価。傷・異物・結晶化・フィラーでヘーズ増大。再生透明材の黄変は色差（YI）評価と併用するとよい。",
  mats:["pmma","pc","ps","pet","pp"]
+},
+{
+ id:"ad-shear", name:"引張せん断接着強さ", jis:"JIS K 6850", iso:"ISO 4587", cat:"adhesive",
+ kw:"接着 接着剤 せん断 引張せん断 ラップシェア 重ね合わせ lap shear 継手 ボンド",
+ specimen:{label:"単純重ね合わせ（シングルラップ）試験片。剛性被着材（金属板が標準）", fig:null,
+  rows:[
+   ["被着材寸法","100 × 25 × 1.6 mm（鋼板が代表。他材質・他厚さも可、報告に明記）"],
+   ["重ね合わせ長さ","12.5 ± 0.25 mm"],
+   ["接着面積","25 × 12.5 mm ＝ 312.5 mm²"],
+   ["組立","接着層厚さを治具・スペーサで一定に管理。はみ出し（フィレット）は硬化後に除去し状態を記録"]
+  ]},
+ cond:[
+  ["試験速度","破断が 65 ± 20 s で生じる一定速度（金属被着材で 5 mm/min 程度が目安）"],
+  ["つかみ","荷重軸が接着面内を通るよう、つかみ部にあて板（タブ）を入れて軸合わせ"],
+  ["算出","せん断接着強さ τ ＝ 最大荷重 ÷ 接着面積（MPa）"],
+  ["破壊状態","凝集破壊（CF）/ 界面破壊（AF）/ 被着材破壊 の別と面積割合（%）を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"ラップ端に応力集中と被着材曲げによる剥離成分が生じるため純せん断ではない。被着材の材質・厚さ・接着層厚さで値が変わるので、条件をそろえない比較は不可。被着材の表面処理（脱脂・研磨等）はJIS K 6848シリーズ（試験通則・被着材の前処理）に従い記録する。木材系はK 6851、圧縮せん断はK 6852。",
+ mats:[]
+},
+{
+ id:"ad-tensile", name:"引張接着強さ（突合せ）", jis:"JIS K 6849", iso:"ISO 6922", cat:"adhesive",
+ kw:"接着 接着剤 引張接着 突合せ 突き合わせ バット butt 垂直引張",
+ specimen:{label:"棒状被着材の端面どうしを突合せ接着し、接着面に垂直に引張", fig:null,
+  rows:[
+   ["被着材","金属の丸棒・角柱（接着端面は平行・平滑に仕上げる）"],
+   ["接着面","断面寸法を実測して接着面積を算出"],
+   ["組立","接着面の平行度と同軸度を治具で確保して硬化"]
+  ]},
+ cond:[
+  ["試験速度","破断が 65 ± 20 s 程度で生じる一定速度を目安に設定"],
+  ["治具","自在継手（ユニバーサルジョイント）等で軸ずれ・曲げ成分を排除"],
+  ["算出","引張接着強さ ＝ 最大荷重 ÷ 接着面積（MPa）"],
+  ["破壊状態","凝集破壊/界面破壊/被着材破壊の別を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"わずかな偏心・傾きで曲げ成分が加わり低めの値が出やすく、ばらつきの主因になる。接着層厚さの管理と端面仕上げが重要。硬くて脆い接着剤の比較に適し、構造用接着剤の基礎特性としてせん断（K 6850）と併用される。",
+ mats:[]
+},
+{
+ id:"ad-tpeel", name:"T形剥離接着強さ", jis:"JIS K 6854-3", iso:"ISO 11339", cat:"adhesive",
+ kw:"接着 接着剤 剥離 はく離 T形 T型 ピール peel たわみ性 フィルム",
+ specimen:{label:"たわみ性被着材どうしをT形にして剥離（両方が曲がる組合せ）", fig:null,
+  rows:[
+   ["被着材","たわみ性材料（薄金属板・プラスチックフィルム・布など）2枚"],
+   ["寸法","幅 25 mm × 長さ 200 mm 程度（接着部 150 mm ＋ 未接着つかみ部 50 mm が代表）"],
+   ["組立","未接着部を互いに反対側へ開いてT字形とし、両端をつかみ具に固定"]
+  ]},
+ cond:[
+  ["試験速度","100 mm/min（つかみ移動速度）"],
+  ["評価区間","剥離初期のピークを除いた安定域の平均剥離力を記録線図から求める"],
+  ["算出","剥離接着強さ ＝ 平均剥離力 ÷ 試験片幅（N/mm。N/25 mm表記も併用）"],
+  ["破壊状態","界面/凝集/被着材破壊（伸び・裂け）の別を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"剥離強さは剥離角度・速度・被着材の剛性（曲げ変形）に強く依存し、方式間の互換はない。剛性＋たわみ性の組合せは90°剥離（K 6854-1）・180°剥離（K 6854-2）、剥離角を機構的に一定化する浮動ローラー法はK 6854-4。粘着テープ類はJIS Z 0237側の体系。",
+ mats:[]
+},
+{
+ id:"ad-flex", name:"曲げ接着強さ", jis:"JIS K 6856", iso:"—", cat:"adhesive",
+ kw:"接着 接着剤 曲げ 曲げ接着 3点曲げ はり",
+ specimen:{label:"接着したはり形試験片に曲げ荷重を与え、接着層を破壊する", fig:null,
+  rows:[
+   ["構成","被着材を接着したはり形試験片（突合せ接着部を曲げスパン中央に配置する形式が代表）"],
+   ["被着材","金属が代表。端面・接着面は平行・平滑に仕上げる"],
+   ["寸法・方法区分","試験片寸法と方法（A法/B法）の区分は規格原文で確認して選択・報告する"]
+  ]},
+ cond:[
+  ["負荷方式","3点曲げ。接着層に曲げモーメントが最大となる位置で負荷"],
+  ["試験速度","一定速度で緩やかに負荷（破断まで数十秒程度が目安）"],
+  ["算出","曲げ接着強さ ＝ はりの曲げ応力式から算出（MPa）。スパン・断面寸法を併記"],
+  ["破壊状態","凝集破壊/界面破壊/被着材破壊の別を報告"],
+  ["試験片数","5個以上"]
+ ],
+ note:"接着層の片側に引張、反対側に圧縮が働く負荷様式で、せん断（K 6850）・垂直引張（K 6849）と破壊モードが異なる。関連規格：割裂接着強さ K 6853、衝撃接着強さ K 6855、はく離を含む耐久性（クリープ破壊）K 6859など。数値適用時は最新版原文の寸法・方法区分を必ず確認。",
+ mats:[]
 },
 {
  id:"r-tensile", name:"引張特性（加硫ゴム）", jis:"JIS K 6251", iso:"ISO 37", cat:"rubber",
@@ -708,6 +761,8 @@ const TESTS = [
   ["報告項目","引張強さ TS・切断時伸び Eb・M100/M300（100 %・300 %伸長時の応力）"],
   ["試験片数","5個以上で試験し中央値（メディアン）評価が慣例"],
   ["状態調節","23 ± 2 ℃。加硫後16 h以上経過してから試験（JIS K 6250）"]
+,
+  ["応力・伸びの算出","TS = F/A₀（初期断面積基準）・Eb = (L−L₀)/L₀ × 100 %。厚さは平行部3点測定の中央値"]
  ],
  note:"プラスチック（K 7161）と体系が別。伸びが数百%に達するため標線間を非接触（光学式）伸び計等で追跡する。応力は初期断面積基準の公称応力。シートの圧延方向による異方性に注意。",
  mats:["nr","sbr","nbr","epdm","cr","iir","vmq","fkm","u"]
@@ -724,6 +779,8 @@ const TESTS = [
   ["タイプ選択","A: 中硬さ（A20〜90）/ D: 高硬さ（A90超の硬質ゴム）/ E: 低硬さ（A20未満・スポンジ寄り）"],
   ["読み取り","加圧面の密着から3 s後の値が標準。クリープが大きい材料は15 s値等を併記"],
   ["測定数","異なる位置で5点、中央値"]
+,
+  ["小型・薄物","IRHDマイクロ硬さ（M法）が適用可（薄物・Oリング等）"]
  ],
  note:"通称「ショアA」だがJIS上はデュロメータ タイプA。ばね式のため装置間差・押付け方の影響を受けやすい。仲裁・国際比較にはIRHD（K 6253-2）が用いられる。プラスチックのデュロメータ（K 7215）とは規格体系が別。",
  mats:["nr","sbr","nbr","epdm","cr","iir","vmq","fkm","u"]
@@ -740,6 +797,8 @@ const TESTS = [
  cond:[
   ["試験速度","500 ± 50 mm/min（トラウザ形のみ 100 ± 10 mm/min）"],
   ["報告","引裂強さ TR = 最大力 ÷ 厚さ（kN/m = N/mm）。試験片形状を必ず併記"]
+,
+  ["試験片数","5個以上、中央値（メディアン）で評価"]
  ],
  note:"形状によって値が大きく異なり相互換算はできない。アングル形の値と実用の口切れ・亀裂成長性は必ずしも対応しない点に注意。",
  mats:["nr","sbr","nbr","epdm","cr","vmq","u"]
@@ -772,24 +831,11 @@ const TESTS = [
  cond:[
   ["条件例","70 / 100 / 125 / 150 ℃ × 72 h・168 h など"],
   ["報告","引張強さ変化率・切断時伸び変化率・硬さ変化（老化前後を同一ロットで比較）"]
+,
+  ["試験片の採取","老化用と未老化（比較用）を同一シートから採取し、同時期に試験する"]
  ],
  note:"ジエン系（NR・SBR・NBR）は酸化架橋による硬化・伸び低下が典型。評価は絶対値でなく変化「率」で行い、老化条件（温度×時間）を必ず明記する。",
  mats:["nr","sbr","nbr","epdm","cr","iir","vmq","fkm","u"]
-},
-{
- id:"r-ozone", name:"オゾン劣化試験（静的）", jis:"JIS K 6259-1", iso:"ISO 1431-1", cat:"rubber",
- kw:"オゾン ozone 亀裂 クラック 耐候 屋外 老化防止剤",
- specimen:{label:"短冊状試験片に静的伸長ひずみを与えて槽内に暴露", fig:null,
-  rows:[
-   ["ひずみ","10 / 20 / 30 / 40 % 等（20 %が代表的）"]
-  ]},
- cond:[
-  ["オゾン濃度","50 ± 5 pphm（0.5 ppm）が代表条件"],
-  ["温度","40 ± 2 ℃"],
-  ["評価","所定時間ごとに亀裂の有無・大きさ・数を拡大鏡で観察し等級付け"]
- ],
- note:"主鎖に二重結合をもつジエン系（NR・SBR・NBR・CR）が主対象。EPDM・IIR・VMQ・FKMは実質的に耐オゾン性良好。老化防止剤・ワックス処方の比較評価に多用される。",
- mats:["nr","sbr","nbr","cr","epdm","iir"]
 },
 {
  id:"r-rebound", name:"反発弾性", jis:"JIS K 6255", iso:"ISO 4662", cat:"rubber",
@@ -822,7 +868,7 @@ const MATS = [
   ["density","0.90〜0.91。タルク・GF入りは上昇"]
  ],
  note:"事前乾燥は原則不要。再生PPは熱酸化劣化による分子切断でMFR増加・伸び低下が典型的（カルボニル指数・OITでの劣化評価と併用）。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","film-tensile","tg","oit","cp","tensile-impact","puncture","creep-tensile","shrinkage","ash","loi","haze","compress","hardness-d","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","film-tensile","tg","oit","cp","tensile-impact","shrinkage","ash","haze","compress","hardness-d","molding"]
 },
 {
  id:"pe", name:"PE（ポリエチレン）", abbr:"PE / HDPE / LDPE / LLDPE",
@@ -836,7 +882,7 @@ const MATS = [
   ["vicat","軟化温度評価に常用"]
  ],
  note:"乾燥不要。再生PEはゲル化・架橋によりMFRが低下する傾向（PPと逆）。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","film-tensile","hardness-d","oit","cp","tensile-impact","puncture","creep-tensile","shrinkage","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","film-tensile","hardness-d","oit","cp","tensile-impact","shrinkage","molding"]
 },
 {
  id:"ps", name:"PS（ポリスチレン）", abbr:"PS / GPPS / HIPS",
@@ -849,7 +895,7 @@ const MATS = [
   ["vicat","B50 が代表的な耐熱指標"]
  ],
  note:"乾燥は原則不要。ケミカルクラック（応力＋薬品）に敏感。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r","tensile-impact","haze","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","tensile-impact","haze","molding"]
 },
 {
  id:"abs", name:"ABS（アクリロニトリル・ブタジエン・スチレン）", abbr:"ABS",
@@ -863,7 +909,7 @@ const MATS = [
   ["dsc","ゴム相のTg（約 −80 ℃）とSAN相のTg（約 105 ℃）"]
  ],
  note:"吸湿性があり成形前乾燥（80 ℃ / 2〜4 h 目安）推奨。再生ABSは衝撃値の低下が劣化指標として鋭敏。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","tensile-impact","puncture","flammability","loi","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","tensile-impact","molding"]
 },
 {
  id:"pmma", name:"PMMA（アクリル樹脂）", abbr:"PMMA",
@@ -876,7 +922,7 @@ const MATS = [
   ["water","吸湿により寸法・光学特性が変化。乾燥（80 ℃ / 4 h以上目安）"]
  ],
  note:"成形前乾燥必須（気泡・シルバー防止）。応力クラックと溶剤クラックに敏感。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","hardness-r","water","haze","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","water","haze","molding"]
 },
 {
  id:"pvc", name:"PVC（塩化ビニル樹脂）", abbr:"PVC（硬質/軟質）",
@@ -889,7 +935,7 @@ const MATS = [
   ["mfr","熱安定性が低く一般に測定しない（分解によるHCl発生・装置腐食に注意）"]
  ],
  note:"加熱試験全般で熱分解（HCl発生）に注意。可塑剤配合で物性レンジが極めて広い。",
- tests:["tensile","flex","charpy","hdt","vicat","density","hardness-d","flammability","loi","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","density","hardness-d","molding"]
 },
 {
  id:"pc", name:"PC（ポリカーボネート）", abbr:"PC",
@@ -903,7 +949,7 @@ const MATS = [
   ["water","加水分解性あり。高温多湿環境・薬品との組合せで分子量低下"]
  ],
  note:"未乾燥での溶融加工・MFR測定は加水分解による分子量低下→MFR見かけ増大を招く。残留応力とケミカルクラックにも注意。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","water","tma","cp","tensile-impact","puncture","creep-tensile","flammability","loi","haze","compress","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","water","tma","cp","tensile-impact","haze","compress","molding"]
 },
 {
  id:"pa6", name:"PA6（ナイロン6）", abbr:"PA6",
@@ -931,7 +977,7 @@ const MATS = [
   ["hdt","GF30グレードはA法で 240 ℃超（Tm直下）まで上昇"]
  ],
  note:"PA6との判別はDSCのTm差（220 ℃ vs 260 ℃）が簡便。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","hardness-r","tma","cp","creep-tensile","shrinkage","ash","flammability","loi","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","tma","cp","shrinkage","ash","molding"]
 },
 {
  id:"pom", name:"POM（ポリアセタール）", abbr:"POM",
@@ -944,7 +990,7 @@ const MATS = [
   ["vicat","B50 常用"]
  ],
  note:"加熱でホルムアルデヒドが発生するため、熱分析・溶融試験時は換気・温度上限に注意（分解が急激）。乾燥は軽度でよい。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","hardness-r","compress","tma","creep-tensile","shrinkage","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","compress","tma","shrinkage","molding"]
 },
 {
  id:"pbt", name:"PBT（ポリブチレンテレフタレート）", abbr:"PBT",
@@ -958,7 +1004,7 @@ const MATS = [
   ["water","加水分解性あり。高温高湿試験（PCT等）で分子量低下を評価"]
  ],
  note:"未乾燥溶融は加水分解による物性低下に直結。GF30 PBTの高温クリープ・表面押込み評価では130 ℃等の実使用温度での長期挙動確認が有効。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","hardness-r","tg","tma","creep-tensile","shrinkage","ash","flammability","loi","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","water","tg","tma","shrinkage","ash","molding"]
 },
 {
  id:"pet", name:"PET（ポリエチレンテレフタレート）", abbr:"PET",
@@ -987,7 +1033,7 @@ const MATS = [
   ["water","吸水率は低い（約0.1〜0.5 %）。耐加水分解・耐熱水性に優れる"]
  ],
  note:"耐熱・耐薬品・耐摩耗・耐加水分解に優れる代表的スーパーエンプラ（濃硫酸には侵される）。成形・熱分析とも高温対応装置が必須で、結晶化には高金型温度（概ね180 ℃以上）が要る。実用はGF/CF強化グレードが主。LCP等と同じく高温摺動部でのトライボ評価対象になりやすい。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","hardness-r","creep-tensile","shrinkage","ash","flammability","loi"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","shrinkage","ash"]
 },
 {
  id:"lcp", name:"LCP（液晶ポリマー）", abbr:"LCP",
@@ -1003,7 +1049,7 @@ const MATS = [
   ["tma","異方性大。MD は低〜負、TD は大きく、方向で線膨張が大きく異なる"]
  ],
  note:"芳香族ポリエステル系スーパーエンプラ。分子鎖が流動方向に高配向して自己補強するため異方性が極めて大きく、ウェルド強度・TD強度が大幅に低下する。薄肉・微細成形（コネクタ等）に多用。高温摺動部のトライボや、充填材（GF等）によるスクリュー・金型の摩耗/腐食も評価対象になりやすい。成形用の第2部規格は未整備でメーカー資料に依拠。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","hardness-r","creep-tensile","shrinkage","ash","flammability","loi"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","shrinkage","ash"]
 },
 {
  id:"gf", name:"GF強化材（共通の注意点）", abbr:"GF強化グレード全般",
@@ -1018,7 +1064,7 @@ const MATS = [
   ["mfr","測定中の繊維折損・目詰まりに注意。参考値扱いが無難"]
  ],
  note:"ウェルド部は繊維が並行配向し強度が大幅低下（非強化より低下率が大きい）。再生（再ペレット化）のたびに繊維長が短くなり衝撃・強度が低下する。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","tg","compress","hardness-r","tma","creep-tensile","shrinkage","ash","flammability","loi","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","tg","compress","tma","shrinkage","ash","molding"]
 },
 {
  id:"recycle", name:"再生材（共通の評価ポイント)", abbr:"リサイクル材全般",
@@ -1033,7 +1079,7 @@ const MATS = [
   ["tg","無機分（フィラー・顔料）定量、組成推定"]
  ],
  note:"ロット間変動が本質的な課題。単発値でなく分布（平均±SD、n≥5）での管理と、IR（カルボニル指数）・OIT・GPC等の劣化分析の併用が有効。",
- tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding","tensile-impact","puncture","shrinkage","ash"]
+ tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding","tensile-impact","shrinkage","ash"]
 },
 {
  id:"nr", name:"NR（天然ゴム）", abbr:"NR", cat:"rubber", rubber:true,
@@ -1041,12 +1087,11 @@ const MATS = [
  props:[["区分","ジエン系（cis-1,4-ポリイソプレン）"],["Tg","約 −70 ℃"],["密度","0.92（生ゴム）〜1.1 g/cm³（配合品）"],["硬さ範囲","A30〜A90"],["引張強さ","20〜30 MPa（補強配合）"],["常用温度","−60〜80 ℃"],["特徴","高強度・高反発・耐摩耗。伸長結晶化する"]],
  conds:[
   ["r-tensile","伸長結晶化により純ゴム配合でも高強度。補強系で20 MPa超"],
-  ["r-ozone","二重結合が多く最も亀裂が出やすい部類。老化防止剤・ワックス処方の影響大"],
   ["r-aging","実用上限は70〜90 ℃目安。高温では軟化（主鎖切断）と硬化が競合"],
   ["r-rebound","汎用ゴム中トップクラスの高反発"]
  ],
  note:"耐油性・耐候性は低い。動的用途（防振ゴム・タイヤ）に強い。IRスペクトルでは合成ポリイソプレン（IR）と実質判別不可のため、必要なら熱分解GC-MS等を併用。",
- tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-ozone","r-rebound"]
+ tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-rebound"]
 },
 {
  id:"sbr", name:"SBR（スチレンブタジエンゴム）", abbr:"SBR", cat:"rubber", rubber:true,
@@ -1054,11 +1099,10 @@ const MATS = [
  props:[["区分","ジエン系（スチレン・ブタジエン共重合）"],["Tg","約 −50 ℃（結合スチレン量で変動）"],["密度","0.94 g/cm³（生ゴム）"],["硬さ範囲","A40〜A90"],["引張強さ","15〜25 MPa（補強配合）"],["常用温度","−50〜100 ℃"],["特徴","耐摩耗・耐老化はNRよりやや良。安価な汎用材"]],
  conds:[
   ["r-tensile","伸長結晶化しないため純ゴム配合では強度が出ない → カーボンブラック補強が前提"],
-  ["r-ozone","NR同様に亀裂が出やすい"],
   ["r-aging","老化で硬化・伸び低下の傾向。NRよりは良好"]
  ],
  note:"タイヤ・工業用品の汎用材。NRとのブレンドで使われることが多く、IRのみでの配合比把握は難しい（熱分解GC-MSが有効）。",
- tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-ozone","r-rebound"]
+ tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-rebound"]
 },
 {
  id:"nbr", name:"NBR（ニトリルゴム）", abbr:"NBR", cat:"rubber", rubber:true,
@@ -1067,34 +1111,31 @@ const MATS = [
  conds:[
   ["r-cset","オイルシール・パッキン用途の主要評価。100 ℃ × 70 h 等"],
   ["r-aging","120 ℃超の耐熱が必要なら水素化NBR（HNBR）の領域"],
-  ["r-ozone","耐オゾン性は低い。屋外・電気機器近傍（オゾン発生源）では要注意"]
  ],
  note:"燃料・鉱物油用途の定番。実務では対象油（IRM 903 等）への浸せき試験（JIS K 6258）を併用することが多い。AN量はIR 2237 cm⁻¹の強度比や窒素分析から推定できる。",
- tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-ozone"]
+ tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging"]
 },
 {
  id:"epdm", name:"EPDM（エチレンプロピレンゴム）", abbr:"EPDM / EPM", cat:"rubber", rubber:true,
  kw:"エチレンプロピレンジエン 耐候 ウェザーストリップ パッキン 水回り",
  props:[["区分","主鎖飽和（ジエンは側鎖のみ）"],["Tg","約 −55 ℃"],["密度","0.86 g/cm³（生ゴム・ゴム中最軽量級）"],["硬さ範囲","A30〜A90"],["引張強さ","10〜20 MPa（補強配合）"],["常用温度","−50〜150 ℃（過酸化物架橋で上限側）"],["特徴","耐候・耐オゾン・耐水・耐熱のバランス◎。耐鉱物油×"]],
  conds:[
-  ["r-ozone","主鎖に二重結合が無くオゾン亀裂は実質発生しない（比較試験の対照材にも好適）"],
   ["r-aging","硫黄加硫で〜130 ℃、過酸化物架橋で〜150 ℃が目安"],
   ["r-cset","過酸化物架橋品はCSが小さくシール向き"]
  ],
  note:"屋外・水回り・自動車ウェザーストリップの定番。鉱物油・燃料には大きく膨潤する。IRはPE/PPと同じC–H系で紛らわしいが、加硫ゴムは溶剤に不溶（膨潤のみ）である点も判断材料になる。",
- tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-ozone","r-rebound"]
+ tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-rebound"]
 },
 {
  id:"cr", name:"CR（クロロプレンゴム）", abbr:"CR", cat:"rubber", rubber:true,
  kw:"クロロプレン ネオプレン 難燃 ベルト 防振",
  props:[["区分","ジエン系（クロロプレン）"],["Tg","約 −45 ℃"],["密度","1.23 g/cm³（生ゴム・Cl含有で重い）"],["硬さ範囲","A30〜A90"],["引張強さ","15〜25 MPa"],["常用温度","−40〜120 ℃"],["特徴","耐候・耐油・機械強度・難燃性（自己消火）のバランス型"]],
  conds:[
-  ["r-ozone","ジエン系の中では耐オゾン性が良好な部類"],
   ["r-cset","低温結晶化しやすいグレードは低温での硬化・CS悪化に注意"],
   ["r-aging","バランス型だが120 ℃超の連続使用は不向き"]
  ],
  note:"Cl由来の自己消火性をもつ。低温結晶化により冬季に硬くなる現象があり、低温試験（JIS K 6261系）の併用が有効。燃焼試験はHCl発生のため換気必須。",
- tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging","r-ozone"]
+ tests:["r-tensile","r-hardness","r-tear","r-cset","r-aging"]
 },
 {
  id:"iir", name:"IIR（ブチルゴム）", abbr:"IIR", cat:"rubber", rubber:true,
@@ -1102,11 +1143,10 @@ const MATS = [
  props:[["区分","ほぼ飽和主鎖（イソプレン少量共重合）"],["Tg","約 −65 ℃"],["密度","0.92 g/cm³（生ゴム）"],["硬さ範囲","A40〜A80"],["引張強さ","10〜18 MPa"],["常用温度","−40〜150 ℃（樹脂加硫で上限側）"],["特徴","ガス透過性が全ゴム中最小級・低反発（高減衰）"]],
  conds:[
   ["r-rebound","常温付近で反発弾性が顕著に低い（制振・防振用途の根拠）"],
-  ["r-ozone","不飽和度が低く耐オゾン良好"],
   ["r-aging","耐熱・耐候とも良好"]
  ],
  note:"タイヤチューブ・気密シール・制振材の定番。加硫が遅く他ゴムとの共加硫が難しい。ハロゲン化ブチル（CIIR/BIIR）も同系統。",
- tests:["r-tensile","r-hardness","r-cset","r-aging","r-ozone","r-rebound"]
+ tests:["r-tensile","r-hardness","r-cset","r-aging","r-rebound"]
 },
 {
  id:"vmq", name:"シリコーンゴム（VMQ）", abbr:"VMQ / Q", cat:"rubber", rubber:true,
@@ -1605,7 +1645,7 @@ function renderTest(t){
   }).join("");
   return `<div class="card" id="t-${t.id}" data-kind="test">
     <div class="card-hd">
-      <span class="badge ${t.cat==="rubber"?"r-badge":"t-badge"}">${esc(t.jis)}</span>
+      <span class="badge ${t.cat==="rubber"?"r-badge":t.cat==="adhesive"?"a-badge":"t-badge"}">${esc(t.jis)}</span>
       <span class="card-title">${hl(t.name)}</span>
       <span class="card-iso">${esc(t.iso)}</span>
       <span class="chev">▶</span>
@@ -1617,9 +1657,9 @@ function renderTest(t){
       </div>
       <div class="blk"><div class="blk-t">測定条件</div>${kvTable(t.cond)}</div>
       ${t.note?`<div class="note">${hl(t.note)}</div>`:""}
-      <div class="blk"><div class="blk-t">関連材料（クリックで移動）</div>
+      ${links?`<div class="blk"><div class="blk-t">関連材料（クリックで移動）</div>
         <div class="links">${links}</div>
-      </div>
+      </div>`:""}
     </div>
   </div>`;
 }
@@ -1892,10 +1932,10 @@ function renderCharts(){
 /* ================= クイックインデックス ================= */
 /* プラスチック試験の分類（ナビゲーション用・未分類は「その他」へ） */
 const TEST_GROUPS = [
-  {label:"力学特性", ids:["tensile","film-tensile","flex","compress","charpy","izod","tensile-impact","puncture","creep-tensile","hardness-r","hardness-d"]},
+  {label:"力学特性", ids:["tensile","film-tensile","flex","compress","charpy","izod","tensile-impact","hardness-d"]},
   {label:"熱的特性", ids:["hdt","vicat","dsc","tg","tma","cp","oit"]},
   {label:"流動・物理・成形", ids:["mfr","density","water","molding","shrinkage","ash"]},
-  {label:"難燃・光学", ids:["flammability","loi","haze"]}
+  {label:"難燃・光学", ids:["haze"]}
 ];
 
 function idxChip(id, label, cls){
@@ -1904,7 +1944,7 @@ function idxChip(id, label, cls){
 function matLabel(m){ return m.name.split("（")[0]; }
 
 function renderIndex(){
-  const pT = TESTS.filter(t=>t.cat!=="rubber"), rT = TESTS.filter(t=>t.cat==="rubber");
+  const pT = TESTS.filter(t=>!t.cat), rT = TESTS.filter(t=>t.cat==="rubber"), aT = TESTS.filter(t=>t.cat==="adhesive");
   const pM = MATS.filter(m=>m.cat!=="rubber"), rM = MATS.filter(m=>m.cat==="rubber");
   const grouped = new Set();
 
@@ -1921,6 +1961,10 @@ function renderIndex(){
     if(other.length){
       testCol += `<div class="idx-grp"><div class="idx-h">その他</div><div class="idx-chips">`
         + other.map(t=>idxChip("t-"+t.id, t.name)).join("") + `</div></div>`;
+    }
+    if(aT.length){
+      testCol += `<div class="idx-grp"><div class="idx-h">接着剤試験</div><div class="idx-chips">`
+        + aT.map(t=>idxChip("t-"+t.id, t.name)).join("") + `</div></div>`;
     }
     if(rT.length){
       testCol += `<div class="idx-grp"><div class="idx-h rub">ゴム試験</div><div class="idx-chips">`
@@ -1953,6 +1997,124 @@ function renderIndex(){
   </div>`;
 }
 
+/* ================= JIS一覧 ================= */
+/* 収録カードのある規格はTESTSから自動生成（リンク付き）。カード未収録の主要規格はJIS_EXTRAに手動登録（リンクなし） */
+const JIS_EXTRA = [
+ /* --- プラスチック：一般・試験方法 --- */
+ {cat:"p", jis:"JIS K 6899-1", name:"プラスチック — 記号及び略語（基本ポリマー）", iso:"ISO 1043-1"},
+ {cat:"p", jis:"JIS K 7100", name:"状態調節及び試験のための標準雰囲気", iso:"ISO 291"},
+ {cat:"p", jis:"JIS K 7117-1 / -2", name:"液状樹脂の粘度（ブルックフィールド形／回転粘度計）", iso:"ISO 2555 / 3219"},
+ {cat:"p", jis:"JIS K 7118", name:"硬質プラスチックの疲労試験方法通則", iso:"—"},
+ {cat:"p", jis:"JIS K 7125", name:"フィルム・シートの摩擦係数", iso:"ISO 8295"},
+ {cat:"p", jis:"JIS K 7126-1 / -2", name:"フィルム・シートの気体透過度（差圧法／等圧法）", iso:"ISO 15105-1 / -2"},
+ {cat:"p", jis:"JIS K 7128-1 / -2 / -3", name:"フィルム・シートの引裂強さ（トラウザー／エルメンドルフ／直角形）", iso:"ISO 6383-1 ほか"},
+ {cat:"p", jis:"JIS K 7129", name:"フィルム・シートの水蒸気透過度", iso:"ISO 15106 相当"},
+ {cat:"p", jis:"JIS K 7142", name:"屈折率の求め方", iso:"ISO 489"},
+ {cat:"p", jis:"JIS K 7151", name:"熱可塑性プラスチック材料の圧縮成形", iso:"ISO 293"},
+ {cat:"p", jis:"JIS K 7152-2 / -3", name:"射出成形（小形引張試験片／小形角板）", iso:"ISO 294-2 / -3"},
+ {cat:"p", jis:"JIS K 7196", name:"熱機械分析（TMA）による軟化温度（針入法）", iso:"—"},
+ {cat:"p", jis:"JIS K 7199", name:"キャピラリーレオメーターによる流動特性", iso:"ISO 11443"},
+ {cat:"p", jis:"JIS K 7201-2", name:"酸素指数による燃焼性（OI）", iso:"ISO 4589-2"},
+ {cat:"p", jis:"JIS K 7218", name:"プラスチックの滑り摩耗試験", iso:"—"},
+ {cat:"p", jis:"JIS K 7244-1", name:"動的機械特性（DMA）— 通則", iso:"ISO 6721-1"},
+ {cat:"p", jis:"JIS K 7252-1", name:"サイズ排除クロマトグラフィー（SEC/GPC）による平均分子量・分子量分布", iso:"ISO 16014-1"},
+ {cat:"p", jis:"JIS K 7350-2 / -3", name:"実験室光源による促進暴露（キセノンアーク／UV蛍光ランプ）", iso:"ISO 4892-2 / -3"},
+ {cat:"p", jis:"JIS K 7373", name:"黄色度・黄変度の求め方", iso:"—"},
+ {cat:"p", jis:"JIS K 6911", name:"熱硬化性プラスチック一般試験方法", iso:"—"},
+ {cat:"p", jis:"JIS K 7017", name:"繊維強化プラスチック（FRP）— 曲げ特性", iso:"ISO 14125"},
+ {cat:"p", jis:"JIS K 7164 / 7165", name:"FRPの引張特性（等方性・直交異方性／一方向強化）", iso:"ISO 527-4 / -5"},
+ /* --- ゴム --- */
+ {cat:"r", jis:"JIS K 6200", name:"ゴム — 用語", iso:"ISO 1382"},
+ {cat:"r", jis:"JIS K 6249", name:"未加硫及び加硫シリコーンゴムの試験方法", iso:"—"},
+ {cat:"r", jis:"JIS K 6254", name:"低変形における応力・ひずみ特性（見掛け弾性率）", iso:"ISO 7743 相当"},
+ {cat:"r", jis:"JIS K 6256-1 / -2", name:"接着力の求め方（剛性材料との90°剥離など）", iso:"ISO 813 ほか"},
+ {cat:"r", jis:"JIS K 6258", name:"耐液性（浸せき試験）", iso:"ISO 1817"},
+ {cat:"r", jis:"JIS K 6259-1", name:"耐オゾン性（静的・動的ひずみ）", iso:"ISO 1431-1"},
+ {cat:"r", jis:"JIS K 6260", name:"屈曲き裂・き裂成長（デマチャ式）", iso:"ISO 132"},
+ {cat:"r", jis:"JIS K 6261", name:"低温特性（ゲーマンねじり・低温弾性回復TR）", iso:"ISO 1432 ほか"},
+ {cat:"r", jis:"JIS K 6264-1 / -2", name:"耐摩耗性（指針／DIN摩耗など試験方法）", iso:"ISO 23794 / 4649"},
+ {cat:"r", jis:"JIS K 6265", name:"発熱及び耐疲労性（フレクソメーター）", iso:"ISO 4666"},
+ {cat:"r", jis:"JIS K 6271", name:"電気抵抗率（体積・表面）の求め方", iso:"—"},
+ {cat:"r", jis:"JIS K 6299", name:"ゴム — 試験用試料の作製方法（混練）", iso:"ISO 2393 相当"},
+ {cat:"r", jis:"JIS K 6300-1 / -2", name:"未加硫ゴム物理特性（ムーニー粘度／振動式加硫特性）", iso:"ISO 289-1 / 6502"},
+ {cat:"r", jis:"JIS K 6397", name:"原料ゴムの分類・記号", iso:"ISO 1629"},
+ /* --- 接着剤 --- */
+ {cat:"a", jis:"JIS K 6800", name:"接着剤・接着 — 用語", iso:"—"},
+ {cat:"a", jis:"JIS K 6833-1 / -2", name:"接着剤 — 一般試験方法（基本特性／サンプリング）", iso:"—"},
+ {cat:"a", jis:"JIS K 6848-1〜-4", name:"接着強さ試験方法 — 被着材の準備（通則・金属・プラスチックなど）", iso:"ISO 17212 相当"},
+ {cat:"a", jis:"JIS K 6851", name:"木材の引張せん断接着強さ", iso:"—"},
+ {cat:"a", jis:"JIS K 6852", name:"圧縮せん断接着強さ", iso:"—"},
+ {cat:"a", jis:"JIS K 6853", name:"割裂接着強さ", iso:"—"},
+ {cat:"a", jis:"JIS K 6854-1 / -2 / -4", name:"剥離接着強さ（90°／180°／浮動ローラー法）", iso:"ISO 8510 / 4578"},
+ {cat:"a", jis:"JIS K 6855", name:"衝撃接着強さ", iso:"—"},
+ {cat:"a", jis:"JIS K 6865", name:"高速衝撃剥離（くさび衝撃法）", iso:"ISO 11343"},
+];
+
+/* 材料規格（第1部：呼び方の基礎／第2部：試験片作製・特性測定） */
+const MATERIAL_STDS = [
+ {jis:"JIS K 6717-1 / -2", name:"PMMA成形用材料（ISO 8257）", go:"m-pmma"},
+ {jis:"JIS K 6719-1 / -2", name:"ポリカーボネート成形用材料（ISO 7391）", go:"m-pc"},
+ {jis:"JIS K 6720-1 / -2", name:"ポリ塩化ビニル樹脂（ISO 1060）", go:"m-pvc"},
+ {jis:"JIS K 6920-1 / -2", name:"ポリアミド成形用材料（PA6・PA66、ISO 1874）", go:"m-pa6"},
+ {jis:"JIS K 6921-1 / -2", name:"ポリプロピレン成形用材料", go:"m-pp"},
+ {jis:"JIS K 6922-1 / -2", name:"ポリエチレン成形用材料", go:"m-pe"},
+ {jis:"JIS K 6923-1 / -2", name:"ポリスチレン成形用材料（HIPSは K 6926）", go:"m-ps"},
+ {jis:"JIS K 6934-1 / -2", name:"ABS成形用材料", go:"m-abs"},
+ {jis:"JIS K 6937-1 / -2", name:"熱可塑性ポリエステル成形用材料（PBT・PET、ISO 7792）", go:"m-pbt"},
+ {jis:"JIS K 7364-1 / -2", name:"ポリアセタール成形用材料（ISO 9988）", go:"m-pom"},
+ {jis:"JIS K 6915", name:"フェノール樹脂成形材料", go:null},
+ {jis:"JIS K 6919", name:"繊維強化プラスチック用液状不飽和ポリエステル樹脂", go:null},
+ {jis:"JIS K 6250", name:"ゴム — 物理試験方法通則（試験片作製・状態調節）", go:null},
+];
+
+function jisSortKey(s){
+  const m = (s||"").match(/([A-Z])\s?(\d{3,5})/);
+  return m ? m[1] + m[2].padStart(6,"0") + (s||"") : "ZZZ" + (s||"");
+}
+
+function renderJisList(matchT){
+  const qn = norm(query);
+  const hitX = x => !qn || norm(x.jis+" "+x.name+" "+(x.iso||"")).includes(qn)
+                 || rawWords.every(w=>norm(x.jis+" "+x.name+" "+(x.iso||"")).includes(norm(w)));
+  const sortJ = arr => arr.slice().sort((a,b)=> jisSortKey(a.jis) < jisSortKey(b.jis) ? -1 : 1);
+
+  /* 収録カード（リンク付き）＋未収録規格（リンクなし）を統合 */
+  const linked = t => ({jis:t.jis, iso:t.iso||"—",
+    body:`<button class="lk to-test" data-go="t-${t.id}" style="margin:0">${esc(t.name)}</button>`});
+  const plain  = x => ({jis:x.jis, iso:x.iso||"—", body:hl(x.name)});
+  const merge = (catKey, testFilter) =>
+    sortJ([...matchT.filter(testFilter).map(linked),
+           ...JIS_EXTRA.filter(x=>x.cat===catKey && hitX(x)).map(plain)]);
+
+  const row = r => `<tr>
+    <td style="white-space:nowrap;font-family:var(--mono)">${hl(r.jis)}</td>
+    <td>${r.body}</td>
+    <td style="font-family:var(--mono)">${hl(r.iso)}</td></tr>`;
+  const tbl = arr => `<div class="card open"><div class="card-body" style="display:block;border-top:none;padding:8px 16px 12px"><table>
+    <tr><th style="width:30%">JIS規格</th><th>規格名称・試験名（青字はカードへリンク）</th><th style="width:22%">対応ISO</th></tr>
+    ${arr.map(row).join("")}</table></div></div>`;
+
+  const pR = merge("p", t=>!t.cat);
+  const aR = merge("a", t=>t.cat==="adhesive");
+  const rR = merge("r", t=>t.cat==="rubber");
+  const mS = MATERIAL_STDS.filter(hitX);
+  const mRow = s => `<tr>
+    <td style="white-space:nowrap;font-family:var(--mono)">${hl(s.jis)}</td>
+    <td>${s.go ? `<button class="lk to-mat" data-go="${s.go}" style="margin:0">${esc(s.name)}</button>` : hl(s.name)}</td></tr>`;
+  const mTbl = arr => `<div class="card open"><div class="card-body" style="display:block;border-top:none;padding:8px 16px 12px"><table>
+    <tr><th style="width:30%">JIS規格</th><th>規格名称（青字は材料カードへリンク）</th></tr>
+    ${arr.map(mRow).join("")}</table></div></div>`;
+
+  let html = "";
+  if(pR.length) html += `<div class="sec-label">プラスチック：試験方法・一般（${pR.length}）</div>` + tbl(pR);
+  if(rR.length) html += `<div class="sec-label">ゴム：試験方法・一般（${rR.length}）</div>` + tbl(rR);
+  if(aR.length) html += `<div class="sec-label">接着剤：試験方法・一般（${aR.length}）</div>` + tbl(aR);
+  if(mS.length) html += `<div class="sec-label">材料規格（第1部：呼び方 ／ 第2部：試験片作製・特性）（${mS.length}）</div>` + mTbl(mS);
+  if(!html) html = `<div class="empty">「${esc(query)}」に一致する規格がありません。</div>`;
+  else html += `<div style="font-size:11.5px;color:var(--sub);margin:6px 2px 0">※ 主要規格の抜粋です。部編成・制定/改正状況は JISC（日本産業標準調査会）で最新版をご確認ください。</div>`;
+  return html;
+}
+
 function render(){
   const qn = norm(query);
   rawWords = query.trim().split(/[\s　]+/).filter(Boolean);
@@ -1967,10 +2129,19 @@ function render(){
     document.querySelector(".tools").style.display = "none";
     return;
   }
+  if(view==="jis"){
+    $("#idx").innerHTML = "";
+    $("#list").innerHTML = renderJisList(matchT);
+    $("#count").textContent = query
+      ? `検索「${query}」に一致する規格を表示中`
+      : `収録： 試験方法・一般 ${TESTS.length + JIS_EXTRA.length} 件 / 材料規格 ${MATERIAL_STDS.length} 件（カード収録 ${TESTS.length} 件はリンク付き）`;
+    document.querySelector(".tools").style.display = "none";
+    return;
+  }
   document.querySelector(".tools").style.display = "";
   $("#idx").innerHTML = query ? "" : renderIndex();
 
-  const pT = matchT.filter(t=>t.cat!=="rubber"), rT = matchT.filter(t=>t.cat==="rubber");
+  const pT = matchT.filter(t=>!t.cat), rT = matchT.filter(t=>t.cat==="rubber"), aT = matchT.filter(t=>t.cat==="adhesive");
   const pM = matchM.filter(m=>m.cat!=="rubber"), rM = matchM.filter(m=>m.cat==="rubber");
   const sect = (label, arr, fn) => arr.length ? `<div class="sec-label">${label}（${arr.length}）</div>` + arr.map(fn).join("") : "";
 
@@ -1982,6 +2153,7 @@ function render(){
   }
   if(view!=="mat"){
     html += sect("試験方法：プラスチック", pT, renderTest);
+    html += sect("試験方法：接着剤", aT, renderTest);
     html += sect("試験方法：ゴム", rT, renderTest);
     if(!matchT.length) html += `<div class="sec-label">試験方法（0）</div><div class="empty" style="padding:16px 0">該当する試験方法はありません</div>`;
   }
