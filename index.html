@@ -1857,17 +1857,23 @@ function matHay(m){
 }
 
 function hl(text){
-  if(!query) return esc(text);
+  const t = text || "";
+  if(!query) return esc(t);
   // 元クエリ語（正規化前の生の語）で単純ハイライト
-  let out = esc(text);
-  for(const w of rawWords){
-    if(w.length<1) continue;
-    try{
-      const re = new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");
-      out = out.replace(re, m=>`<mark>${m}</mark>`);
-    }catch(e){}
+  // ※全語をまとめた1本の正規表現で「生テキスト」を1パス走査し、
+  //   マッチ区間とそれ以外を個別にエスケープする（<mark>タグやHTMLエンティティ内への再マッチを防止）
+  const pat = rawWords.filter(w=>w.length>0)
+    .map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|");
+  if(!pat) return esc(t);
+  let re;
+  try{ re = new RegExp(pat,"gi"); }catch(e){ return esc(t); }
+  let out = "", last = 0, m;
+  while((m = re.exec(t)) !== null){
+    if(m[0].length === 0){ re.lastIndex++; continue; }
+    out += esc(t.slice(last, m.index)) + `<mark>${esc(m[0])}</mark>`;
+    last = m.index + m[0].length;
   }
-  return out;
+  return out + esc(t.slice(last));
 }
 let rawWords = [];
 
@@ -1995,6 +2001,130 @@ function kvTable(rows){
   return `<table>${rows.map(r=>`<tr><th>${hl(r[0])}</th><td>${hl(r[1])}</td></tr>`).join("")}</table>`;
 }
 
+/* ================= IR・ラマン ピーク模式図（データから自動生成） ================= */
+function parsePeakRows(rows, kind){
+  const out=[];
+  rows.forEach(r=>{
+    const key=String(r[0]), desc=String(r[1]||"");
+    if(!/\d{3,4}/.test(key)) return;                       // 「注意」「判別」等の行は除外
+    const deg=/劣化|混入/.test(key+desc);                  // 劣化・混入指標 → 橙表示
+    const d1=desc.split("。")[0];
+    let h=0.66;
+    if(/非常に強|極めて強/.test(desc)) h=1.0;
+    else if(/強/.test(d1)) h=0.88;
+    if(/[（(]?弱/.test(key) || (kind==="raman" && /(ラマンでは(IRより)?弱|IRより弱|弱め)/.test(d1))) h=0.36;
+    const broad=/幅広|ブロード/.test(key+desc);
+    const peaks=[];
+    key.split("/").forEach(seg=>{
+      const rg=seg.match(/(\d{3,4})\s*〜\s*(\d{3,4})/);
+      if(rg){ const a=+rg[1], b=+rg[2]; peaks.push({lo:Math.min(a,b), hi:Math.max(a,b), range:true}); }
+      else (seg.match(/\d{3,4}/g)||[]).forEach(v=>peaks.push({v:+v}));
+    });
+    if(peaks.length) out.push({key,desc,deg,h,broad,peaks});
+  });
+  return out;
+}
+
+function peakFig(rows, kind){
+  const data=parsePeakRows(rows, kind);
+  if(!data.length) return "";
+  const W=700, H=146, L=36, R=14, BASE=106, MAXH=56;
+  const X=v=>L+(4000-Math.max(400,Math.min(4000,v)))/3600*(W-L-R);
+  const main = kind==="raman" ? "#0E7C66" : "#24365E";
+  let g="";
+  [4000,3500,3000,2500,2000,1500,1000,500].forEach(t=>{
+    g+=`<line x1="${X(t)}" y1="16" x2="${X(t)}" y2="${BASE}" stroke="#D8DAD2" stroke-dasharray="2 3"/>`;
+    g+=`<line x1="${X(t)}" y1="${BASE}" x2="${X(t)}" y2="${BASE+4}" stroke="#5B6373"/>`;
+    g+=`<text x="${X(t)}" y="${BASE+15}" font-size="9.5" text-anchor="middle" fill="#5B6373">${t}</text>`;
+  });
+  g+=`<line x1="${L-4}" y1="${BASE}" x2="${W-R+4}" y2="${BASE}" stroke="#22293B"/>`;
+  g+=`<text x="${W-R+4}" y="${BASE+29}" font-size="9.5" text-anchor="end" fill="#5B6373">${kind==="raman"?"ラマンシフト":"波数"}（cm⁻¹）　※高さ・幅は相対的な目安</text>`;
+
+  // ピーク描画（行ごとに<g>＋ツールチップ）
+  const labels=[];
+  data.forEach(d=>{
+    const col=d.deg ? "#9A6200" : main;
+    const hp=d.h*MAXH;
+    let body="", xs=[];
+    d.peaks.forEach(p=>{
+      if(p.range){
+        const x1=X(p.hi), x2=X(p.lo);
+        body+=`<path d="M ${x1.toFixed(1)} ${BASE} L ${x1.toFixed(1)} ${(BASE-hp+6).toFixed(1)} Q ${x1.toFixed(1)} ${(BASE-hp).toFixed(1)} ${(x1+6).toFixed(1)} ${(BASE-hp).toFixed(1)} L ${(x2-6).toFixed(1)} ${(BASE-hp).toFixed(1)} Q ${x2.toFixed(1)} ${(BASE-hp).toFixed(1)} ${x2.toFixed(1)} ${(BASE-hp+6).toFixed(1)} L ${x2.toFixed(1)} ${BASE} Z" fill="${col}" opacity=".26" stroke="${col}" stroke-opacity=".5"/>`;
+        xs.push((x1+x2)/2);
+      }else{
+        const c=X(p.v), w=d.broad?16:7;
+        body+=`<path d="M ${(c-w).toFixed(1)} ${BASE} C ${(c-w/3).toFixed(1)} ${BASE} ${(c-w/3).toFixed(1)} ${(BASE-hp).toFixed(1)} ${c.toFixed(1)} ${(BASE-hp).toFixed(1)} C ${(c+w/3).toFixed(1)} ${(BASE-hp).toFixed(1)} ${(c+w/3).toFixed(1)} ${BASE} ${(c+w).toFixed(1)} ${BASE} Z" fill="${col}" opacity=".78"/>`;
+        xs.push(c);
+      }
+    });
+    const lx=xs.reduce((a,b)=>a+b,0)/xs.length;
+    const txt=d.key.replace(/\s+/g,"");
+    const wpx=[...txt].reduce((a,ch)=>a+(ch.charCodeAt(0)>255?9:5.4),0);
+    labels.push({x:lx, w:wpx, txt, col, top:BASE-hp, body, tip:`${d.key}：${d.desc}`});
+  });
+
+  // ラベルの段組み（重なり回避・3段）
+  labels.sort((a,b)=>a.x-b.x);
+  const tiers=[-1e9,-1e9,-1e9];
+  labels.forEach(lb=>{
+    let t=tiers.findIndex(rgt=>lb.x-lb.w/2 > rgt+6);
+    if(t<0){ t=tiers.indexOf(Math.min(...tiers)); }
+    lb.tier=t; tiers[t]=lb.x+lb.w/2;
+  });
+  let out="";
+  labels.forEach(lb=>{
+    const ly=42-lb.tier*13;
+    let s=`<g>${lb.body}`;
+    if(lb.top-ly>10) s+=`<line x1="${lb.x.toFixed(1)}" y1="${ly+3}" x2="${lb.x.toFixed(1)}" y2="${(lb.top-2).toFixed(1)}" stroke="${lb.col}" stroke-dasharray="1 3" opacity=".45"/>`;
+    s+=`<text x="${lb.x.toFixed(1)}" y="${ly}" font-size="9" text-anchor="middle" fill="${lb.col}" font-family="var(--mono)">${esc(lb.txt)}</text>`;
+    s+=`<title>${esc(lb.tip)}</title></g>`;
+    out+=s;
+  });
+  const cap = `模式図：位置は代表値、高さは相対強度の目安（強／中／弱）。帯＝幅広い吸収${data.some(d=>d.deg)?"、<span style=\"color:#9A6200\">橙＝劣化・混入時に現れるバンド</span>":""}。ピークに触れると帰属を表示します。`;
+  return `<div class="fig"><svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px">${g}${out}</svg><div class="fig-cap">${cap}</div></div>`;
+}
+
+/* ================= IR・ラマン 主要バンド領域マップ ================= */
+function bandMapChart(){
+  const rows=[
+   ["O–H・N–H 伸縮（幅広）",3550,3150,"◎","△","PA・PUR・吸水／水酸基（PA 3300）"],
+   ["芳香族 C–H 伸縮",3110,3000,"○","○","PS・PC 等（3000 超が芳香環の目印）"],
+   ["脂肪族 C–H 伸縮",3000,2840,"◎","◎","ほぼ全材料（PE 2915/2848 極強）"],
+   ["C≡N 伸縮",2260,2220,"○","◎","NBR・ABS（2237。孤立領域で判別性大）"],
+   ["C=O 伸縮",1790,1690,"◎","△","エステル類・カルボニル劣化（PC 1770 は高波数側）"],
+   ["C=C・芳香環骨格",1670,1580,"△","◎","ジエン系ゴム 1660 台・芳香環 1600"],
+   ["CH₂・CH₃ 変角",1490,1350,"○","○","PP 1376（CH₃）・IIR 1389/1366 二重線"],
+   ["Si–CH₃ 変角",1270,1250,"◎","○","シリコーン 1260（鋭い）"],
+   ["C–O・C–F・Si–O 伸縮",1300,1000,"◎","△","PMMA・POM・PC／FKM・VMQ（強く幅広）"],
+   ["環呼吸振動",1010,990,"△","◎","PS 1001（極強・シャープ）・PET 998"],
+   ["芳香環 面外 C–H 変角",900,690,"◎","△","置換様式の判定（PS 756/698 の組）"],
+   ["C–Cl 伸縮",800,600,"◎","○","PVC 690〜610・CR"]
+  ];
+  const W=700, L=182, R=118, ROWH=22, TOP=30, H=TOP+rows.length*ROWH+34;
+  const X=v=>L+(4000-Math.max(400,Math.min(4000,v)))/3600*(W-L-R);
+  let g="";
+  [4000,3500,3000,2500,2000,1500,1000,500].forEach(t=>{
+    g+=`<line x1="${X(t)}" y1="${TOP-6}" x2="${X(t)}" y2="${TOP+rows.length*ROWH+2}" stroke="#D8DAD2" stroke-dasharray="2 3"/>`;
+    g+=`<text x="${X(t)}" y="${TOP+rows.length*ROWH+14}" font-size="9.5" text-anchor="middle" fill="#5B6373">${t}</text>`;
+  });
+  g+=`<text x="${W-R+16}" y="${TOP-10}" font-size="10" fill="#5B6373" text-anchor="middle">IR</text>`;
+  g+=`<text x="${W-R+52}" y="${TOP-10}" font-size="10" fill="#5B6373" text-anchor="middle">ラマン</text>`;
+  rows.forEach((r,i)=>{
+    const [name,hi,lo,ir,rm,ex]=r, y=TOP+i*ROWH, cy=y+ROWH/2;
+    const x1=X(hi), x2=X(lo);
+    g+=`<g><text x="${L-8}" y="${cy+3.5}" font-size="10.5" text-anchor="end" fill="#22293B">${name}</text>`;
+    g+=`<rect x="${x1.toFixed(1)}" y="${(cy-6).toFixed(1)}" width="${Math.max(4,x2-x1).toFixed(1)}" height="12" rx="4" fill="#24365E" opacity=".55"/>`;
+    const vlbl=`${hi}〜${lo}`, vw=[...vlbl].reduce((a,c)=>a+(c.charCodeAt(0)>255?9:5.4),0);
+    if(x2+6+vw < W-R+2) g+=`<text x="${(x2+6).toFixed(1)}" y="${cy+3.5}" font-size="9" fill="#5B6373" font-family="var(--mono)">${vlbl}</text>`;
+    else g+=`<text x="${(x1-6).toFixed(1)}" y="${cy+3.5}" font-size="9" text-anchor="end" fill="#5B6373" font-family="var(--mono)">${vlbl}</text>`;
+    g+=`<text x="${W-R+16}" y="${cy+3.5}" font-size="10.5" text-anchor="middle" fill="${ir==="◎"?"#0E7C66":"#5B6373"}">${ir}</text>`;
+    g+=`<text x="${W-R+52}" y="${cy+3.5}" font-size="10.5" text-anchor="middle" fill="${rm==="◎"?"#0E7C66":"#5B6373"}">${rm}</text>`;
+    g+=`<title>${name}（${hi}〜${lo} cm⁻¹）：${ex}</title></g>`;
+  });
+  g+=`<text x="${L}" y="${H-4}" font-size="10" fill="#5B6373">◎＝強く明瞭　○＝中程度　△＝弱い／出にくい（材料・配合で変動）。バンドに触れると代表例を表示。</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px">${g}</svg>`;
+}
+
 function renderTest(t){
   const fig = t.specimen.fig && FIGS[t.specimen.fig]
     ? `<div class="fig">${FIGS[t.specimen.fig]}</div>` : "";
@@ -2046,8 +2176,8 @@ function renderMat(m){
       ${MOLD[m.id]?`<div class="blk"><div class="blk-t">${m.rubber?`試験片作製・加硫条件（代表値・JIS K 6250 参照）`:`試験片成形条件（射出成形：各材料規格 第2部＝下記「出典」／手順は <button class="lk to-test" data-go="t-molding" style="margin:0;padding:1px 8px">JIS K 7152-1</button>）`}</div>${kvTable(MOLD[m.id])}</div>`:""}
       <div class="blk"><div class="blk-t">試験別の条件・ポイント</div><table>${condRows}</table></div>
       ${IDENT[m.id]?`<div class="blk"><div class="blk-t">簡易的な見分け方</div>${kvTable(IDENT[m.id])}</div>`:""}
-      ${IR[m.id]?`<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）</div>${kvTable(IR[m.id])}</div>`:""}
-      ${RAMAN[m.id]?`<div class="blk"><div class="blk-t">ラマン分析の特徴的ピーク（cm⁻¹・代表値）</div>${kvTable(RAMAN[m.id])}</div>`:""}
+      ${IR[m.id]?`<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）<button class="lk to-test" data-go="c-bandmap" style="margin:0 0 0 10px;padding:1px 8px;font-weight:400">バンド領域マップ（グラフタブ）→</button></div>${peakFig(IR[m.id],"ir")}${kvTable(IR[m.id])}</div>`:""}
+      ${RAMAN[m.id]?`<div class="blk"><div class="blk-t">ラマン分析の特徴的ピーク（cm⁻¹・代表値）<button class="lk to-mat" data-go="c-bandmap" style="margin:0 0 0 10px;padding:1px 8px;font-weight:400">バンド領域マップ（グラフタブ）→</button></div>${peakFig(RAMAN[m.id],"raman")}${kvTable(RAMAN[m.id])}</div>`:""}
       ${m.note?`<div class="note">${hl(m.note)}</div>`:""}
       <div class="blk"><div class="blk-t">適用試験（クリックで移動）</div><div class="links">${links}</div></div>
     </div>
@@ -2268,8 +2398,8 @@ function mfrChart(){
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px">${g}</svg>`;
 }
 
-function chartCard(title, svg, note){
-  return `<div class="card open" data-kind="chart">
+function chartCard(title, svg, note, id){
+  return `<div class="card open" data-kind="chart"${id?` id="${id}"`:""}>
     <div class="card-hd"><span class="badge m-badge">図</span><span class="card-title">${title}</span><span class="chev">▶</span></div>
     <div class="card-body"><div class="blk">${svg}</div>${note?`<div class="note">${note}</div>`:""}</div>
   </div>`;
@@ -2287,6 +2417,9 @@ function renderCharts(){
     "溶融温度・金型温度は各材料の第2部 表1の実値（PP→K 6921-2、PE→K 6922-2、PS→K 6923-2、ABS→K 6934-2、PMMA→K 6717-2、PC→K 6719-2、PA→K 6920-2、POM→K 7364-2、PBT・PET→K 6937-2）。PP・PC・PA・PMMAはMFR/MVR・粘度数・グレードで溶融温度が区分される（バーは規格値の範囲）。PVCは射出成形の第2部規格がなく圧縮成形（実務レンジを参考表示）。PETの金型温度は非晶（20 ℃）と結晶化（110〜135 ℃）の2水準。射出速度・保圧・サイクル等の詳細は各材料カードを参照。");
   html += chartCard("MFR測定条件：温度×荷重（JIS K 7210-1）", mfrChart(),
     "硬質PVCは熱分解（HCl発生）のため通常測定しない。PA6/PA66・PET・PBT・PCは測定前乾燥が必須（加水分解・水分でMFRが増大）。GF強化材は繊維折損・目詰まりのため参考値扱いが無難。");
+  html += `<div class="sec-label">分光分析（IR・ラマン）の目安</div>`;
+  html += chartCard("IR・ラマン 主要バンド領域マップ（cm⁻¹・代表値）", bandMapChart(),
+    "同じ振動でもIRとラマンで強度が大きく異なるのが使い分けの基本（例：C=OはIRで強くラマンで弱い／C=C・芳香環・環呼吸はラマンで強い）。黒色（カーボンブラック配合）品はIRの全域吸収・ラマンの蛍光やD/Gバンドの影響を受けやすい。各材料カードの「IR分析／ラマン分析の特徴的ピーク」の模式図とあわせて活用してください。", "c-bandmap");
   return html;
 }
 
@@ -2525,7 +2658,7 @@ function render(){
   if(view==="chart"){
     $("#idx").innerHTML = "";
     $("#list").innerHTML = renderCharts();
-    $("#count").textContent = `グラフ： ${CHARTS.length+RUBBER_CHARTS.length+3} 図（代表値ベース）`;
+    $("#count").textContent = `グラフ： ${CHARTS.length+RUBBER_CHARTS.length+4} 図（代表値ベース）`;
     document.querySelector(".tools").style.display = "none";
     return;
   }
@@ -2583,8 +2716,8 @@ function goToCard(id){
   // 移動先が現在のビューに無い場合は「すべて」に切替
   let el = document.getElementById(id);
   if(!el){
-    view = "all"; query = ""; $("#q").value = "";
-    document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v==="all"));
+    view = id.startsWith("c-") ? "chart" : "all"; query = ""; $("#q").value = "";
+    document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v===view));
     render();
     el = document.getElementById(id);
   }
