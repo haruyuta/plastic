@@ -235,8 +235,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
   <div class="hd-controls">
     <input id="q" type="search" placeholder="検索：試験名 / JIS番号 / 材料名（例: K 7171、曲げ、PP、K 6251、K 6850、接着、硬さ）" autocomplete="off">
     <div class="seg" id="seg">
-      <button data-v="all" class="on">すべて</button>
-      <button data-v="mat">材料から</button>
+      <button data-v="mat" class="on">材料から</button>
       <button data-v="test">試験方法から</button>
       <button data-v="chart">グラフ</button>
       <button data-v="peak">ピーク逆引き</button>
@@ -2059,7 +2058,7 @@ const esc = s => (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&
 const testById = Object.fromEntries(TESTS.map(t=>[t.id,t]));
 const matById  = Object.fromEntries(MATS.map(m=>[m.id,m]));
 
-let view = "all";
+let view = "mat";
 let query = "";
 
 /* 検索対象テキスト生成 */
@@ -3205,10 +3204,10 @@ $("#seg").addEventListener("click", e=>{
 });
 
 function goToCard(id){
-  // 移動先が現在のビューに無い場合は「すべて」に切替
+  // 移動先が現在のビューに無い場合は、その項目を含むビューに切替
   let el = document.getElementById(id);
   if(!el){
-    view = id.startsWith("c-") ? "chart" : "all"; query = ""; $("#q").value = "";
+    view = id.startsWith("c-") ? "chart" : id.startsWith("t-") ? "test" : "mat"; query = ""; $("#q").value = "";
     document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v===view));
     render();
     el = document.getElementById(id);
