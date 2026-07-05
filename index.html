@@ -1605,6 +1605,97 @@ const RAMAN = {
 };
 
 /* ================= 材料別：簡易的な見分け方 ================= */
+/* ================= フィラー・添加剤のIR/ラマンピーク ================= */
+const FILLERS = [
+{ id:"talc", kw:"タルク talc 珪酸マグネシウム 滑石 充填材 フィラー", name:"タルク（Mg₃Si₄O₁₀(OH)₂）",
+  ir:[
+   ["3676","Mg–O–H伸縮（鋭く強い単一ピーク。タルクの決め手）"],
+   ["1018","Si–O–Si伸縮（非常に強い）"],
+   ["669","Si–O変角"]
+  ],
+  raman:[
+   ["676","Si–O対称伸縮（非常に強い）"],
+   ["3677","O–H伸縮（鋭い）"],
+   ["低波数域","362 / 195 に格子振動"]
+  ],
+  note:"タルク充填PP（自動車部材・再生PPで頻出）は3676の鋭いOHと1018の強吸収が樹脂ピークに重なって現れる。OHが1本＝タルク、2本組（3695/3620）＝カオリンが判別点。定量は灰分（JIS K 7250）併用が実務的。"},
+{ id:"caco3", kw:"炭酸カルシウム 炭カル calcium carbonate カルサイト 重質 軽質 充填材 フィラー", name:"炭酸カルシウム（CaCO₃・カルサイト）",
+  ir:[
+   ["1420前後（幅広）","CO₃²⁻逆対称伸縮（非常に強い）"],
+   ["875","CO₃²⁻面外変角（鋭い）"],
+   ["712","CO₃²⁻面内変角（鋭い。カルサイトの目印）"],
+   ["1795（弱）","結合音。孤立領域で確認しやすい"]
+  ],
+  raman:[
+   ["1086","CO₃²⁻対称伸縮（非常に強く鋭い。カルサイトの決め手）"],
+   ["712","CO₃²⁻面内変角"],
+   ["低波数域","281 / 156 に格子振動"]
+  ],
+  note:"875＋712の鋭い2本の有無でタルク・ガラスと判別できる。塩酸で発泡（CO₂）する点も簡易確認に有効。再生PP・PVC・シートで配合例が多い。"},
+{ id:"glass", kw:"ガラス繊維 GF glass シリカ silica 充填材 フィラー 強化材", name:"ガラス繊維・非晶質シリカ",
+  ir:[
+   ["1100〜1000（幅広）","Si–O–Si逆対称伸縮（非常に強い）"],
+   ["800前後","Si–O–Si対称伸縮"],
+   ["470前後","Si–O変角（ATRの測定下限近く）"]
+  ],
+  raman:[
+   ["440〜490（幅広・弱）","Si–O–Si変角。非晶質ガラスはラマン感度が低くブロード"]
+  ],
+  note:"GF強化材のIRは1000台の幅広い吸収が樹脂の指紋領域に重なる（PBT・PA等のC–O・C–N領域と競合）。含有率の定量はラマン・IRでなく灰分（JIS K 7250）・強熱残分が確実。"},
+{ id:"tio2", kw:"酸化チタン チタニア titanium ルチル アナタース 白色顔料 顔料", name:"酸化チタン（TiO₂・白色顔料）",
+  ir:[
+   ["700〜500（幅広）","Ti–O伸縮（強い立上り。ATRでは測定域端に現れる）"]
+  ],
+  raman:[
+   ["612 / 447","ルチル形の2本組"],
+   ["639 / 516 / 397","アナタース形"],
+   ["低波数域","アナタース形は144が極めて強く微量でも検出可。結晶形判別はラマンが確実"]
+  ],
+  note:"白色成形品のほぼ定番配合。IRでは低波数の立上りとしてしか見えないため、確認・結晶形判別（ルチル／アナタース）はラマンが適する。"},
+{ id:"cb", kw:"カーボンブラック carbon black 黒 顔料 Dバンド Gバンド", name:"カーボンブラック",
+  ir:[
+   ["全域","可視〜赤外の全域で吸収。配合量が多いとスペクトルがつぶれる（ATRでもS/N低下）"]
+  ],
+  raman:[
+   ["1350前後（幅広）","Dバンド（無定形炭素）"],
+   ["1590前後（幅広）","Gバンド（グラファイト構造）"]
+  ],
+  note:"黒色品はIR全域吸収・ラマン蛍光/発熱の影響を受けやすい（レーザー出力を下げ焼損に注意）。D/Gバンドが樹脂バンドを覆い隠すため、黒色品の樹脂同定はDSC（Tm・Tg）併用が実務的。"},
+{ id:"baso4", kw:"硫酸バリウム バリウム barium sulfate バライト 充填材 フィラー", name:"硫酸バリウム（BaSO₄）",
+  ir:[
+   ["1180〜1070（幅広）","SO₄²⁻逆対称伸縮（強い）"],
+   ["983（弱）","SO₄²⁻対称伸縮（鋭い）"],
+   ["634 / 610","SO₄²⁻変角（二重線）"]
+  ],
+  raman:[
+   ["988","SO₄²⁻対称伸縮（非常に強く鋭い）"],
+   ["617 / 462","SO₄²⁻変角"]
+  ],
+  note:"高比重（約4.5）のため少量配合でも製品密度が上がる。密度・灰分の値と組み合わせると推定しやすい。X線造影用途・遮音材などで配合例あり。"},
+{ id:"kaolin", kw:"カオリン クレー カオリナイト kaolin clay 充填材 フィラー", name:"カオリン（クレー・Al₂Si₂O₅(OH)₄）",
+  ir:[
+   ["3695 / 3620","O–H伸縮の2本組（カオリンの決め手。タルクの1本と対照）"],
+   ["1030 / 1008","Si–O伸縮（非常に強い）"],
+   ["912","Al–OH変角"]
+  ],
+  raman:[
+   ["3695 / 3620（弱）","O–H伸縮（IRと同様の2本組。全体に感度は低め）"]
+  ],
+  note:"ワイヤー被覆PVC・ゴム配合などで使用例あり。OH領域の本数（2本＝カオリン／1本＝タルク）で層状ケイ酸塩どうしを判別できる。"},
+{ id:"plast", kw:"可塑剤 フタル酸 DOP DEHP DINP DBP phthalate plasticizer 軟質PVC", name:"フタル酸エステル系可塑剤（DOP・DINP等）",
+  ir:[
+   ["1725","エステルC=O伸縮（強い）"],
+   ["1270 / 1120","C–O–C伸縮（強い）"],
+   ["1600 / 1580","芳香環骨格"],
+   ["743","オルト二置換ベンゼン面外変角"]
+  ],
+  raman:[
+   ["1043","芳香環（比較的明瞭）"],
+   ["1600","芳香環骨格。C=O（1725）はラマンでは弱い"]
+  ],
+  note:"軟質PVCの1720前後のC=Oは可塑剤由来（PVC自体にC=Oはない）。表面ブリード分はATRで無処理確認できるが、種類の特定・定量はGC-MS等の併用が確実。"}
+];
+
 const IDENT = {
  pp:[
   ["水浮沈","浮く（密度<1。PE/PPのみ。フィラー入りは沈むことあり）"],
@@ -1854,6 +1945,13 @@ function matHay(m){
     (RAMAN[m.id]||[]).flat().join(" "), "ラマン Raman",
     (IDENT[m.id]||[]).flat().join(" "), "見分け方 判別 同定 燃焼 浮沈",
     m.conds.map(c=>(testById[c[0]]?.name||"")+" "+c[1]).join(" ")].join(" "));
+}
+
+function fillerHay(f){
+  return norm([f.name, f.kw||"",
+    (f.ir||[]).flat().join(" "), "IR FTIR 赤外 ピーク",
+    (f.raman||[]).flat().join(" "), "ラマン Raman",
+    f.note||"", "フィラー 充填材 添加剤 同定"].join(" "));
 }
 
 function hl(text){
@@ -2176,7 +2274,7 @@ function renderMat(m){
       ${MOLD[m.id]?`<div class="blk"><div class="blk-t">${m.rubber?`試験片作製・加硫条件（代表値・JIS K 6250 参照）`:`試験片成形条件（射出成形：各材料規格 第2部＝下記「出典」／手順は <button class="lk to-test" data-go="t-molding" style="margin:0;padding:1px 8px">JIS K 7152-1</button>）`}</div>${kvTable(MOLD[m.id])}</div>`:""}
       <div class="blk"><div class="blk-t">試験別の条件・ポイント</div><table>${condRows}</table></div>
       ${IDENT[m.id]?`<div class="blk"><div class="blk-t">簡易的な見分け方</div>${kvTable(IDENT[m.id])}</div>`:""}
-      ${IR[m.id]?`<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）<button class="lk to-test" data-go="c-bandmap" style="margin:0 0 0 10px;padding:1px 8px;font-weight:400">バンド領域マップ（グラフタブ）→</button></div>${peakFig(IR[m.id],"ir")}${kvTable(IR[m.id])}</div>`:""}
+      ${IR[m.id]?`<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）<button class="lk to-test" data-go="c-bandmap" style="margin:0 0 0 10px;padding:1px 8px;font-weight:400">バンド領域マップ（グラフタブ）→</button><button class="lk to-test" data-go="c-fillers" style="margin:0 0 0 6px;padding:1px 8px;font-weight:400">フィラー・添加剤→</button></div>${peakFig(IR[m.id],"ir")}${kvTable(IR[m.id])}</div>`:""}
       ${RAMAN[m.id]?`<div class="blk"><div class="blk-t">ラマン分析の特徴的ピーク（cm⁻¹・代表値）<button class="lk to-mat" data-go="c-bandmap" style="margin:0 0 0 10px;padding:1px 8px;font-weight:400">バンド領域マップ（グラフタブ）→</button></div>${peakFig(RAMAN[m.id],"raman")}${kvTable(RAMAN[m.id])}</div>`:""}
       ${m.note?`<div class="note">${hl(m.note)}</div>`:""}
       <div class="blk"><div class="blk-t">適用試験（クリックで移動）</div><div class="links">${links}</div></div>
@@ -2405,6 +2503,15 @@ function chartCard(title, svg, note, id){
   </div>`;
 }
 
+function fillerCard(f){
+  const irBlk = f.ir ? `<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）</div>${peakFig(f.ir,"ir")}${kvTable(f.ir)}</div>` : "";
+  const rmBlk = f.raman ? `<div class="blk"><div class="blk-t">ラマン分析の特徴的ピーク（cm⁻¹・代表値）</div>${peakFig(f.raman,"raman")}${kvTable(f.raman)}</div>` : "";
+  return `<div class="card open" data-kind="chart" id="c-fill-${f.id}">
+    <div class="card-hd"><span class="badge m-badge">充填</span><span class="card-title">${hl(f.name)}</span><span class="chev">▶</span></div>
+    <div class="card-body">${irBlk}${rmBlk}${f.note?`<div class="note">${f.note}</div>`:""}</div>
+  </div>`;
+}
+
 function renderCharts(){
   let html = `<div class="sec-label">基本データの材料間比較（代表値・グレードで変動）</div>`;
   for(const c of CHARTS) html += chartCard(c.title, rangeChart(c), c.note||"");
@@ -2420,6 +2527,8 @@ function renderCharts(){
   html += `<div class="sec-label">分光分析（IR・ラマン）の目安</div>`;
   html += chartCard("IR・ラマン 主要バンド領域マップ（cm⁻¹・代表値）", bandMapChart(),
     "同じ振動でもIRとラマンで強度が大きく異なるのが使い分けの基本（例：C=OはIRで強くラマンで弱い／C=C・芳香環・環呼吸はラマンで強い）。黒色（カーボンブラック配合）品はIRの全域吸収・ラマンの蛍光やD/Gバンドの影響を受けやすい。各材料カードの「IR分析／ラマン分析の特徴的ピーク」の模式図とあわせて活用してください。", "c-bandmap");
+  html += `<div class="sec-label" id="c-fillers">フィラー・添加剤の同定（IR・ラマン）</div>`;
+  for(const f of FILLERS) html += fillerCard(f);
   return html;
 }
 
@@ -2654,6 +2763,7 @@ function render(){
   const words = qn ? qn.split(/\s+/).filter(Boolean) : [];
   const matchT = TESTS.filter(t => !qn || testHay(t).includes(qn) || rawWords.every(w=>testHay(t).includes(norm(w))));
   const matchM = MATS.filter(m => !qn || matHay(m).includes(qn) || rawWords.every(w=>matHay(m).includes(norm(w))));
+  const matchF = qn ? FILLERS.filter(f => fillerHay(f).includes(qn) || rawWords.every(w=>fillerHay(f).includes(norm(w)))) : [];
 
   if(view==="chart"){
     $("#idx").innerHTML = "";
@@ -2683,6 +2793,7 @@ function render(){
     html += sect("材料：プラスチック", pM, renderMat);
     html += sect("材料：ゴム", rM, renderMat);
     if(!matchM.length) html += `<div class="sec-label">材料（0）</div><div class="empty" style="padding:16px 0">該当する材料はありません</div>`;
+    html += sect("フィラー・添加剤", matchF, fillerCard);
   }
   if(view!=="mat"){
     html += sect("試験方法：プラスチック", pT, renderTest);
@@ -2690,12 +2801,12 @@ function render(){
     html += sect("試験方法：ゴム", rT, renderTest);
     if(!matchT.length) html += `<div class="sec-label">試験方法（0）</div><div class="empty" style="padding:16px 0">該当する試験方法はありません</div>`;
   }
-  if(!matchT.length && !matchM.length){
+  if(!matchT.length && !matchM.length && !matchF.length){
     html = `<div class="empty">「${esc(query)}」に一致する項目がありません。<br>別のキーワード（規格番号・略称・試験名など）を試してください。</div>`;
   }
   $("#list").innerHTML = html;
   $("#count").textContent = query
-    ? `検索「${query}」： 材料 ${matchM.length} 件 / 試験方法 ${matchT.length} 件`
+    ? `検索「${query}」： 材料 ${matchM.length} 件 / 試験方法 ${matchT.length} 件${matchF.length?` / フィラー・添加剤 ${matchF.length} 件`:""}`
     : `収録： 材料 ${MATS.length} 件 / 試験方法 ${TESTS.length} 件`;
 
   // 検索時は自動展開
