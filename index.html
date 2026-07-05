@@ -684,6 +684,25 @@ const TESTS = [
  mats:["pmma","pc","ps","pet","pp"]
 },
 {
+ id:"yi", name:"黄色度・黄変度（YI・ΔYI）", jis:"JIS K 7373", iso:"ISO 17223",
+ kw:"黄色度 黄変度 イエローインデックス yellowness index YI ΔYI 黄変 変色 色 色差 劣化 測色",
+ specimen:{label:"無色（透明）・半透明白色・不透明白色のプラスチック", fig:null,
+  rows:[
+   ["形状","フィルム・板・粉・ペレット（マット面・表面パターン付きも可）"],
+   ["厚さ","記録必須（透過測定はとくに厚さに依存）"],
+   ["対象外","蛍光を発するもの・有彩色品"]
+  ]},
+ cond:[
+  ["装置","分光測色計・色彩計（透過または反射で三刺激値XYZを測定）"],
+  ["黄色度 YI","YI = 100 (Cx·X − Cz·Z) / Y"],
+  ["係数（D65・10°視野）","Cx = 1.3013 / Cz = 1.1498"],
+  ["係数（C・2°視野）","Cx = 1.2985 / Cz = 1.1335（旧2006年版の標準条件）"],
+  ["黄変度 ΔYI","ΔYI = 処理（熱老化・促進暴露等）後のYI − 初期のYI"]
+ ],
+ note:"旧JIS K 7105から分離独立し、2024年改正でISO 17223ベースに。透明・白色材の熱／UV劣化評価の定番。再生透明材（PET・PC・PMMA）や白色ABS（ブタジエン相の酸化）の黄変管理では、カルボニル指数・OIT・ヘーズとの併用が有効。",
+ mats:["pmma","pc","ps","pet","pvc","pp","abs","recycle"]
+},
+{
  id:"ad-shear", name:"引張せん断接着強さ", jis:"JIS K 6850", iso:"ISO 4587", cat:"adhesive",
  kw:"接着 接着剤 せん断 引張せん断 ラップシェア 重ね合わせ lap shear 継手 ボンド",
  specimen:{label:"単純重ね合わせ（シングルラップ）試験片。剛性被着材（金属板が標準）", fig:null,
@@ -940,7 +959,7 @@ const MATS = [
   ["density","0.90〜0.91。タルク・GF入りは上昇"]
  ],
  note:"事前乾燥は原則不要。再生PPは熱酸化劣化による分子切断でMFR増加・伸び低下が典型的（カルボニル指数・OITでの劣化評価と併用）。",
- tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","film-tensile","tg","oit","cp","tensile-impact","shrinkage","ash","haze","compress","hardness-d","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","film-tensile","tg","oit","cp","tensile-impact","shrinkage","ash","haze","yi","compress","hardness-d","molding"]
 },
 {
  id:"pe", name:"PE（ポリエチレン）", abbr:"PE / HDPE / LDPE / LLDPE",
@@ -967,7 +986,7 @@ const MATS = [
   ["vicat","B50 が代表的な耐熱指標"]
  ],
  note:"乾燥は原則不要。ケミカルクラック（応力＋薬品）に敏感。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","tensile-impact","haze","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","tensile-impact","haze","yi","molding"]
 },
 {
  id:"abs", name:"ABS（アクリロニトリル・ブタジエン・スチレン）", abbr:"ABS",
@@ -981,7 +1000,7 @@ const MATS = [
   ["dsc","ゴム相のTg（約 −80 ℃）とSAN相のTg（約 105 ℃）"]
  ],
  note:"吸湿性があり成形前乾燥（80 ℃ / 2〜4 h 目安）推奨。再生ABSは衝撃値の低下が劣化指標として鋭敏。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","tensile-impact","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","tensile-impact","molding","yi"]
 },
 {
  id:"pmma", name:"PMMA（アクリル樹脂）", abbr:"PMMA",
@@ -994,7 +1013,7 @@ const MATS = [
   ["water","吸湿により寸法・光学特性が変化。乾燥（80 ℃ / 4 h以上目安）"]
  ],
  note:"成形前乾燥必須（気泡・シルバー防止）。応力クラックと溶剤クラックに敏感。",
- tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","water","haze","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","mfr","density","dsc","water","haze","yi","molding"]
 },
 {
  id:"pvc", name:"PVC（塩化ビニル樹脂）", abbr:"PVC（硬質/軟質）",
@@ -1007,7 +1026,7 @@ const MATS = [
   ["mfr","熱安定性が低く一般に測定しない（分解によるHCl発生・装置腐食に注意）"]
  ],
  note:"加熱試験全般で熱分解（HCl発生）に注意。可塑剤配合で物性レンジが極めて広い。",
- tests:["tensile","flex","charpy","hdt","vicat","density","hardness-d","molding"]
+ tests:["tensile","flex","charpy","hdt","vicat","density","hardness-d","molding","yi"]
 },
 {
  id:"pc", name:"PC（ポリカーボネート）", abbr:"PC",
@@ -1021,7 +1040,7 @@ const MATS = [
   ["water","加水分解性あり。高温多湿環境・薬品との組合せで分子量低下"]
  ],
  note:"未乾燥での溶融加工・MFR測定は加水分解による分子量低下→MFR見かけ増大を招く。残留応力とケミカルクラックにも注意。",
- tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","water","tma","cp","tensile-impact","haze","compress","molding"]
+ tests:["tensile","flex","charpy","izod","hdt","vicat","mfr","density","dsc","water","tma","cp","tensile-impact","haze","yi","compress","molding"]
 },
 {
  id:"pa6", name:"PA6（ナイロン6）", abbr:"PA6",
@@ -1090,7 +1109,7 @@ const MATS = [
   ["water","加水分解しやすい。再生PETはIV（固有粘度）低下の管理が定番"]
  ],
  note:"再生PETの品質指標はIV低下・黄変・アセトアルデヒド。乾燥不足での溶融は急激なIV低下を招く。",
- tests:["tensile","film-tensile","flex","hdt","mfr","density","dsc","water","shrinkage","haze","molding"]
+ tests:["tensile","film-tensile","flex","hdt","mfr","density","dsc","water","shrinkage","haze","yi","molding"]
 },
 {
  id:"peek", name:"PEEK（ポリエーテルエーテルケトン）", abbr:"PEEK",
@@ -1151,7 +1170,7 @@ const MATS = [
   ["tg","無機分（フィラー・顔料）定量、組成推定"]
  ],
  note:"ロット間変動が本質的な課題。単発値でなく分布（平均±SD、n≥5）での管理と、IR（カルボニル指数）・OIT・GPC等の劣化分析の併用が有効。",
- tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding","tensile-impact","shrinkage","ash"]
+ tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding","tensile-impact","shrinkage","ash","yi"]
 },
 {
  id:"nr", name:"NR（天然ゴム）", abbr:"NR", cat:"rubber", rubber:true,
@@ -1437,6 +1456,154 @@ const IR = {
  ]
 };
 
+/* ================= 材料別：ラマン分析の特徴的ピーク（cm⁻¹・代表値） ================= */
+const RAMAN = {
+ pp:[
+  ["2840〜2960","C–H伸縮（CH₃・CH₂）"],
+  ["1435 / 1458","CH₂・CH₃変角"],
+  ["1152 / 998 / 973","アイソタクチックPPの規則性バンド"],
+  ["809 / 841","骨格振動。809（結晶ヘリックス）と841（非晶）の強度比が結晶化度の目安"],
+  ["注意","C=O（酸化劣化）はラマンでは弱く、カルボニル指数の定量はIRが適する"]
+ ],
+ pe:[
+  ["2848 / 2883","CH₂伸縮（非常に強い）"],
+  ["1418","結晶CH₂変角（斜方晶の目印）。結晶化度評価に使用"],
+  ["1296","CH₂ねじれ（強度規格化の内部標準によく使われる）"],
+  ["1064 / 1130","trans C–C骨格伸縮（結晶）。1080付近のブロードは非晶成分"],
+  ["PPとの判別","PE 1064/1130 vs PP 809/841・998で明瞭に判別可"]
+ ],
+ ps:[
+  ["3054","芳香族C–H伸縮"],
+  ["1602","ベンゼン環骨格振動"],
+  ["1001 / 1031","環呼吸振動（1001は極めて強くシャープ＝PS同定の決め手）"],
+  ["620","環変角"]
+ ],
+ abs:[
+  ["2237","C≡N伸縮（ニトリル。ラマンでも明瞭）"],
+  ["1665前後","ブタジエンC=C伸縮（IRでは弱いがラマンでは強い＝ブタジエン量の目安）"],
+  ["1001 / 1031 / 1602","スチレン環（PSと共通）"],
+  ["PSとの判別","2237（C≡N）と1665（C=C）の有無で確定"]
+ ],
+ pmma:[
+  ["2953","C–H伸縮"],
+  ["1730","エステルC=O（IRより弱い）"],
+  ["1450","CH変角"],
+  ["812","C–O–C対称伸縮＋骨格振動（強い。PMMAの決め手）"],
+  ["600","骨格変角"]
+ ],
+ pvc:[
+  ["2912","C–H伸縮"],
+  ["1430","CH₂変角"],
+  ["614 / 638 / 695","C–Cl伸縮（コンホメーションで分裂。PVCの決め手）"],
+  ["1511 / 1590付近（劣化時）","共役ポリエン（脱HCl劣化）。共鳴効果で微量でも強く現れ、PVCの劣化評価にラマンが有効"]
+ ],
+ pc:[
+  ["3070","芳香族C–H伸縮"],
+  ["1602","ベンゼン環骨格"],
+  ["1235","O–C–O伸縮"],
+  ["888","カーボネート骨格 O–C(=O)–O（PCの目印）"],
+  ["1775","カーボネートC=O（ラマンでは弱め）"]
+ ],
+ pa6:[
+  ["2900前後","C–H伸縮"],
+  ["1636","アミドI（C=O）。3300のN–HはラマンではIRより弱い"],
+  ["1440","CH₂変角"],
+  ["注意","PA6/PA66はラマンでも判別困難（930〜960付近に微差）。DSCのTm差（220 vs 260 ℃）を併用"]
+ ],
+ pa66:[
+  ["2900前後","C–H伸縮"],
+  ["1636","アミドI（C=O）"],
+  ["1440","CH₂変角"],
+  ["注意","PA6との判別はラマンでも困難。DSC（Tm 260 ℃）との併用が実務的"]
+ ],
+ pom:[
+  ["2925前後","C–H伸縮"],
+  ["1490","CH₂変角"],
+  ["918","C–O–C対称伸縮（非常に強い。POMの決め手）"],
+  ["540","骨格変角"]
+ ],
+ pbt:[
+  ["1615","ベンゼン環（テレフタレート。非常に強くシャープ）"],
+  ["1715前後","エステルC=O"],
+  ["注意","PETとの判別はラマンでも実質困難。DSC（Tm 225 vs 255 ℃）で確定"]
+ ],
+ pet:[
+  ["1615","ベンゼン環（非常に強くシャープ）"],
+  ["1725","エステルC=O"],
+  ["1096","C–O・骨格（結晶化で先鋭化）"],
+  ["998","エチレングリコール trans（結晶化度・配向の指標）"],
+  ["858","環C–C"]
+ ],
+ peek:[
+  ["1595 / 1608","芳香族環骨格（二重線）"],
+  ["1644","ジアリールケトンC=O（ラマンで明瞭）"],
+  ["1146","骨格振動"],
+  ["確定判別","IRと同様、DSC Tm 340 ℃前後の高融点を併用"]
+ ],
+ lcp:[
+  ["1600前後","芳香族環（強い）"],
+  ["1730前後","芳香族エステルC=O"],
+  ["注意","蛍光を発しやすく、励起波長の選択（785 nm等の長波長）が重要"]
+ ],
+ gf:[
+  ["ベース樹脂のピーク","GF入りでも樹脂側の同定は可能"],
+  ["注意","ガラスはラマン散乱が非常に弱くGF検出には不向き。GF確認は灰化残渣・TG定量が確実"]
+ ],
+ recycle:[
+  ["1350 / 1580付近","カーボンブラック・炭化物のD/Gバンド。黒色品では母材ピークを覆い測定困難になりやすい"],
+  ["1064 / 1130（PP中）","PE混入の検出（結晶PEのC–C伸縮）"],
+  ["1511 / 1590","共役ポリエン＝PVC系混入・劣化の指標（共鳴効果で高感度）"],
+  ["注意","C=O（酸化劣化）はラマンでは弱く、カルボニル指数はIRが適する。顔料・蛍光の影響も受けやすい"]
+ ],
+ nr:[
+  ["1664","C=C伸縮（IRでは弱いがラマンでは強い＝ジエン系ゴムの主指標）"],
+  ["1375","CH₃変角（イソプレン単位）"],
+  ["2850〜2960","C–H伸縮"],
+  ["注意","カーボンブラック配合品はD/Gバンド（1350/1580）と蛍光により測定困難なことが多い（ゴム共通）"]
+ ],
+ sbr:[
+  ["1001 / 1031","スチレン環呼吸振動（スチレン量の目安）"],
+  ["1639 / 1650 / 1665","ブタジエンC=C（ビニル / cis / trans）。ミクロ構造解析が可能"],
+  ["3054","芳香族C–H伸縮"]
+ ],
+ nbr:[
+  ["2237","C≡N伸縮（強い）"],
+  ["1665","ブタジエンC=C伸縮"],
+  ["備考","AN量は2237/1665強度比等から推定可"]
+ ],
+ epdm:[
+  ["2850〜2930","C–H伸縮（飽和主鎖）"],
+  ["1435〜1460","CH₂・CH₃変角"],
+  ["1685前後（弱）","ENB由来C=C（ジエン量が少なく弱い）"],
+  ["判別点","主鎖飽和でC=C（1660付近）がほぼ見えないことがジエン系ゴムとの判別点"]
+ ],
+ cr:[
+  ["1657","C=C伸縮"],
+  ["600〜700","C–Cl系バンド"],
+  ["2850〜2960","C–H伸縮"]
+ ],
+ iir:[
+  ["2880〜2960","C–H伸縮"],
+  ["1445 / 1365","CH変角（gem-ジメチル）"],
+  ["判別点","不飽和度が低くC=C（1660付近）がほぼ見えない点がNR/SBR等との判別点"]
+ ],
+ vmq:[
+  ["2906 / 2965","Si–CH₃のC–H伸縮"],
+  ["708","Si–C対称伸縮"],
+  ["488","Si–O–Si対称伸縮（強い。シリコーンの決め手）"]
+ ],
+ fkm:[
+  ["800〜900","CF₂・骨格系（弱い）"],
+  ["注意","C–F系はラマン散乱が弱く感度が低い。同定はIR＋密度（1.8超）を優先（燃焼試験はHF懸念のため避ける）"]
+ ],
+ u:[
+  ["1615前後","芳香族環（芳香族イソシアネート系で強い）"],
+  ["1730前後","ウレタンC=O（ラマンでは弱め）"],
+  ["2860〜2940","C–H伸縮"],
+  ["注意","エーテル/エステル系（EU/AU）の判別はIRの方が明瞭"]
+ ]
+};
+
 /* ================= 材料別：簡易的な見分け方 ================= */
 const IDENT = {
  pp:[
@@ -1684,6 +1851,7 @@ function matHay(m){
     m.props.flat().join(" "),
     (MOLD[m.id]||[]).flat().join(" "),
     (IR[m.id]||[]).flat().join(" "), "IR FTIR 赤外 ピーク",
+    (RAMAN[m.id]||[]).flat().join(" "), "ラマン Raman",
     (IDENT[m.id]||[]).flat().join(" "), "見分け方 判別 同定 燃焼 浮沈",
     m.conds.map(c=>(testById[c[0]]?.name||"")+" "+c[1]).join(" ")].join(" "));
 }
@@ -1702,6 +1870,125 @@ function hl(text){
   return out;
 }
 let rawWords = [];
+
+/* ================= 分子構造（繰返し単位）SVG ================= */
+const G=(g,o)=>Object.assign({g},o||{});
+const B=(n)=>({b:n||1});
+const RG={ring:1};
+
+function _aring(cx,cy,r){
+  const p=[];
+  for(let k=0;k<6;k++){const a=Math.PI*k/3;p.push(`${(cx+r*Math.cos(a)).toFixed(1)},${(cy+r*Math.sin(a)).toFixed(1)}`);}
+  return `<polygon points="${p.join(" ")}" fill="#FFF" stroke="#24365E" stroke-width="1.4"/>`+
+         `<circle cx="${cx}" cy="${cy}" r="${(r*0.55).toFixed(1)}" fill="none" stroke="#24365E" stroke-width="1"/>`;
+}
+function _tw(s){let n=0;for(const ch of s){n+=/[₀-₉]/.test(ch)?5.4:(/[()≡=]/.test(ch)?5.5:7.6);}return n;}
+
+function molSVG(seq,nLab){
+  nLab=nLab===undefined?"n":nLab;
+  let hasSup=false,hasSub=false,hasSubring=false;
+  for(const t of seq){if(t.sup)hasSup=true;if(t.sub)hasSub=true;if(t.subring)hasSubring=true;}
+  const padTop=hasSup?42:14, padBot=hasSubring?54:(hasSub?40:14);
+  const Y=padTop, H=Y+padBot;
+  let x=6, parts=[];
+  const xL=x; x+=9;
+  for(const tk of seq){
+    if(tk.b){
+      const bw=15;
+      if(tk.b===2){
+        parts.push(`<line x1="${x+1}" y1="${Y-2.4}" x2="${x+bw-1}" y2="${Y-2.4}" stroke="#24365E" stroke-width="1.3"/>`);
+        parts.push(`<line x1="${x+1}" y1="${Y+2.4}" x2="${x+bw-1}" y2="${Y+2.4}" stroke="#24365E" stroke-width="1.3"/>`);
+      }else{
+        parts.push(`<line x1="${x+1}" y1="${Y}" x2="${x+bw-1}" y2="${Y}" stroke="#24365E" stroke-width="1.3"/>`);
+      }
+      x+=bw; continue;
+    }
+    if(tk.ring){
+      const r=15,cx=x+r;
+      parts.push(_aring(cx,Y,r)); x+=2*r; continue;
+    }
+    const gw=_tw(tk.g)+4, cx=x+gw/2;
+    parts.push(`<text x="${cx}" y="${Y+4.5}" font-size="13" text-anchor="middle" fill="#24365E" font-family="inherit">${tk.g}</text>`);
+    if(tk.sup){
+      if(tk.supd===2){
+        parts.push(`<line x1="${cx-2.4}" y1="${Y-10}" x2="${cx-2.4}" y2="${Y-21}" stroke="#24365E" stroke-width="1.3"/>`);
+        parts.push(`<line x1="${cx+2.4}" y1="${Y-10}" x2="${cx+2.4}" y2="${Y-21}" stroke="#24365E" stroke-width="1.3"/>`);
+      }else{
+        parts.push(`<line x1="${cx}" y1="${Y-10}" x2="${cx}" y2="${Y-21}" stroke="#24365E" stroke-width="1.3"/>`);
+      }
+      parts.push(`<text x="${cx}" y="${Y-25}" font-size="12" text-anchor="middle" fill="#24365E">${tk.sup}</text>`);
+    }
+    if(tk.sub){
+      parts.push(`<line x1="${cx}" y1="${Y+9}" x2="${cx}" y2="${Y+20}" stroke="#24365E" stroke-width="1.3"/>`);
+      parts.push(`<text x="${cx}" y="${Y+33}" font-size="12" text-anchor="middle" fill="#24365E">${tk.sub}</text>`);
+    }
+    if(tk.subring){
+      parts.push(`<line x1="${cx}" y1="${Y+9}" x2="${cx}" y2="${Y+18}" stroke="#24365E" stroke-width="1.3"/>`);
+      parts.push(_aring(cx,Y+18+15,15));
+    }
+    x+=gw;
+  }
+  x+=3;
+  const yT=6, bh=H-12;
+  parts.push(`<path d="M${xL+7},${yT} h-7 v${bh} h7" fill="none" stroke="#5B6373" stroke-width="1.3"/>`);
+  parts.push(`<path d="M${x},${yT} h7 v${bh} h-7" fill="none" stroke="#5B6373" stroke-width="1.3"/>`);
+  if(nLab) parts.push(`<text x="${x+10}" y="${H-6}" font-size="11" font-style="italic" fill="#5B6373">${nLab}</text>`);
+  const W=x+22;
+  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:inline-block">${parts.join("")}</svg>`;
+}
+
+const _CO={g:"C",sup:"O",supd:2};
+const _bd=[G("CH₂"),B(),G("CH"),B(2),G("CH"),B(),G("CH₂")];           /* ブタジエン単位 */
+const _an=[G("CH₂"),B(),G("CH",{sub:"C≡N"})];                          /* アクリロニトリル単位 */
+const _st=[G("CH₂"),B(),G("CH",{subring:true})];                       /* スチレン単位 */
+
+const STRUCT = {
+ pp:  [{seq:[G("CH₂"),B(),G("CH",{sub:"CH₃"})]}],
+ pe:  [{seq:[G("CH₂"),B(),G("CH₂")]}],
+ ps:  [{seq:_st}],
+ abs: [{cap:"アクリロニトリル単位",n:"x",seq:_an},
+       {cap:"ブタジエン単位",n:"y",seq:_bd},
+       {cap:"スチレン単位",n:"z",seq:_st}],
+ pmma:[{seq:[G("CH₂"),B(),G("C",{sup:"CH₃",sub:"COOCH₃"})]}],
+ pvc: [{seq:[G("CH₂"),B(),G("CH",{sub:"Cl"})]}],
+ pc:  [{cap:"ビスフェノールA型ポリカーボネート",seq:[G("O"),B(),RG,B(),G("C",{sup:"CH₃",sub:"CH₃"}),B(),RG,B(),G("O"),B(),_CO]}],
+ pa6: [{seq:[G("NH"),B(),G("(CH₂)₅"),B(),_CO]}],
+ pa66:[{seq:[G("NH"),B(),G("(CH₂)₆"),B(),G("NH"),B(),_CO,B(),G("(CH₂)₄"),B(),_CO]}],
+ pom: [{seq:[G("CH₂"),B(),G("O")]}],
+ pbt: [{seq:[G("O"),B(),G("(CH₂)₄"),B(),G("O"),B(),_CO,B(),RG,B(),_CO]}],
+ pet: [{seq:[G("O"),B(),G("(CH₂)₂"),B(),G("O"),B(),_CO,B(),RG,B(),_CO]}],
+ peek:[{seq:[G("O"),B(),RG,B(),G("O"),B(),RG,B(),_CO,B(),RG]}],
+ lcp: [{cap:"4-ヒドロキシ安息香酸（HBA）単位",seq:[G("O"),B(),RG,B(),_CO]}],
+ nr:  [{cap:"cis-1,4-ポリイソプレン",seq:[G("CH₂"),B(),G("C",{sup:"CH₃"}),B(2),G("CH"),B(),G("CH₂")]}],
+ sbr: [{cap:"ブタジエン単位",n:"x",seq:_bd},
+       {cap:"スチレン単位",n:"y",seq:_st}],
+ nbr: [{cap:"ブタジエン単位",n:"x",seq:_bd},
+       {cap:"アクリロニトリル単位",n:"y",seq:_an}],
+ epdm:[{cap:"エチレン単位",n:"x",seq:[G("CH₂"),B(),G("CH₂")]},
+       {cap:"プロピレン単位",n:"y",seq:[G("CH₂"),B(),G("CH",{sub:"CH₃"})]}],
+ cr:  [{cap:"ポリクロロプレン",seq:[G("CH₂"),B(),G("C",{sub:"Cl"}),B(2),G("CH"),B(),G("CH₂")]}],
+ iir: [{cap:"イソブチレン単位（主成分）",seq:[G("CH₂"),B(),G("C",{sup:"CH₃",sub:"CH₃"})]}],
+ vmq: [{cap:"ジメチルシロキサン単位",seq:[G("Si",{sup:"CH₃",sub:"CH₃"}),B(),G("O")]}],
+ fkm: [{cap:"フッ化ビニリデン（VDF）単位",n:"x",seq:[G("CH₂"),B(),G("CF₂")]},
+       {cap:"ヘキサフルオロプロピレン（HFP）単位",n:"y",seq:[G("CF₂"),B(),G("CF",{sub:"CF₃"})]}],
+ u:   [{cap:"ウレタン結合（主鎖の特徴部）",n:"",seq:[G("NH"),B(),_CO,B(),G("O")]}]
+};
+const STRUCT_NOTE = {
+ lcp:"実際の主要グレード（I型・II型）はHNA（ヒドロキシナフトエ酸）等との全芳香族コポリエステル。",
+ epdm:"第三成分として少量のジエン（ENB等）を共重合し、側鎖の二重結合を加硫点とする（EPMはジエンなし）。",
+ iir:"少量（1〜3 mol%）のイソプレンを共重合し加硫点とする。",
+ u:"AU＝エステル系ポリオール、EU＝エーテル系ポリオール。ジイソシアネートとの重付加で生成。",
+ fkm:"2元系（VDF/HFP）が代表。3元系はTFE（テトラフルオロエチレン）を追加。"
+};
+
+function structBlock(id){
+  const s=STRUCT[id]; if(!s) return "";
+  const inner=s.map(u=>
+    `<div style="display:inline-block;text-align:center;margin:2px 18px 2px 0;vertical-align:top">${molSVG(u.seq,u.n)}${u.cap?`<div class="fig-cap">${u.cap}</div>`:""}</div>`
+  ).join("");
+  const note=STRUCT_NOTE[id]?`<div class="fig-cap">${STRUCT_NOTE[id]}</div>`:"";
+  return `<div class="blk"><div class="blk-t">分子構造（繰返し単位）</div><div class="fig">${inner}${note}</div></div>`;
+}
 
 /* ================= 描画 ================= */
 function kvTable(rows){
@@ -1755,10 +2042,12 @@ function renderMat(m){
     </div>
     <div class="card-body">
       <div class="blk"><div class="blk-t">基本データ（代表値）</div><div class="props">${props}</div></div>
+      ${structBlock(m.id)}
       ${MOLD[m.id]?`<div class="blk"><div class="blk-t">${m.rubber?`試験片作製・加硫条件（代表値・JIS K 6250 参照）`:`試験片成形条件（射出成形：各材料規格 第2部＝下記「出典」／手順は <button class="lk to-test" data-go="t-molding" style="margin:0;padding:1px 8px">JIS K 7152-1</button>）`}</div>${kvTable(MOLD[m.id])}</div>`:""}
       <div class="blk"><div class="blk-t">試験別の条件・ポイント</div><table>${condRows}</table></div>
       ${IDENT[m.id]?`<div class="blk"><div class="blk-t">簡易的な見分け方</div>${kvTable(IDENT[m.id])}</div>`:""}
       ${IR[m.id]?`<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）</div>${kvTable(IR[m.id])}</div>`:""}
+      ${RAMAN[m.id]?`<div class="blk"><div class="blk-t">ラマン分析の特徴的ピーク（cm⁻¹・代表値）</div>${kvTable(RAMAN[m.id])}</div>`:""}
       ${m.note?`<div class="note">${hl(m.note)}</div>`:""}
       <div class="blk"><div class="blk-t">適用試験（クリックで移動）</div><div class="links">${links}</div></div>
     </div>
@@ -2007,7 +2296,7 @@ const TEST_GROUPS = [
   {label:"力学特性", ids:["tensile","film-tensile","flex","compress","charpy","izod","tensile-impact","hardness-d"]},
   {label:"熱的特性", ids:["hdt","vicat","dsc","tg","tma","cp","oit"]},
   {label:"流動・物理・成形", ids:["mfr","density","water","molding","shrinkage","ash"]},
-  {label:"難燃・光学", ids:["haze"]}
+  {label:"難燃・光学", ids:["haze","yi"]}
 ];
 
 function idxChip(id, label, cls){
@@ -2095,6 +2384,7 @@ const JIS_OFFICIAL = {
  "shrinkage":"プラスチック — 熱可塑性プラスチック材料の射出成形試験片 — 第4部：成形収縮率の測定",
  "ash":"プラスチック — 灰分の求め方 — 第1部：通則",
  "haze":"プラスチック — 透明材料の全光線透過率の試験方法 — 第1部：シングルビーム法 ／ 透明材料のヘーズの求め方（K 7136）",
+ "yi":"プラスチック — 黄色度及び黄変度の求め方",
  "ad-shear":"接着剤 — 剛性被着材の引張せん断接着強さ試験方法",
  "ad-tensile":"接着剤 — 引張接着強さ試験方法",
  "ad-90peel":"接着剤 — はく離接着強さ試験方法 — 第1部：90度はく離",
