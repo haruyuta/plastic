@@ -203,6 +203,26 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
   .card-body{display:block!important}
   .tools,.seg,.idx,#toTop{display:none}
 }
+
+/* ===== 図の拡大表示（クリックで最大化） ===== */
+#list .card-body svg{cursor:zoom-in}
+.zoom-ov{position:fixed;inset:0;z-index:1000;background:rgba(20,24,34,.78);
+  display:flex;align-items:center;justify-content:center;padding:12px;
+  animation:zoomIn .15s ease-out}
+@keyframes zoomIn{from{opacity:0}to{opacity:1}}
+.zoom-box{background:#FDFDFB;border-radius:10px;padding:12px 14px 14px;
+  width:min(96vw,1400px);height:min(90vh,900px);display:flex;flex-direction:column;
+  box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.zoom-title{flex:0 0 auto;font-size:15px;font-weight:700;color:#22293B;
+  padding:2px 34px 8px 2px;border-bottom:1px solid #EDEEE8;margin-bottom:8px}
+.zoom-box svg{flex:1 1 auto;min-height:0;width:100%;height:100%;
+  max-width:none!important;cursor:default}
+.zoom-box svg [data-go]{cursor:pointer}
+.zoom-x{position:fixed;top:10px;right:12px;width:40px;height:40px;border:none;
+  border-radius:50%;background:rgba(255,255,255,.92);color:#22293B;font-size:22px;
+  line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.zoom-hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);
+  color:#D8DAD2;font-size:12px;pointer-events:none}
 </style>
 </head>
 <body>
@@ -456,7 +476,7 @@ const TESTS = [
   ["C法","浮沈法（液密度を調整し試料の浮沈で判定）も規定あり"]
  ],
  note:"結晶性樹脂は密度が結晶化度の指標になる（例：PEの密度分類、PETの結晶化度推定）。発泡・ボイド・フィラー量の影響を受けるため、再生材では組成把握と併用する。",
- mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","recycle","peek","lcp","gf"]
+ mats:["pp","pe","ps","abs","pmma","pc","pa6","pa66","pom","pbt","pet","pvc","recycle","peek","lcp","gf","talc","caco3","tio2","baso4"]
 },
 {
  id:"dsc", name:"転移温度（DSC）", jis:"JIS K 7121（転移温度）/ K 7122（転移熱）", iso:"ISO 11357",
@@ -534,7 +554,7 @@ const TESTS = [
   ["校正","キュリー点標準物質等による温度校正、標準分銅による質量校正"]
  ],
  note:"GF・タルク等の無機フィラー含有率の定量に実用的（残渣質量%）。再生材の組成推定・グレード照合にも使える。",
- mats:["pp","pa6","pbt","gf","recycle","peek","lcp"]
+ mats:["pp","pa6","pbt","gf","recycle","peek","lcp","talc","caco3","glass","tio2","cb","baso4","kaolin","plast"]
 },
 {
  id:"molding", name:"試験片の射出成形", jis:"JIS K 7152-1（成形）/ K 7139（試験片）", iso:"ISO 294-1 / ISO 20753",
@@ -662,7 +682,7 @@ const TESTS = [
   ["方法B（硫酸灰化）","硫酸を加えてから灰化する方法も規定（灰分が揮散しやすい場合）"]
  ],
  note:"GF強化材のガラス含有率確認、無機フィラー量把握の定番。カーボンブラック等の有機系添加剤は灰化で消失する点に注意。TG（熱重量）でも代替・補完評価が可能。",
- mats:["pp","pa6","pa66","pbt","gf","recycle","peek","lcp"]
+ mats:["pp","pa6","pa66","pbt","gf","recycle","peek","lcp","talc","caco3","glass","tio2","cb","baso4","kaolin"]
 },
 {
  id:"haze", name:"全光線透過率・ヘーズ", jis:"JIS K 7361-1（透過率）/ K 7136（ヘーズ）", iso:"ISO 13468-1 / ISO 14782",
@@ -1171,6 +1191,113 @@ const MATS = [
  ],
  note:"ロット間変動が本質的な課題。単発値でなく分布（平均±SD、n≥5）での管理と、IR（カルボニル指数）・OIT・GPC等の劣化分析の併用が有効。",
  tests:["tensile","flex","charpy","mfr","density","dsc","tg","oit","molding","tensile-impact","shrinkage","ash","yi"]
+},
+{
+ id:"talc", name:"タルク（Mg₃Si₄O₁₀(OH)₂）", abbr:"タルク", cat:"other",
+ kw:"タルク talc 珪酸マグネシウム 滑石 充填材 フィラー 無機 ミネラル タルク入りPP 板状",
+ props:[["対象","PP等のタルク10〜40 %充填グレード（自動車内外装・家電筐体・再生PPで頻出）"],["密度","タルク自体 約2.7〜2.8 g/cm³。PP＋タルク20 %で約1.04〜1.05、40 %で約1.22〜1.24 g/cm³"],["曲げ弾性率","大幅上昇（PPタルク20 %で概ね 2.0〜2.5 GPa）"],["シャルピー衝撃強さ（ノッチ付）","低下傾向（配合量・粒径・母材による）"],["熱的効果","HDT上昇・成形収縮率低下・線膨張低下。PPの結晶核剤としても作用"]],
+ conds:[
+  ["tensile","引張強さはほぼ横ばい〜微減、破断伸びは大幅に低下。板状粒子が流動方向に配向し異方性が出る"],
+  ["flex","剛性向上の確認が主目的。GFほどではないが配向の影響あり"],
+  ["charpy","ノッチ付きで低下が顕著。粒径が大きい・分散不良ほど低下しやすい"],
+  ["hdt","母材PPに対し上昇（タルク20〜40 %で数十 ℃）。荷重条件（A法/B法）の明記を"],
+  ["density","含有率と密度がよく対応し、簡易的な含有率チェックに使える"],
+  ["ash","JIS K 7250 の灰分が含有率定量の基本（600 ℃前後）。タルクは灰化温度域でほぼ残るため残渣≒タルク量"],
+  ["tg","900 ℃以上で脱水酸基（OH脱離）により約4.8 %減量する。高温まで昇温する条件では補正に注意"],
+  ["dsc","タルクはPPの結晶核剤として働き、降温時のTc（結晶化温度）が上昇。バージン/再生・配合差の比較指標になる"],
+  ["mfr","溶融粘度上昇でMFRは低下傾向。含有率が異なるロット間のMFR比較は要注意"],
+  ["shrinkage","成形収縮率が低下（寸法安定化）。流動/直角方向の差（異方性）も縮小傾向"]
+ ],
+ note:"タルク入りPP（PP-TD）は自動車・家電・再生材で最頻出の充填系。同定はIRの3676 cm⁻¹（鋭いOH 1本）＋1018 cm⁻¹が決め手で、OHが2本組（3695/3620）ならカオリン（詳細はグラフタブ「フィラー・添加剤の同定」参照）。含有率は密度＋灰分の併用が実務的。",
+ tests:["tensile","flex","charpy","izod","hdt","mfr","density","dsc","tg","tma","shrinkage","ash","molding"]
+},
+{
+ id:"caco3", name:"炭酸カルシウム（CaCO₃）", abbr:"CaCO₃", cat:"other",
+ kw:"炭酸カルシウム 炭カル calcium carbonate カルサイト 重質 軽質 充填材 フィラー 増量材",
+ props:[["対象","PP・PVC・シート/フィルムの増量・低コスト化配合（重質/軽質・表面処理品）"],["密度","約2.7 g/cm³（カルサイト）"],["モース硬度","3（軟らかく装置摩耗が小さい）"],["機械物性への影響","剛性は微増、破断伸び・衝撃は配合量とともに低下（微細・表面処理品は影響小）"]],
+ conds:[
+  ["density","含有率と密度がよく対応。組成推定の第一歩"],
+  ["ash","600 ℃前後から CaCO₃→CaO＋CO₂ の分解（約44 %減量）が始まるため、灰化温度によって残渣がCaCO₃かCaOかが変わる。条件の明記を"],
+  ["tg","TGでは600〜800 ℃のCO₂脱離ステップ（−44 %）から含有率を逆算できる"],
+  ["tensile","増量目的では強度寄与は小さい。破断伸びの低下と分散不良起点のばらつきに注意"],
+  ["mfr","高充填で溶融粘度上昇・MFR低下"]
+ ],
+ note:"確認は塩酸で発泡（CO₂）する点とIRの875/712 cm⁻¹の鋭い2本が簡便（ピーク図は下記）。再生PP・PVC製品で頻出。",
+ tests:["density","ash","tg","tensile","mfr","dsc"]
+},
+{
+ id:"glass", name:"ガラス繊維・非晶質シリカ", abbr:"GF/シリカ", cat:"other",
+ kw:"ガラス繊維 GF glass シリカ silica 充填材 フィラー 強化材",
+ props:[["対象","GF強化グレード全般・シリカ配合品"],["密度","Eガラス 約2.54〜2.6 g/cm³"],["機械物性への影響","強度・剛性・HDTが大幅上昇（詳細は「GF強化材」カード参照）"]],
+ conds:[
+  ["ash","含有率定量の基本。灰化温度域で安定に残るため残渣≒GF量"],
+  ["tg","灰化残渣からの定量（600 ℃空気雰囲気など）"],
+  ["density","含有率と密度が対応。ボイド有無の影響に注意"]
+ ],
+ note:"機械物性・成形上の注意点は材料カード「GF強化材（共通の注意点）」を参照。IRでは1000 cm⁻¹台の幅広いSi–O–Si吸収が樹脂の指紋領域に重畳し、ATRでは表層樹脂リッチで検出されにくいことがある。",
+ tests:["ash","tg","density","tensile","flex","charpy"]
+},
+{
+ id:"tio2", name:"酸化チタン（TiO₂）", abbr:"TiO₂", cat:"other",
+ kw:"酸化チタン チタニア titanium ルチル アナタース 白色顔料 顔料",
+ props:[["対象","白色成形品のほぼ定番の顔料（配合量は数%以下が多い）"],["密度","ルチル 約4.2 / アナタース 約3.9 g/cm³"],["結晶形","顔料用途はルチル形が主流（高隠蔽・耐候性）"]],
+ conds:[
+  ["density","高比重のため少量でも製品密度が上がる。密度差の一因として考慮"],
+  ["ash","高温まで安定。灰化残渣に残る（他フィラーと合算値になる点に注意）"],
+  ["tg","TGでは減量を示さない。残渣の同定はラマン・蛍光X線の併用を"],
+  ["yi","白色度・黄変評価と密接。TiO₂の結晶形・表面処理は耐候黄変にも影響"]
+ ],
+ note:"IRでは低波数の立上りとしてしか見えないため、確認と結晶形判別（ルチル612/447、アナタース144ほか）はラマンが確実（ピーク図は下記）。",
+ tests:["density","ash","tg","yi"]
+},
+{
+ id:"cb", name:"カーボンブラック", abbr:"CB", cat:"other",
+ kw:"カーボンブラック carbon black 黒 顔料 導電 補強 Dバンド Gバンド",
+ props:[["対象","黒色着色（樹脂：〜1 %程度）・ゴム補強（数十phr）・導電付与"],["密度","約1.8〜1.9 g/cm³"],["分析上の影響","IR全域吸収・ラマン蛍光/発熱・レーザー焼損のリスク"]],
+ conds:[
+  ["tg","空気中の灰化ではCB自身が燃焼して残らない。定量はN₂中昇温→高温で空気切替の2段TG（ゴムはJIS K 6226-2）"],
+  ["ash","灰分にはCBは含まれない（無機分のみ残る）点に注意"],
+  ["dsc","黒色品の樹脂同定はIR/ラマンが困難なためDSC（Tm・Tg）併用が実務的"]
+ ],
+ note:"配合量が多いとATRでもスペクトルがつぶれる。ラマンはD（1350付近）/G（1590付近）バンドが樹脂バンドを覆うためレーザー出力を下げ焼損に注意（ピーク図は下記）。",
+ tests:["tg","ash","dsc","density"]
+},
+{
+ id:"baso4", name:"硫酸バリウム（BaSO₄）", abbr:"BaSO₄", cat:"other",
+ kw:"硫酸バリウム バリウム barium sulfate バライト 充填材 フィラー 遮音 X線造影",
+ props:[["対象","遮音材・制振材・X線造影用途などの高比重配合"],["密度","約4.5 g/cm³（汎用フィラー中で最重量級）"],["化学的安定性","酸・アルカリに不溶。熱的にも安定"]],
+ conds:[
+  ["density","少量配合でも製品密度が大きく上がる。密度異常の原因物質として代表的"],
+  ["ash","高温まで分解せず残渣に残る。灰分＋密度の組合せで推定しやすい"],
+  ["tg","TGで減量を示さない（CaCO₃との判別点のひとつ）"]
+ ],
+ note:"高密度なのに灰分が多い試料はBaSO₄配合を疑う。同定はラマン988 cm⁻¹の鋭い1本が決め手（ピーク図は下記）。",
+ tests:["density","ash","tg"]
+},
+{
+ id:"kaolin", name:"カオリン（クレー）", abbr:"カオリン", cat:"other",
+ kw:"カオリン クレー カオリナイト kaolin clay 充填材 フィラー Al2Si2O5",
+ props:[["対象","ワイヤー被覆PVC・ゴム配合・製紙等（Al₂Si₂O₅(OH)₄）"],["密度","約2.6 g/cm³"],["熱挙動","450〜600 ℃で脱水酸基（約14 %減量）しメタカオリンへ"]],
+ conds:[
+  ["ash","600 ℃灰化では脱水酸基分（約14 %）が減量済みの残渣になる。含有率換算時に補正を"],
+  ["tg","450〜600 ℃の脱水ステップ（−14 %）が定量の手がかり。タルク（900 ℃以上・−4.8 %）と減量温度域で区別できる"],
+  ["density","含有率と密度が対応"]
+ ],
+ note:"タルクとの判別はIRのOH領域の本数（3695/3620の2本組＝カオリン、3676の1本＝タルク）が決め手（ピーク図は下記）。",
+ tests:["ash","tg","density"]
+},
+{
+ id:"plast", name:"フタル酸エステル系可塑剤（DOP・DINP等）", abbr:"可塑剤", cat:"other",
+ kw:"可塑剤 フタル酸 DOP DEHP DINP DBP phthalate plasticizer 軟質PVC ブリード",
+ props:[["対象","軟質PVC（配合量30〜60phr程度）ほか"],["物性への影響","可塑剤量とともに硬さ・弾性率が低下し伸びが増大。Tgが大きく低下"],["経時変化","揮発・移行（ブリード）により硬化・寸法変化・べたつきが生じる"]],
+ conds:[
+  ["tensile","可塑剤量の指標として硬さ・引張特性（伸び）が鋭敏。経年品はバージンとの対比を"],
+  ["dsc","可塑化によりTgが大きく低下（PVC単体 約80 ℃→軟質で0 ℃以下も）。可塑剤量の推定に有効"],
+  ["tg","TGで200〜300 ℃台の揮発減量ステップから可塑剤量を概算できる（PVC脱HClとの分離に注意）"],
+  ["water","移行・抽出評価（温水浸漬後の質量変化）と組み合わせることがある"]
+ ],
+ note:"軟質PVCの1720 cm⁻¹前後のC=Oは可塑剤由来（PVC自体にC=Oはない）。表面ブリード分はATRで無処理確認できるが、種類の特定・定量はGC-MS等の併用が確実（ピーク図は下記）。",
+ tests:["tensile","dsc","tg","water","hardness-d"]
 },
 {
  id:"nr", name:"NR（天然ゴム）", abbr:"NR", cat:"rubber", rubber:true,
@@ -1696,6 +1823,9 @@ const FILLERS = [
   note:"軟質PVCの1720前後のC=Oは可塑剤由来（PVC自体にC=Oはない）。表面ブリード分はATRで無処理確認できるが、種類の特定・定量はGC-MS等の併用が確実。"}
 ];
 
+/* 「その他」材料カードのIR・ラマンはフィラー定義を流用 */
+for(const f of FILLERS){ if(MATS.some(m=>m.id===f.id)){ IR[f.id]=f.ir; RAMAN[f.id]=f.raman; } }
+
 const IDENT = {
  pp:[
   ["水浮沈","浮く（密度<1。PE/PPのみ。フィラー入りは沈むことあり）"],
@@ -1947,13 +2077,6 @@ function matHay(m){
     m.conds.map(c=>(testById[c[0]]?.name||"")+" "+c[1]).join(" ")].join(" "));
 }
 
-function fillerHay(f){
-  return norm([f.name, f.kw||"",
-    (f.ir||[]).flat().join(" "), "IR FTIR 赤外 ピーク",
-    (f.raman||[]).flat().join(" "), "ラマン Raman",
-    f.note||"", "フィラー 充填材 添加剤 同定"].join(" "));
-}
-
 function hl(text){
   const t = text || "";
   if(!query) return esc(t);
@@ -2183,6 +2306,116 @@ function peakFig(rows, kind){
 }
 
 /* ================= IR・ラマン 主要バンド領域マップ ================= */
+/* 主要ピークマップ（材料カードへのリンク付き・数値ラベル付き）
+   行形式: [表示名, 材料id, IRピーク[], IR帯[[hi,lo]], ラマンピーク[], ラマン帯[[hi,lo]],
+            IRラベル[[中心値,文字]], ラマンラベル[[中心値,文字]], 補足] */
+const FILLER_MAP_ROWS=[
+   ["タルク","talc",[3676,1018,669],[],[3677,676,362,195],[],
+    [[3676,"3676"],[1018,"1018"],[669,"669"]],[[3677,"3677"],[676,"676"],[278,"362/195"]],
+    "IR 3676のOH 1本＋1018が決め手／ラマン676極強"],
+   ["炭酸カルシウム","caco3",[1795,875,712],[[1500,1390]],[1086,712,281,156],[],
+    [[1795,"1795"],[1445,"1420"],[793,"875/712"]],[[1086,"1086"],[712,"712"],[218,"281/156"]],
+    "IR 875＋712の鋭い2本／ラマン1086極強（カルサイト）"],
+   ["ガラス繊維・シリカ","glass",[800,470],[[1100,1000]],[],[[490,440]],
+    [[1050,"1100〜1000"],[800,"800"],[470,"470"]],[[465,"490〜440"]],
+    "IRの幅広Si–O–Si（1000台）が樹脂指紋領域に重畳／ラマン感度低"],
+   ["酸化チタン","tio2",[],[[700,500]],[612,447,639,516,397,144],[],
+    [[600,"700〜500"]],[[626,"639/612"],[482,"516/447"],[397,"397"],[144,"144"]],
+    "ラマンで結晶形判別（ルチル612/447・アナタース639/516/397、144極強）"],
+   ["カーボンブラック","cb",[],[[4000,400]],[],[[1420,1300],[1650,1540]],
+    [[2200,"全域吸収"]],[[1595,"G 1590"],[1360,"D 1350"]],
+    "IRは全域吸収／ラマンD（1350付近）・G（1590付近）バンド"],
+   ["硫酸バリウム","baso4",[983,634,610],[[1180,1070]],[988,617,462],[],
+    [[1125,"1180〜1070"],[983,"983"],[622,"634/610"]],[[988,"988"],[617,"617"],[462,"462"]],
+    "ラマン988の鋭い1本が決め手"],
+   ["カオリン","kaolin",[3695,3620,1030,1008,912],[],[3695,3620],[],
+    [[3658,"3695/3620"],[1019,"1030/1008"],[912,"912"]],[[3658,"3695/3620"]],
+    "OH 2本組（3695/3620）＝カオリン、1本＝タルクが判別点"],
+   ["可塑剤（フタル酸系）","plast",[1725,1270,1120,743],[],[1600,1043],[],
+    [[1725,"1725"],[1270,"1270"],[1120,"1120"],[743,"743"]],[[1600,"1600"],[1043,"1043"]],
+    "軟質PVCの1720前後C=Oは可塑剤由来"]
+];
+
+/* 樹脂 主要ピークマップの行データ（IR/RAMAN定数と同じ代表値） */
+const POLYMER_MAP_ROWS=[
+ ["PE","pe",[2915,2848,1472,730,719],[],[2883,2848,1418,1296,1130,1064],[],
+  [[2882,"2915/2848"],[1472,"1472"],[725,"730/719"]],[[2866,"2883/2848"],[1418,"1418"],[1296,"1296"],[1097,"1130/1064"]],
+  "IR 730/719二重線＝結晶性の目安／ラマン1064・1130（trans C–C）でPPと明瞭に判別"],
+ ["PP","pp",[2950,2917,1455,1376,1167,998,973,841],[],[1458,1435,1152,998,973,841,809],[],
+  [[2934,"2950/2917"],[1416,"1455/1376"],[1167,"1167"],[986,"998/973"],[841,"841"]],[[1447,"1458/1435"],[1152,"1152"],[986,"998/973"],[825,"841/809"]],
+  "IR 1376（CH₃）＝PEとの判別点／ラマン809/841強度比＝結晶化度の目安"],
+ ["PS","ps",[3060,3026,1601,1493,756,698],[],[3054,1602,1031,1001,620],[],
+  [[3043,"3060/3026"],[1547,"1601/1493"],[727,"756/698"]],[[3054,"3054"],[1602,"1602"],[1016,"1031/1001"],[620,"620"]],
+  "IR 756＋698の組／ラマン1001の環呼吸（極強・シャープ）が決め手"],
+ ["ABS","abs",[2237,1601,1493,966,911,758,698],[],[2237,1665,1602,1031,1001],[],
+  [[2237,"2237"],[1547,"1601/1493"],[939,"966/911"],[727,"758/698"]],[[2237,"2237"],[1665,"1665"],[1602,"1602"],[1016,"1031/1001"]],
+  "2237（C≡N）が孤立領域で判別性大／ラマン1665＝ブタジエンC=C"],
+ ["PVC","pvc",[1427,1330,1255],[[690,610]],[2912,1430,695,638,614],[],
+  [[1427,"1427"],[1330,"1330"],[1255,"1255"],[650,"690〜610"]],[[2912,"2912"],[1430,"1430"],[649,"695/638/614"]],
+  "IR 690〜610の幅広C–Cl／ラマンC–Cl 3本組。劣化（ポリエン1511/1590）はラマン高感度"],
+ ["PMMA","pmma",[1725,1435,1387,987,841,750],[[1190,1145]],[2953,1730,1450,812,600],[],
+  [[1725,"1725"],[1411,"1435/1387"],[1167,"1190〜1145"],[912,"987/841"]],[[2953,"2953"],[1730,"1730"],[1450,"1450"],[812,"812"],[600,"600"]],
+  "IR 1725＋1190〜1145（C–O–C）／ラマン812が決め手"],
+ ["PC","pc",[1770,1505,1220,1190,1160,830],[],[3070,1602,1235,888],[],
+  [[1770,"1770"],[1505,"1505"],[1190,"1220/1190/1160"],[830,"830"]],[[3070,"3070"],[1602,"1602"],[1235,"1235"],[888,"888"]],
+  "IR 1770（通常エステルより高波数）／ラマン888（カーボネート骨格）が目印"],
+ ["PA6・PA66","pa6",[3300,1635,1540],[],[2900,1636,1440],[],
+  [[3300,"3300"],[1635,"1635"],[1540,"1540"]],[[2900,"2900"],[1636,"1636"],[1440,"1440"]],
+  "N–H＋アミドI/IIが指標。PA6/PA66の判別は困難＝DSC（Tm 220/260 ℃）併用"],
+ ["POM","pom",[935,895],[[1120,1080]],[2925,1490,918,540],[],
+  [[1100,"1120〜1080"],[915,"935/895"]],[[2925,"2925"],[1490,"1490"],[918,"918"],[540,"540"]],
+  "IRはC–O–C（1120〜1080）が支配的／ラマン918（極強）が決め手"],
+ ["PET","pet",[1715,1240,1095,970,720],[],[1725,1615,1096,998,858],[],
+  [[1715,"1715"],[1240,"1240"],[1095,"1095"],[970,"970"],[720,"720"]],[[1725,"1725"],[1615,"1615"],[1096,"1096"],[998,"998"],[858,"858"]],
+  "IR 1715＋1240／ラマン1615（極強）。PBTとの判別はDSC（Tm 255 vs 225 ℃）併用"]
+];
+
+function peakMapChart(rows, foot){
+  const W=700, L=150, R=20, ROWH=48, TOP=32, H=TOP+rows.length*ROWH+34;
+  const xmax=4000, xmin=100;
+  const X=v=>L+(xmax-Math.max(xmin,Math.min(xmax,v)))/(xmax-xmin)*(W-L-R);
+  const lw=t=>[...t].reduce((a,c)=>a+(c.charCodeAt(0)>255?8.6:5.2),0); // ラベル概算幅
+  // 2段スタガー配置：近接ラベルの重なりを回避
+  function placeLabels(labels, y0, y1, color){
+    const sorted=[...labels].map(([v,t])=>({x:X(v),t,w:lw(t)})).sort((a,b)=>a.x-b.x);
+    const end=[-1e9,-1e9]; let g="";
+    for(const lb of sorted){
+      const lv = (lb.x - lb.w/2 > end[0]+4) ? 0 : 1;
+      end[lv] = lb.x + lb.w/2;
+      g+=`<text x="${lb.x.toFixed(1)}" y="${lv?y1:y0}" font-size="8.5" text-anchor="middle" fill="${color}" font-family="var(--mono)">${lb.t}</text>`;
+    }
+    return g;
+  }
+  let g="";
+  [4000,3500,3000,2500,2000,1500,1000,500].forEach(t=>{
+    g+=`<line x1="${X(t)}" y1="${TOP-6}" x2="${X(t)}" y2="${TOP+rows.length*ROWH+2}" stroke="#D8DAD2" stroke-dasharray="2 3"/>`;
+    g+=`<text x="${X(t)}" y="${TOP+rows.length*ROWH+14}" font-size="9.5" text-anchor="middle" fill="#5B6373">${t}</text>`;
+  });
+  g+=`<text x="${W-R}" y="${TOP-12}" font-size="10" text-anchor="end" fill="#5B6373">cm⁻¹</text>`;
+  rows.forEach((r,i)=>{
+    const [name,id,irP,irB,rmP,rmB,irL,rmL,ex]=r, y=TOP+i*ROWH, cy=y+ROWH/2;
+    g+=`<g><text x="${L-8}" y="${cy+3.5}" font-size="10.5" text-anchor="end" fill="#22293B" data-go="m-${id}" style="cursor:pointer" text-decoration="underline" opacity=".9">${name}</text>`;
+    g+=`<line x1="${L}" y1="${cy}" x2="${W-R}" y2="${cy}" stroke="#EDEEE8"/>`;
+    for(const [hi,lo] of irB) g+=`<rect x="${X(hi).toFixed(1)}" y="${(cy-9).toFixed(1)}" width="${Math.max(4,X(lo)-X(hi)).toFixed(1)}" height="8" rx="3" fill="#24365E" opacity=".35"/>`;
+    for(const [hi,lo] of rmB) g+=`<rect x="${X(hi).toFixed(1)}" y="${(cy+1).toFixed(1)}" width="${Math.max(4,X(lo)-X(hi)).toFixed(1)}" height="8" rx="3" fill="#0E7C66" opacity=".35"/>`;
+    for(const v of irP) g+=`<line x1="${X(v).toFixed(1)}" y1="${cy-10}" x2="${X(v).toFixed(1)}" y2="${cy-1}" stroke="#24365E" stroke-width="2.4"><title>${name} IR ${v} cm⁻¹</title></line>`;
+    for(const v of rmP) g+=`<line x1="${X(v).toFixed(1)}" y1="${cy+1}" x2="${X(v).toFixed(1)}" y2="${cy+10}" stroke="#0E7C66" stroke-width="2.4"><title>${name} ラマン ${v} cm⁻¹</title></line>`;
+    g+=placeLabels(irL, cy-13, cy-21, "#24365E");
+    g+=placeLabels(rmL, cy+20, cy+28, "#0E7C66");
+    g+=`<title>${name}：${ex}</title></g>`;
+  });
+  g+=`<text x="${L}" y="${H-4}" font-size="10" fill="#5B6373">${foot}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px">${g}</svg>`;
+}
+function fillerMapChart(){
+  return peakMapChart(FILLER_MAP_ROWS,
+    "上段（紺）＝IR　下段（緑）＝ラマン　薄い帯＝幅広バンド（数値はcm⁻¹・代表値）。フィラー名クリックで各材料カードへ移動。");
+}
+function polymerMapChart(){
+  return peakMapChart(POLYMER_MAP_ROWS,
+    "上段（紺）＝IR　下段（緑）＝ラマン　薄い帯＝幅広バンド（数値はcm⁻¹・代表値）。材料名クリックで各材料カードへ移動。");
+}
+
 function bandMapChart(){
   const rows=[
    ["O–H・N–H 伸縮（幅広）",3550,3150,"◎","△","PA・PUR・吸水／水酸基（PA 3300）"],
@@ -2503,15 +2736,6 @@ function chartCard(title, svg, note, id){
   </div>`;
 }
 
-function fillerCard(f){
-  const irBlk = f.ir ? `<div class="blk"><div class="blk-t">IR分析の特徴的ピーク（cm⁻¹・代表値）</div>${peakFig(f.ir,"ir")}${kvTable(f.ir)}</div>` : "";
-  const rmBlk = f.raman ? `<div class="blk"><div class="blk-t">ラマン分析の特徴的ピーク（cm⁻¹・代表値）</div>${peakFig(f.raman,"raman")}${kvTable(f.raman)}</div>` : "";
-  return `<div class="card open" data-kind="chart" id="c-fill-${f.id}">
-    <div class="card-hd"><span class="badge m-badge">充填</span><span class="card-title">${hl(f.name)}</span><span class="chev">▶</span></div>
-    <div class="card-body">${irBlk}${rmBlk}${f.note?`<div class="note">${f.note}</div>`:""}</div>
-  </div>`;
-}
-
 function renderCharts(){
   let html = `<div class="sec-label">基本データの材料間比較（代表値・グレードで変動）</div>`;
   for(const c of CHARTS) html += chartCard(c.title, rangeChart(c), c.note||"");
@@ -2527,8 +2751,11 @@ function renderCharts(){
   html += `<div class="sec-label">分光分析（IR・ラマン）の目安</div>`;
   html += chartCard("IR・ラマン 主要バンド領域マップ（cm⁻¹・代表値）", bandMapChart(),
     "同じ振動でもIRとラマンで強度が大きく異なるのが使い分けの基本（例：C=OはIRで強くラマンで弱い／C=C・芳香環・環呼吸はラマンで強い）。黒色（カーボンブラック配合）品はIRの全域吸収・ラマンの蛍光やD/Gバンドの影響を受けやすい。各材料カードの「IR分析／ラマン分析の特徴的ピーク」の模式図とあわせて活用してください。", "c-bandmap");
-  html += `<div class="sec-label" id="c-fillers">フィラー・添加剤の同定（IR・ラマン）</div>`;
-  for(const f of FILLERS) html += fillerCard(f);
+  html += chartCard("樹脂 主要ピークマップ（cm⁻¹・代表値）", polymerMapChart(),
+    "主要10樹脂の特徴的ピーク位置の一覧（フィラー・添加剤マップと同形式）。判別点の例：PE/PPはIR 1376の有無とラマン1064/1130 vs 809/841、PS/ABSは2237（C≡N）の有無、PC 1770は通常エステル（1720〜1740）より高波数、PA6/66・PET/PBTはスペクトル類似のためDSCのTm併用が実務的。各ピークの帰属・劣化バンドの詳細は材料名をクリックして材料カードを参照してください。", "c-polymap");
+  html += `<div class="sec-label">フィラー・添加剤の同定（IR・ラマン）</div>`;
+  html += chartCard("フィラー・添加剤 主要ピークマップ（cm⁻¹・代表値）", fillerMapChart(),
+    "無機フィラー・添加剤の代表ピーク位置の一覧。判別点の例：層状ケイ酸塩はOH本数（タルク1本 vs カオリン2本組）、CaCO₃は875＋712の2本と塩酸発泡、TiO₂の結晶形はラマン低波数、黒色品（CB）はIR全域吸収のためDSC併用。各ピークの帰属・定量法（灰分・TG）の詳細はフィラー名をクリックして材料カードを参照してください。", "c-fillers");
   return html;
 }
 
@@ -2548,7 +2775,7 @@ function matLabel(m){ return m.name.split("（")[0]; }
 
 function renderIndex(){
   const pT = TESTS.filter(t=>!t.cat), rT = TESTS.filter(t=>t.cat==="rubber"), aT = TESTS.filter(t=>t.cat==="adhesive");
-  const pM = MATS.filter(m=>m.cat!=="rubber"), rM = MATS.filter(m=>m.cat==="rubber");
+  const pM = MATS.filter(m=>!m.cat), oM = MATS.filter(m=>m.cat==="other"), rM = MATS.filter(m=>m.cat==="rubber");
   const grouped = new Set();
 
   let testCol = "";
@@ -2584,6 +2811,10 @@ function renderIndex(){
     if(rM.length){
       matCol += `<div class="idx-grp"><div class="idx-h rub">材料：ゴム</div><div class="idx-chips">`
         + rM.map(m=>idxChip("m-"+m.id, matLabel(m), "rub")).join("") + `</div></div>`;
+    }
+    if(oM.length){
+      matCol += `<div class="idx-grp"><div class="idx-h">材料：その他（充填材・共通）</div><div class="idx-chips">`
+        + oM.map(m=>idxChip("m-"+m.id, matLabel(m), "mat")).join("") + `</div></div>`;
     }
   }
 
@@ -2763,7 +2994,6 @@ function render(){
   const words = qn ? qn.split(/\s+/).filter(Boolean) : [];
   const matchT = TESTS.filter(t => !qn || testHay(t).includes(qn) || rawWords.every(w=>testHay(t).includes(norm(w))));
   const matchM = MATS.filter(m => !qn || matHay(m).includes(qn) || rawWords.every(w=>matHay(m).includes(norm(w))));
-  const matchF = qn ? FILLERS.filter(f => fillerHay(f).includes(qn) || rawWords.every(w=>fillerHay(f).includes(norm(w)))) : [];
 
   if(view==="chart"){
     $("#idx").innerHTML = "";
@@ -2785,15 +3015,15 @@ function render(){
   $("#idx").innerHTML = query ? "" : renderIndex();
 
   const pT = matchT.filter(t=>!t.cat), rT = matchT.filter(t=>t.cat==="rubber"), aT = matchT.filter(t=>t.cat==="adhesive");
-  const pM = matchM.filter(m=>m.cat!=="rubber"), rM = matchM.filter(m=>m.cat==="rubber");
+  const pM = matchM.filter(m=>!m.cat), oM = matchM.filter(m=>m.cat==="other"), rM = matchM.filter(m=>m.cat==="rubber");
   const sect = (label, arr, fn) => arr.length ? `<div class="sec-label">${label}（${arr.length}）</div>` + arr.map(fn).join("") : "";
 
   let html = "";
   if(view!=="test"){
     html += sect("材料：プラスチック", pM, renderMat);
     html += sect("材料：ゴム", rM, renderMat);
+    html += sect("材料：その他（充填材・共通）", oM, renderMat);
     if(!matchM.length) html += `<div class="sec-label">材料（0）</div><div class="empty" style="padding:16px 0">該当する材料はありません</div>`;
-    html += sect("フィラー・添加剤", matchF, fillerCard);
   }
   if(view!=="mat"){
     html += sect("試験方法：プラスチック", pT, renderTest);
@@ -2801,12 +3031,12 @@ function render(){
     html += sect("試験方法：ゴム", rT, renderTest);
     if(!matchT.length) html += `<div class="sec-label">試験方法（0）</div><div class="empty" style="padding:16px 0">該当する試験方法はありません</div>`;
   }
-  if(!matchT.length && !matchM.length && !matchF.length){
+  if(!matchT.length && !matchM.length){
     html = `<div class="empty">「${esc(query)}」に一致する項目がありません。<br>別のキーワード（規格番号・略称・試験名など）を試してください。</div>`;
   }
   $("#list").innerHTML = html;
   $("#count").textContent = query
-    ? `検索「${query}」： 材料 ${matchM.length} 件 / 試験方法 ${matchT.length} 件${matchF.length?` / フィラー・添加剤 ${matchF.length} 件`:""}`
+    ? `検索「${query}」： 材料 ${matchM.length} 件 / 試験方法 ${matchT.length} 件`
     : `収録： 材料 ${MATS.length} 件 / 試験方法 ${TESTS.length} 件`;
 
   // 検索時は自動展開
@@ -2839,9 +3069,32 @@ function goToCard(id){
   }
 }
 
+/* 図クリックで最大化表示 */
+function openZoom(svg, title){
+  const ov = document.createElement("div");
+  ov.className = "zoom-ov";
+  ov.innerHTML = `<div class="zoom-box">${title?`<div class="zoom-title">${esc(title)}</div>`:""}${svg.outerHTML}</div>
+    <button class="zoom-x" aria-label="閉じる">×</button>
+    <div class="zoom-hint">背景クリック・×・Escで閉じる</div>`;
+  const close = ()=>{ ov.remove(); document.removeEventListener("keydown", onKey); };
+  const onKey = e=>{ if(e.key==="Escape") close(); };
+  ov.addEventListener("click", e=>{
+    const go = e.target.closest("[data-go]");
+    if(go){ close(); goToCard(go.dataset.go); return; }   // 拡大中の材料名リンクも有効
+    if(!e.target.closest(".zoom-box") || e.target.closest(".zoom-x")) close();
+  });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(ov);
+}
+
 $("#list").addEventListener("click", e=>{
   const go = e.target.closest("[data-go]");
   if(go){ goToCard(go.dataset.go); e.stopPropagation(); return; }
+  const sv = e.target.closest("svg");
+  if(sv && sv.closest(".card-body")){
+    openZoom(sv, sv.closest(".card")?.querySelector(".card-title")?.textContent || "");
+    return;
+  }
   const hd = e.target.closest(".card-hd");
   if(hd) hd.parentElement.classList.toggle("open");
 });
