@@ -239,6 +239,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
       <button data-v="mat">材料から</button>
       <button data-v="test">試験方法から</button>
       <button data-v="chart">グラフ</button>
+      <button data-v="peak">ピーク逆引き</button>
       <button data-v="jis">JIS一覧</button>
     </div>
   </div>
@@ -2246,6 +2247,110 @@ function parsePeakRows(rows, kind){
   return out;
 }
 
+
+/* ================= ピーク逆引き（IR/Raman 波数 → 材料候補） ================= */
+let peakQ = "", peakKind = "ir", peakTol = 10;
+
+function parsePeakQuery(str){
+  // 全角数字→半角、区切りはスペース・カンマ・読点・スラッシュ
+  const z = str.replace(/[０-９]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));
+  const vals = (z.match(/\d{3,4}(?:\.\d+)?/g)||[]).map(Number)
+    .filter(v=>v>=400 && v<=4000);
+  return [...new Set(vals)];
+}
+
+function peakLookup(qvals, kind, tol){
+  const SRC = kind==="raman" ? RAMAN : IR;
+  const out = [];
+  Object.keys(SRC).forEach(id=>{
+    const m = matById[id]; if(!m) return;
+    const entries = parsePeakRows(SRC[id], kind);
+    const matchedQ = new Set(); const hits = [];
+    entries.forEach(e=>{
+      const hitQ = [];
+      qvals.forEach(q=>{
+        const ok = e.peaks.some(p => p.range
+          ? (q >= p.lo - tol && q <= p.hi + tol)
+          : Math.abs(p.v - q) <= tol);
+        if(ok){ hitQ.push(q); matchedQ.add(q); }
+      });
+      if(hitQ.length) hits.push({e, hitQ});
+    });
+    if(matchedQ.size){
+      const score = hits.reduce((a,h)=>a+h.e.h,0);   // 一致バンドの強度和（強い特徴ピークほど優先）
+      out.push({m, hits, nMatch: matchedQ.size, nBands: entries.length, score});
+    }
+  });
+  // 一致数降順 → 強度スコア降順 → 収録バンド数昇順
+  out.sort((a,b)=> b.nMatch - a.nMatch || b.score - a.score || a.nBands - b.nBands);
+  return out;
+}
+
+function renderPeakSearch(){
+  const qvals = parsePeakQuery(peakQ);
+  let res = "";
+  if(qvals.length){
+    const cands = peakLookup(qvals, peakKind, peakTol);
+    if(!cands.length){
+      res = `<div class="empty" style="padding:16px 0">±${peakTol} cm⁻¹ の範囲に一致する材料がありません。許容幅を広げるか、測定モードを確認してください。</div>`;
+    }else{
+      res = cands.map(c=>{
+        const rows = c.hits.map(h=>{
+          const d1 = esc(String(h.e.desc).split("。")[0]);
+          const badge = h.e.deg ? `<span style="color:var(--amber);font-weight:700"> ⚠劣化・混入指標</span>` : "";
+          return `<tr><th style="width:11em">${esc(h.e.key)}</th><td>${d1}${badge}<span style="color:var(--sub)">（入力: ${h.hitQ.join(", ")}）</span></td></tr>`;
+        }).join("");
+        return `<div class="card open" data-kind="mat" style="margin-bottom:10px">
+          <div class="card-head" style="cursor:default">
+            <span class="card-title">${esc(m_label_pk(c.m))}
+              <span style="font-weight:400;color:var(--sub);font-size:12px">　一致 ${c.nMatch}/${qvals.length} ピーク</span></span>
+            <button class="lk to-mat" data-go="m-${c.m.id}" style="margin:0">材料カードへ →</button>
+          </div>
+          <div class="card-body" style="display:block"><table>${rows}</table></div>
+        </div>`;
+      }).join("");
+    }
+  }
+  return `<div class="card open" style="margin-bottom:14px">
+    <div class="card-body" style="display:block">
+      <div class="blk"><div class="blk-t">ピーク波数から材料候補を検索</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px">
+          <input id="pk-q" type="text" inputmode="numeric" value="${esc(peakQ)}"
+            placeholder="例: 1713 730 719（スペース・カンマ区切り）"
+            style="flex:1;min-width:220px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:inherit">
+          <select id="pk-kind" style="padding:8px;border:1px solid var(--line);border-radius:6px;font-family:inherit">
+            <option value="ir"${peakKind==="ir"?" selected":""}>IR</option>
+            <option value="raman"${peakKind==="raman"?" selected":""}>ラマン</option>
+          </select>
+          <select id="pk-tol" style="padding:8px;border:1px solid var(--line);border-radius:6px;font-family:inherit">
+            <option value="5"${peakTol===5?" selected":""}>±5 cm⁻¹</option>
+            <option value="10"${peakTol===10?" selected":""}>±10 cm⁻¹</option>
+            <option value="20"${peakTol===20?" selected":""}>±20 cm⁻¹</option>
+          </select>
+          <button id="pk-run" class="lk to-mat" style="margin:0;padding:8px 16px">検索</button>
+        </div>
+        <div style="font-size:12px;color:var(--sub);margin-top:8px">
+          収録材料の代表ピーク（400〜4000 cm⁻¹）と照合します。強いピークから2〜4本入れると絞り込めます。
+          C–H伸縮（2800〜3000）は多くの材料で共通のため判別力は低めです。実測は装置分解能・結晶性・配向で数 cm⁻¹ ずれることがあります。
+        </div>
+      </div>
+    </div>
+  </div>${res}`;
+}
+
+function m_label_pk(m){ return m.name; }
+
+function bindPeakUI(){
+  const q = document.getElementById("pk-q");
+  const run = ()=>{ peakQ = q.value; peakKind = document.getElementById("pk-kind").value;
+    peakTol = +document.getElementById("pk-tol").value; render();
+    const nq = document.getElementById("pk-q"); if(nq){ nq.focus(); const L=nq.value.length; nq.setSelectionRange(L,L); } };
+  document.getElementById("pk-run").addEventListener("click", run);
+  q.addEventListener("keydown", e=>{ if(e.key==="Enter") run(); });
+  document.getElementById("pk-kind").addEventListener("change", run);
+  document.getElementById("pk-tol").addEventListener("change", run);
+}
+
 function peakFig(rows, kind){
   const data=parsePeakRows(rows, kind);
   if(!data.length) return "";
@@ -3032,6 +3137,15 @@ function render(){
   const matchT = TESTS.filter(t => !qn || testHay(t).includes(qn) || rawWords.every(w=>testHay(t).includes(norm(w))));
   const matchM = MATS.filter(m => !qn || matHay(m).includes(qn) || rawWords.every(w=>matHay(m).includes(norm(w))));
 
+  if(view==="peak"){
+    $("#idx").innerHTML = "";
+    $("#list").innerHTML = renderPeakSearch();
+    const nq = parsePeakQuery(peakQ).length;
+    $("#count").textContent = nq ? `入力 ${nq} ピークで照合中（${peakKind==="raman"?"ラマン":"IR"}・±${peakTol} cm⁻¹）` : "IR・ラマンの実測ピーク波数から材料候補を逆引きします";
+    document.querySelector(".tools").style.display = "none";
+    bindPeakUI();
+    return;
+  }
   if(view==="chart"){
     $("#idx").innerHTML = "";
     $("#list").innerHTML = renderCharts();
