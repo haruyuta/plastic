@@ -229,6 +229,9 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 .crow:hover .rowbg{fill:#DFE7F7}
 .crow:hover .rname{font-weight:700;opacity:1}
 .crow:hover .rval{font-weight:700}
+/* グラフ内ラベルに白ハローを付け、ゼブラ背景／バー／ガイド線に埋もれないようにする */
+.blk svg text{paint-order:stroke;stroke:#fff;stroke-width:2.4px;stroke-linejoin:round;stroke-linecap:round}
+.blk svg text.rname{stroke-width:2.6px}
 </style>
 </head>
 <body>
@@ -2481,7 +2484,7 @@ const POLYMER_MAP_ROWS=[
 ];
 
 function peakMapChart(rows, foot){
-  const W=700, L=150, R=20, ROWH=48, TOP=32, H=TOP+rows.length*ROWH+34;
+  const W=700, L=150, R=20, ROWH=56, TOP=32, H=TOP+rows.length*ROWH+34;
   const xmax=4000, xmin=100;
   const X=v=>L+(xmax-Math.max(xmin,Math.min(xmax,v)))/(xmax-xmin)*(W-L-R);
   const lw=t=>[...t].reduce((a,c)=>a+(c.charCodeAt(0)>255?8.6:5.2),0); // ラベル概算幅
