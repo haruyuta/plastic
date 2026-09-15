@@ -232,6 +232,63 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 /* グラフ内ラベルに白ハローを付け、ゼブラ背景／バー／ガイド線に埋もれないようにする */
 .blk svg text{paint-order:stroke;stroke:#fff;stroke-width:2.4px;stroke-linejoin:round;stroke-linecap:round}
 .blk svg text.rname{stroke-width:2.6px}
+
+/* ================= 分子モデルビュー ================= */
+#mxRoot{--mx-hot:#9A6200;--mx-hot-bg:#FBF1DC}
+#mxRoot .mx-lead2{font-size:13px;color:var(--sub);margin:2px 0 14px;max-width:72ch}
+#mxRoot h2.mx-h2{font-size:17px;margin:26px 0 6px;padding-bottom:7px;border-bottom:2px solid var(--navy);color:var(--navy);font-weight:700}
+#mxRoot h2.mx-h2 .mx-n{font-size:11.5px;color:var(--sub);font-weight:400;margin-left:9px}
+#mxRoot h3{font-size:14px;color:var(--navy)}
+#mxRoot p{margin:6px 0}
+#mxRoot .mx-lead{color:var(--sub);font-size:13px;margin:6px 0 12px;max-width:72ch}
+#mxRoot .mx-card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:12px 0}
+#mxRoot .mx-note{background:var(--navy-soft);border-left:3px solid var(--navy);padding:9px 13px;font-size:12.5px;color:var(--sub);margin:10px 0;border-radius:0 4px 4px 0}
+#mxRoot .mx-note b{color:var(--ink)}
+#mxRoot .mx-foot{font-size:11.5px;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:12px}
+#mxRoot table.mx-tbl{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+#mxRoot table.mx-tbl th,#mxRoot table.mx-tbl td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+#mxRoot table.mx-tbl th{background:var(--navy-soft);color:var(--navy);font-weight:700;white-space:nowrap}
+#mxRoot table.mx-tbl td.mx-v{white-space:nowrap;font-weight:700;color:var(--navy);font-family:var(--mono)}
+#mxRoot svg{display:block;max-width:100%;height:auto}
+#mxRoot figure{margin:0}
+#mxRoot figcaption{font-size:11px;color:var(--sub);text-align:center;margin-top:1px}
+#mxRoot .mx-spring{display:grid;grid-template-columns:1fr 290px;gap:22px;align-items:center}
+#mxRoot .mx-ctrl{font-size:12.5px}
+#mxRoot .mx-ctrl label{display:block;margin:12px 0 2px;color:var(--sub)}
+#mxRoot .mx-ctrl input[type=range]{width:100%;accent-color:var(--navy)}
+#mxRoot .mx-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+#mxRoot .mx-presets button,#mxRoot .mx-gbtn{font-family:inherit;font-size:12px;padding:5px 11px;
+  border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;cursor:pointer}
+#mxRoot .mx-presets button:hover,#mxRoot .mx-gbtn:hover{background:var(--navy-soft)}
+#mxRoot .mx-presets button[aria-pressed=true],#mxRoot .mx-gbtn[aria-pressed=true]{
+  background:var(--mx-hot-bg);border-color:var(--mx-hot);color:var(--mx-hot);font-weight:700}
+#mxRoot .mx-readout{margin-top:14px;padding:11px 13px;background:var(--navy-soft);border-radius:6px}
+#mxRoot .mx-big{font-size:28px;font-weight:700;color:var(--navy);line-height:1.2;font-family:var(--mono)}
+#mxRoot .mx-big span{font-size:13px;font-weight:400;color:var(--sub);margin-left:4px;font-family:inherit}
+#mxRoot .mx-sm{font-size:11.5px;color:var(--sub);margin-top:4px}
+#mxRoot .mx-poly{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:14px 0;overflow:hidden}
+#mxRoot .mx-poly>h3{margin:0;padding:11px 16px;background:var(--navy-soft);border-bottom:1px solid var(--line);
+  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+#mxRoot .mx-poly>h3 em{font-style:normal;font-size:12px;color:var(--sub);font-weight:400}
+#mxRoot .mx-pbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 18px;padding:12px 16px 16px}
+#mxRoot .mx-mol{grid-column:1}
+#mxRoot .mx-spec{grid-column:2}
+#mxRoot .mx-picks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 9px}
+#mxRoot .mx-desc{grid-column:1/-1;font-size:13px;background:var(--mx-hot-bg);border:1px solid #EFE0BE;
+  border-radius:6px;padding:9px 12px;min-height:48px}
+#mxRoot .mx-desc b{color:var(--mx-hot)}
+#mxRoot .mx-desc .mx-mode{color:var(--sub);font-size:12px;display:block;margin-top:3px}
+#mxRoot .mx-tip{grid-column:1/-1;font-size:12.5px;color:var(--sub);margin-top:7px}
+#mxRoot .mx-flash{animation:mxFlash 1.6s ease-out}
+@keyframes mxFlash{0%{box-shadow:0 0 0 3px rgba(154,98,0,.55)}100%{box-shadow:0 0 0 3px rgba(154,98,0,0)}}
+.mx-jump{font-family:inherit;font-size:11.5px;padding:3px 10px;margin-top:6px;cursor:pointer;
+  border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px}
+.mx-jump:hover{background:var(--navy-soft)}
+@media (max-width:760px){
+  #mxRoot .mx-spring{grid-template-columns:1fr}
+  #mxRoot .mx-pbody{grid-template-columns:1fr}
+  #mxRoot .mx-mol,#mxRoot .mx-spec{grid-column:1}
+}
 </style>
 </head>
 <body>
@@ -239,7 +296,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 <header>
   <div class="hd-top">
     <h1>JIS プラスチック・ゴム試験 早見検索</h1>
-    <span class="hd-sub">試験片形状・測定条件リファレンス（オフライン・単一ファイル）</span>
+    <span class="hd-sub">試験片形状・測定条件リファレンス（オフライン・単一ファイル）　v2.0</span>
   </div>
   <div class="hd-controls">
     <input id="q" type="search" placeholder="検索：試験名 / JIS番号 / 材料名（例: K 7171、曲げ、PP、K 6251、K 6850、接着、硬さ）" autocomplete="off">
@@ -248,6 +305,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
       <button data-v="test">試験方法から</button>
       <button data-v="chart">グラフ</button>
       <button data-v="peak">ピーク逆引き</button>
+      <button data-v="mol">分子モデル</button>
       <button data-v="jis">JIS一覧</button>
     </div>
   </div>
@@ -2223,7 +2281,9 @@ function structBlock(id){
     `<div style="display:inline-block;text-align:center;margin:2px 18px 2px 0;vertical-align:top">${molSVG(u.seq,u.n)}${u.cap?`<div class="fig-cap">${u.cap}</div>`:""}</div>`
   ).join("");
   const note=STRUCT_NOTE[id]?`<div class="fig-cap">${STRUCT_NOTE[id]}</div>`:"";
-  return `<div class="blk"><div class="blk-t">分子構造（繰返し単位）</div><div class="fig">${inner}${note}</div></div>`;
+  const jump=(typeof MOLIR!=="undefined"&&MOLIR.has(id))
+    ?`<div><button class="mx-jump" data-mol="${id}">IRピークを分子モデルで見る →</button></div>`:"";
+  return `<div class="blk"><div class="blk-t">分子構造（繰返し単位）</div><div class="fig">${inner}${note}</div>${jump}</div>`;
 }
 
 /* ================= 描画 ================= */
@@ -2987,9 +3047,9 @@ function renderIndex(){
   const cols = [matCol, testCol].filter(Boolean);
   const grid = cols.length===2
     ? `<div class="idx-cols"><div>${matCol}</div><div>${testCol}${
-        `<div class="idx-grp"><div class="idx-h">グラフ</div><button class="idx-chart" data-view="chart">物性・条件の比較グラフを見る →</button></div>`}</div></div>`
+        `<div class="idx-grp"><div class="idx-h">グラフ</div><button class="idx-chart" data-view="chart">物性・条件の比較グラフを見る →</button><button class="idx-chart" data-view="mol">分子モデルでIRピークを見る →</button></div>`}</div></div>`
     : `<div class="idx-cols" style="grid-template-columns:1fr">${cols.join("")}`
-      + `<div class="idx-grp"><div class="idx-h">グラフ</div><button class="idx-chart" data-view="chart">物性・条件の比較グラフを見る →</button></div></div>`;
+      + `<div class="idx-grp"><div class="idx-h">グラフ</div><button class="idx-chart" data-view="chart">物性・条件の比較グラフを見る →</button><button class="idx-chart" data-view="mol">分子モデルでIRピークを見る →</button></div></div>`;
 
   return `<div class="idx">
     <div class="idx-hint">項目名をクリックすると該当カードを開いて移動します。上部の検索窓でキーワード（規格番号・略称・試験名）による絞り込みもできます。</div>
@@ -3177,6 +3237,14 @@ function render(){
     document.querySelector(".tools").style.display = "none";
     return;
   }
+  if(view==="mol"){
+    $("#idx").innerHTML = "";
+    $("#list").innerHTML = MOLIR.html();
+    $("#count").textContent = "分子モデルと振動モードからIRピークを読む（波数は代表値・ピーク逆引きと同じ値）";
+    document.querySelector(".tools").style.display = "none";
+    MOLIR.bind();
+    return;
+  }
   if(view==="jis"){
     $("#idx").innerHTML = "";
     $("#list").innerHTML = renderJisList(matchT);
@@ -3217,6 +3285,717 @@ function render(){
   // 検索時は自動展開
   if(query) document.querySelectorAll(".card").forEach(c=>c.classList.add("open"));
 }
+
+const MOLIR_HTML = `<div id="mxRoot"><div class="mx-lead2">IRスペクトルのピークは「分子のどこが、どう揺れているか」を写したもの。ばねモデルで波数の決まり方をつかみ、樹脂ごとの繰り返し単位を動かしながら、どのピークがどの結合に対応するかを確認できます。波数は本ツールの「ピーク逆引き」と同じ代表値です。</div><h2 class="mx-h2">1. 波数はどう決まるか<span class="mx-n">2つのおもり＋ばね で近似する</span></h2>
+<p class="mx-lead">結合を「ばね」、原子を「おもり」とみなすと、吸収する波数はばねの硬さ（結合の強さ <em>k</em>）と、おもりの重さ（換算質量 <em>μ</em>）だけでおおよそ決まります。スライダーを動かすと、振動の速さと波数が連動します。</p>
+
+<div class="mx-card">
+  <div class="mx-spring">
+    <div>
+      <svg id="mxSpring" viewBox="0 0 420 170" role="img" aria-label="二原子ばねモデルの振動アニメーション"></svg>
+      <figcaption>結合が硬いほど速く・軽い原子ほど速く振動する → 高波数側に出る</figcaption>
+    </div>
+    <div class="mx-ctrl">
+      <label>結合の強さ k ＝ <b id="mxKOut">500</b> N/m</label>
+      <input id="mxK" type="range" min="150" max="2000" step="10" value="500">
+      <label>原子の重さ m₁ / m₂ ＝ <b id="mxMOut">12 / 1</b></label>
+      <input id="mxM1" type="range" min="1" max="40" step="1" value="12">
+      <input id="mxM2" type="range" min="1" max="40" step="1" value="1">
+      <div class="mx-readout">
+        <div class="mx-big" id="mxNu">3032<span>cm⁻¹</span></div>
+        <div class="mx-sm">二原子調和振動子の近似計算値。実測と完全には一致せず、位置の目安です（重い原子・水素結合・共役があると大きくずれます）。</div>
+      </div>
+      <div class="mx-presets" id="mxPresets"></div>
+    </div>
+  </div>
+  <div class="mx-note" style="font-size:12.5px">
+    プリセットの k は代表的な力の定数のオーダー（単結合 ≒ 500、二重 ≒ 1200、三重 ≒ 1800 N/m）を用いた概算で、特定の文献値ではありません。実測値との対応はあくまで傾向の確認に使ってください。
+  </div>
+  <div class="mx-note">
+    <b>読み方の3原則。</b>
+    ① 結合が強いほど高波数（C≡N 2237 &gt; C=O 1725 &gt; C–O 1100）。
+    ② 原子が軽いほど高波数（C–H 2900 ≫ C–Cl 650）。
+    ③ 同じ結合なら 伸縮 &gt; 変角 &gt; 横揺れ（CH₂ は 2900 / 1465 / 720）。
+  </div>
+  <div class="mx-note">
+    <b>IRに出る条件。</b> 振動で双極子モーメントが変化しないと吸収は起きません。C=O・N–H・C–Cl のような極性結合は強く出て、対称なC=Cや芳香環の呼吸振動は弱い（＝ラマンで見るべき領域）。黒色品（カーボンブラック）は全域が吸収されて測れないことがあります。
+  </div>
+</div>
+
+<h2 class="mx-h2">2. 波数の地図<span class="mx-n">まず4つの区画に分ける</span></h2>
+<p class="mx-lead">未知試料は、左から順に「X–Hがあるか → 三重結合があるか → C=Oがあるか」を見て候補を絞り、最後に指紋領域で確定します。</p>
+<div class="mx-card">
+  <svg id="mxMap" viewBox="0 0 960 230" role="img" aria-label="IR波数の領域マップ"></svg>
+</div>
+<table class="mx-tbl">
+  <tr><th>領域</th><th>主な振動</th><th>樹脂での使いどころ</th></tr>
+  <tr><td class="mx-v">3600–3100</td><td>O–H / N–H 伸縮（幅広）</td><td>PA・PU の確認。吸湿水や劣化のOHも重なる</td></tr>
+  <tr><td class="mx-v">3100–2800</td><td>C–H 伸縮</td><td>ほぼ全樹脂にある＝判別力は低い。3000超は芳香族・不飽和</td></tr>
+  <tr><td class="mx-v">2300–2100</td><td>C≡N / C≡C 伸縮</td><td>他が空く領域。ABS・NBR の 2237 は決め手になる</td></tr>
+  <tr><td class="mx-v">1800–1650</td><td>C=O 伸縮</td><td>最も情報量が多い。PC 1770 / PMMA 1725 / PET 1715 / PA 1635</td></tr>
+  <tr><td class="mx-v">1650–1400</td><td>芳香環骨格・CH₂/CH₃ 変角</td><td>1601+1493 の組は芳香環。1376 は CH₃ の有無</td></tr>
+  <tr><td class="mx-v">1300–1000</td><td>C–O / C–O–C / Si–O 伸縮</td><td>エステル・エーテル・POM・フィラー（Si–O）が集中</td></tr>
+  <tr><td class="mx-v">1000–600</td><td>面外変角・C–Cl・骨格</td><td>指紋領域。PS 698+756、PVC 690–610、PE 730/719</td></tr>
+</table>
+
+<h2 class="mx-h2">3. 樹脂別 分子モデル<span class="mx-n">バンド名をクリックすると、その部分が振動します</span></h2>
+<p class="mx-lead">左が繰り返し単位の分子モデル、右が模式スペクトル（下向き＝吸収、横軸は高波数が左）。選んだバンドに対応する原子が動き、スペクトル上の位置が光ります。波数はすべて代表値で、結晶性・配向・測定モード（ATR/透過）により数 cm⁻¹ ずれます。</p>
+<div id="mxPolys"></div>
+
+<h2 class="mx-h2">4. 間違えやすい組み合わせ</h2>
+<table class="mx-tbl">
+  <tr><th>ペア</th><th>IRでの違い</th><th>確実な決め手</th></tr>
+  <tr><td class="mx-v">PE / PP</td><td>PP には 1376（CH₃）と 998/973 がある。PE には 730/719 の二重線</td><td>IRで判別可。DSCのTm併用でより確実</td></tr>
+  <tr><td class="mx-v">PA6 / PA66</td><td>スペクトルは酷似。930付近などに微差のみ</td><td>DSC の Tm（220 ℃ / 260 ℃）</td></tr>
+  <tr><td class="mx-v">PET / PBT</td><td>937付近（ブチレン鎖）などに差はあるが弱い</td><td>DSC の Tm・結晶化挙動</td></tr>
+  <tr><td class="mx-v">PS / ABS</td><td>芳香族バンドは共通。ABS は 2237（C≡N）と 966（ブタジエン）を持つ</td><td>2237 の有無</td></tr>
+  <tr><td class="mx-v">PC / PET</td><td>C=O の位置。PC 1770 はエステル 1715–1740 より明確に高波数</td><td>1770 と 830（パラ二置換）</td></tr>
+  <tr><td class="mx-v">硬質PVC / 軟質PVC</td><td>PVC 自体に C=O はない。1720 が出れば可塑剤由来</td><td>1720 の有無と 690–610 の C–Cl</td></tr>
+</table>
+
+<div class="mx-note">
+  <b>劣化を見るとき。</b> PP・PE の熱酸化劣化は 1713/1715 付近のカルボニル増加として現れ、カルボニル指数（例：A₁₇₁₃/A₁₄₅₅）で相対評価します。ABS はゴム相の酸化で 1720 が増え 966 が減る。ATR は表面数 µm の情報なので、成形品の表層劣化とバルクで結果が変わる点に注意。
+</div>
+
+<div class="mx-foot">分子モデルは結合の位置関係を示す模式図で、実際の結合角・立体配座を反映したものではありません。振動アニメーションは各基準振動の動きを誇張した模式表現です。波数はアップロードいただいた「JIS プラスチック・ゴム試験 早見検索」内のIRピーク値と整合させた代表値で、個別の文献値そのものではありません。</div></div>`;
+
+/* ================= 分子モデルで見るIRピーク ================= */
+const MOLIR = (function(){
+const NS="http://www.w3.org/2000/svg";
+const C_LIGHT=2.99792458e10, AMU=1.66053907e-27, PI=Math.PI;
+const EL={C:{c:"#3D4451",d:"#9AA0AB",r:11},H:{c:"#B9BFC9",d:"#CBD0D8",r:7},O:{c:"#B03A2E",d:"#CE9E98",r:11},N:{c:"#2E5FA3",d:"#9BAFCF",r:11},Cl:{c:"#4E9A51",d:"#A9CBAB",r:13}};
+
+
+const $m = id => document.getElementById(id);
+const PRESETS=[
+  {n:"O–H",k:770,m1:16,m2:1},{n:"C–H",k:500,m1:12,m2:1},{n:"C≡N",k:1800,m1:12,m2:14},
+  {n:"C=O",k:1200,m1:12,m2:16},{n:"C–O",k:520,m1:12,m2:16},{n:"C–Cl",k:350,m1:12,m2:35}
+];
+
+function wavenumber(k,m1,m2){
+  const mu=(m1*m2/(m1+m2))*AMU;
+  return (1/(2*PI*C_LIGHT))*Math.sqrt(k/mu);
+}
+
+function buildSpring(){
+  const s=$m("mxSpring"); if(!s) return;
+  s.innerHTML=
+    '<line x1="40" y1="130" x2="380" y2="130" stroke="#DCD9D0"/>'+
+    '<path id="mxSpPath" d="" fill="none" stroke="#24365E" stroke-width="2.4" stroke-linecap="round"/>'+
+    '<g id="mxSpA"><circle r="26" fill="#3D4451"/><text y="6" text-anchor="middle" fill="#fff" font-size="15" font-family="inherit">m\u2081</text></g>'+
+    '<g id="mxSpB"><circle r="20" fill="#9A6200"/><text y="5" text-anchor="middle" fill="#fff" font-size="14" font-family="inherit">m\u2082</text></g>'+
+    '<text x="210" y="152" text-anchor="middle" font-size="11.5" fill="#5B6373" font-family="inherit">\u3070\u306d\u306e\u786c\u3055\uff1d\u7d50\u5408\u306e\u5f37\u3055\u3000\u304a\u3082\u308a\uff1d\u539f\u5b50\u306e\u91cd\u3055</text>';
+}
+function springPath(x1,x2,y){
+  const n=9, w=(x2-x1)/n; let d="M"+x1+" "+y;
+  for(let i=0;i<n;i++){ d+=" L"+(x1+w*(i+0.5))+" "+(y+(i%2?16:-16))+" L"+(x1+w*(i+1))+" "+y; }
+  return d;
+}
+
+let springT=0;
+function tickSpring(dt){
+  const kIn=$m("mxK"), m1In=$m("mxM1"), m2In=$m("mxM2");
+  if(!kIn) return;
+  const k=+kIn.value, m1=+m1In.value, m2=+m2In.value;
+  const nu=wavenumber(k,m1,m2);
+  $m("mxKOut").textContent=k; $m("mxMOut").textContent=m1+" / "+m2;
+  $m("mxNu").innerHTML=Math.round(nu)+"<span>cm⁻¹</span>";
+  const f=0.35+ (nu/4000)*2.2;                       // 見た目の速さを波数に連動
+  springT+=dt*f;
+  const amp=14, ph=Math.sin(springT*2*PI);
+  const rA=26, rB=20;
+  // 重い方が動きにくい（振幅は質量に反比例）
+  const aA=amp*(m2/(m1+m2)), aB=amp*(m1/(m1+m2));
+  const xA=130-aA*ph, xB=290+aB*ph, y=130-52;
+  const gA=document.getElementById("mxSpA"), gB=document.getElementById("mxSpB");
+  gA.setAttribute("transform","translate("+xA.toFixed(1)+","+y+")");
+  gB.setAttribute("transform","translate("+xB.toFixed(1)+","+y+")");
+  document.getElementById("mxSpPath").setAttribute("d",springPath(xA+rA,xB-rB,y));
+  const pm=$m("mxPkMark"); if(pm){ pm.setAttribute("x1",mapX(nu)); pm.setAttribute("x2",mapX(nu)); }
+}
+
+function bindSpring(){
+  const box=$m("mxPresets"); if(!box) return;
+  box.innerHTML="";
+  PRESETS.forEach(function(p){
+    const b=document.createElement("button");
+    b.textContent=p.n; b.dataset.n=p.n; b.setAttribute("aria-pressed","false");
+    b.onclick=function(){ $m("mxK").value=p.k; $m("mxM1").value=p.m1; $m("mxM2").value=p.m2; setPressed(p.n); };
+    box.appendChild(b);
+  });
+  ["mxK","mxM1","mxM2"].forEach(function(id){ $m(id).addEventListener("input",function(){ setPressed(null); }); });
+}
+function setPressed(name){
+  document.querySelectorAll("#mxPresets button").forEach(function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.n===name));
+  });
+}
+const MAPW=960, MAPL=60, MAPR=30;
+function mapX(v){ // 4000 → 400 を左→右
+  const t=(4000-v)/(4000-400);
+  return MAPL+t*(MAPW-MAPL-MAPR);
+}
+const BANDS=[
+  {hi:3600,lo:3100,t:"O–H / N–H 伸縮",e:"PA 3300",row:0},
+  {hi:3100,lo:2800,t:"C–H 伸縮",e:"ほぼ全樹脂",row:1},
+  {hi:2300,lo:2100,t:"C≡N 伸縮",e:"ABS 2237",row:0},
+  {hi:1800,lo:1650,t:"C=O 伸縮",e:"PC 1770 / PMMA 1725",row:1},
+  {hi:1650,lo:1400,t:"芳香環・CH変角",e:"PS 1601 / PP 1376",row:0},
+  {hi:1300,lo:1000,t:"C–O / C–O–C 伸縮",e:"POM 1090",row:1},
+  {hi:1000,lo:600,t:"面外変角・C–Cl",e:"PS 698 / PVC 650",row:0}
+];
+
+function buildMap(){
+  const s=document.getElementById("mxMap");
+  let g="";
+  g+='<line x1="'+MAPL+'" y1="170" x2="'+(MAPW-MAPR)+'" y2="170" stroke="#22293B" stroke-width="1.2"/>';
+  [4000,3000,2000,1500,1000,600,400].forEach(function(v){
+    const x=mapX(v);
+    g+='<line x1="'+x+'" y1="170" x2="'+x+'" y2="176" stroke="#22293B"/>';
+    g+='<text x="'+x+'" y="192" text-anchor="middle" font-size="11.5" fill="#5B6373" font-family="inherit">'+v+'</text>';
+  });
+  g+='<text x="'+(MAPW-MAPR)+'" y="212" text-anchor="end" font-size="11.5" fill="#5B6373" font-family="inherit">波数 (cm⁻¹)　※右へ行くほど低波数（慣習的な表示）</text>';
+  BANDS.forEach(function(b){
+    const x1=mapX(b.hi), x2=mapX(b.lo), cx=(x1+x2)/2, y=b.row?102:46, h=18;
+    g+='<line x1="'+cx+'" y1="'+(y+h)+'" x2="'+cx+'" y2="170" stroke="#C6CBD4" stroke-dasharray="2 3"/>';
+    g+='<rect x="'+x1+'" y="'+y+'" width="'+(x2-x1)+'" height="'+h+'" rx="3" fill="#DDE4F0" stroke="#24365E" stroke-width="1"/>';
+    g+='<text x="'+cx+'" y="'+(y-6)+'" text-anchor="middle" font-size="12" fill="#24365E" font-weight="600" font-family="inherit">'+b.t+'</text>';
+    g+='<text x="'+cx+'" y="'+(y+h+14)+'" text-anchor="middle" font-size="11" fill="#5B6373" font-family="inherit">'+b.e+'</text>';
+  });
+  g+='<line id="mxPkMark" x1="0" y1="24" x2="0" y2="176" stroke="#B45309" stroke-width="2"/>';
+  g+='<text x="'+MAPL+'" y="14" font-size="11" fill="#B45309" font-family="inherit">縦線＝上のばねモデルの計算値</text>';
+  s.innerHTML=g;
+}
+function M(){ this.a=[]; this.b=[]; }
+M.prototype.at=function(x,y,el){ this.a.push([x,y,el||"C"]); return this.a.length-1; };
+M.prototype.bd=function(i,j,o){ this.b.push([i,j,o||1]); return this; };
+M.prototype.dash=function(x1,y1,x2,y2){ (this.d=this.d||[]).push([x1,y1,x2,y2]); return this; };
+M.prototype.hb=function(i,x2,y2){ (this.hbs=this.hbs||[]).push([i,x2,y2]); return this; };
+
+function unit(p,q){ const dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy)||1; return [dx/L,dy/L]; }
+function stretch(A,c,hs,amp){ amp=amp||5.5;
+  return hs.map(function(h){ const u=unit(A[c],A[h]); return [h,u[0]*amp,u[1]*amp]; });
+}
+function antisym(A,c,hs,amp){ amp=amp||5.5;
+  return hs.map(function(h,i){ const u=unit(A[c],A[h]), s=i%2?-1:1; return [h,u[0]*amp*s,u[1]*amp*s]; });
+}
+function scissor(A,c,hs,amp){ amp=amp||6;
+  return hs.map(function(h,i){ const u=unit(A[c],A[h]), s=i%2?-1:1;
+    return [h,-u[1]*amp*s,u[0]*amp*s]; });
+}
+function rock(A,c,hs,amp){ amp=amp||6;
+  return hs.map(function(h){ const u=unit(A[c],A[h]); return [h,-u[1]*amp,u[0]*amp]; });
+}
+function shift(idx,dx,dy){ return idx.map(function(i){ return [i,dx,dy]; }); }
+function breathe(A,idx,cx,cy,amp){ amp=amp||4;
+  return idx.map(function(i){ const u=unit([cx,cy],A[i]); return [i,u[0]*amp,u[1]*amp]; });
+}
+
+/* 骨格ジグザグ：偶数index が下、奇数が上 */
+function zig(m,n,x0,y0,dx,dy,el){
+  const ids=[];
+  for(let i=0;i<n;i++){ ids.push(m.at(x0+i*dx, (i%2===0)?y0:y0-dy, (typeof el==="function")?el(i):(el||"C"))); }
+  for(let i=0;i<n-1;i++) m.bd(ids[i],ids[i+1]);
+  return ids;
+}
+function addH2(m,ci,down){
+  const p=m.a[ci], s=down?1:-1;
+  const h1=m.at(p[0]-15,p[1]+s*20,"H"), h2=m.at(p[0]+15,p[1]+s*20,"H");
+  m.bd(ci,h1); m.bd(ci,h2); return [h1,h2];
+}
+function addH1(m,ci,down,dxs){
+  const p=m.a[ci], s=down?1:-1;
+  const h=m.at(p[0]+(dxs||0),p[1]+s*21,"H"); m.bd(ci,h); return h;
+}
+function ring(m,cx,cy,r,rot){ // 芳香環（6員）：index 0 が結合点
+  const ids=[];
+  for(let i=0;i<6;i++){
+    const a=(rot||0)+i*PI/3;
+    ids.push(m.at(cx+r*Math.sin(a), cy-r*Math.cos(a)));
+  }
+  for(let i=0;i<6;i++) m.bd(ids[i],ids[(i+1)%6], i%2?2:1);
+  return ids;
+}
+
+
+const POLY=[];
+
+/* PE */
+(function(){
+  const m=new M(), C=zig(m,5,70,120,36,28);
+  const H=[]; C.forEach(function(c,i){ H.push.apply(H,addH2(m,c,i%2===0)); });
+  m.dash(34,92,70,120); m.dash(214,120,250,92);
+  POLY.push({id:"pe",vb:"-48 57 380 98",name:"PE（ポリエチレン）",sub:"–CH₂–CH₂–　C と H だけの最も単純な骨格",mol:m,
+    spec:[[2915,.95,25],[2848,.9,25],[1472,.55,12],[1462,.55,12],[730,.5,9],[719,.5,9]],
+    tip:"CH₂しか無いため、ピークの本数が極端に少ないのがPEの特徴。730/719 の二重線がはっきり分かれるほど結晶性が高い。1715付近にカルボニルが出たら酸化劣化。",
+    groups:[
+      {label:"C–H 伸縮 2915 / 2848",peaks:[2915,2848],mode:"伸縮（結合が伸び縮みする）",
+       text:"CH₂ の C–H が伸び縮み。<b>水素が軽いので最も高波数</b>に出る。逆対称(2915)と対称(2848)の2本。",
+       atoms:H,anim:function(A){ let r=[]; C.forEach(function(c,i){ r=r.concat(antisym(A,c,[H[i*2],H[i*2+1]])); }); return r; }},
+      {label:"CH₂ 変角 1472 / 1462",peaks:[1472,1462],mode:"変角（はさみ：H–C–H の角度が開閉）",
+       text:"結合の長さは変えず<b>角度だけを変える</b>ので、伸縮よりずっと低波数。1472 は結晶場による分裂成分。",
+       atoms:H,anim:function(A){ let r=[]; C.forEach(function(c,i){ r=r.concat(scissor(A,c,[H[i*2],H[i*2+1]])); }); return r; }},
+      {label:"CH₂ 横揺れ 730 / 719",peaks:[730,719],mode:"横揺れ（ロッキング：H₂ が左右に振れる）",
+       text:"CH₂ が主鎖に対して横に振れる。<b>結晶部由来の730と非晶の719が二重線</b>になり、分離の良さが結晶性の目安。",
+       atoms:H,anim:function(A){ let r=[]; C.forEach(function(c,i){ r=r.concat(rock(A,c,[H[i*2],H[i*2+1]],7)); }); return r; }}
+    ]});
+})();
+
+/* PP */
+(function(){
+  const m=new M(), C=zig(m,5,70,124,36,28);
+  const h0=addH2(m,C[0],true), h2=addH2(m,C[2],true), h4=addH2(m,C[4],true);
+  const ha=addH1(m,C[1],false,-14), hb=addH1(m,C[3],false,-14);
+  const me1=m.at(m.a[C[1]][0]+28,m.a[C[1]][1]-36,"C"); m.bd(C[1],me1);
+  const me2=m.at(m.a[C[3]][0]+28,m.a[C[3]][1]-36,"C"); m.bd(C[3],me2);
+  const M1=[m.at(m.a[me1][0]+18,m.a[me1][1]-16,"H"),m.at(m.a[me1][0]+20,m.a[me1][1]+8,"H"),m.at(m.a[me1][0]-2,m.a[me1][1]-24,"H")];
+  M1.forEach(function(h){ m.bd(me1,h); });
+  const M2=[m.at(m.a[me2][0]+18,m.a[me2][1]-16,"H"),m.at(m.a[me2][0]+20,m.a[me2][1]+8,"H"),m.at(m.a[me2][0]-2,m.a[me2][1]-24,"H")];
+  M2.forEach(function(h){ m.bd(me2,h); });
+  m.dash(34,96,70,124); m.dash(214,124,250,96);
+  const allCH2=h0.concat(h2,h4);
+  POLY.push({id:"pp",vb:"-48 21 380 138",name:"PP（ポリプロピレン）",sub:"–CH₂–CH(CH₃)–　1つおきにメチル基が付く",mol:m,
+    spec:[[2950,.8,22],[2917,.9,22],[2868,.7,22],[2838,.6,22],[1455,.6,14],[1376,.62,12],[1167,.35,12],[998,.4,10],[973,.45,10],[841,.3,10]],
+    tip:"PEとの決定的な差はメチル基。1376 が明瞭に立てばPP、719の二重線が見えればPE混入を疑う。998/973 の強度比はアイソタクチシティの指標。",
+    groups:[
+      {label:"C–H 伸縮 2950 / 2917 / 2868 / 2838",peaks:[2950,2917,2868,2838],mode:"伸縮",
+       text:"CH₃ と CH₂ の C–H が伸縮。<b>CH₃ を持つぶんPEより本数が増える</b>（2950・2868 が CH₃ 側）。",
+       atoms:allCH2.concat(M1,M2,[ha,hb]),
+       anim:function(A){ return stretch(A,me1,M1).concat(stretch(A,me2,M2),antisym(A,C[0],h0),antisym(A,C[2],h2),antisym(A,C[4],h4)); }},
+      {label:"CH₃ 対称変角 1376",peaks:[1376],mode:"変角（傘：3つのHが同時に開閉）",
+       text:"メチル基の3つのHが傘を開くように同時に動く。<b>PPの目印。PEにはこのピークがない</b>（LDPEの分岐で弱く出る程度）。",
+       atoms:M1.concat(M2),
+       anim:function(A){ return stretch(A,me1,M1,5).concat(stretch(A,me2,M2,5)); }},
+      {label:"CH₂ 変角 1455",peaks:[1455],mode:"変角（はさみ）",
+       text:"主鎖 CH₂ のはさみ振動。PP・PE 共通で出るため、単独では判別に使えない。<b>カルボニル指数の基準ピーク</b>としてよく使う。",
+       atoms:allCH2,
+       anim:function(A){ return scissor(A,C[0],h0).concat(scissor(A,C[2],h2),scissor(A,C[4],h4)); }},
+      {label:"規則性バンド 998 / 973 / 841",peaks:[998,973,841],mode:"骨格振動（らせん配座に特有）",
+       text:"アイソタクチックPPが作る<b>らせん構造に固有の骨格振動</b>。998 は長いらせんが必要で、結晶性・立体規則性が高いほど強い。",
+       atoms:C,
+       anim:function(A){ return shift(C,0,0).map(function(x,i){ return [C[i],(i%2?5:-5),(i%2?-4:4)]; }); }}
+    ]});
+})();
+
+/* PS */
+(function(){
+  const m=new M(), C=zig(m,3,80,150,42,28);
+  const h0=addH2(m,C[0],true), h2=addH2(m,C[2],true);
+  const hA=addH1(m,C[1],false,-16);
+  const cx=152, cy=50;
+  const R=ring(m,cx,cy,40,0); m.bd(C[1],R[3]);
+  const RH=[];
+  [0,1,2,4,5].forEach(function(i){
+    const p=m.a[R[i]], u=unit([cx,cy],p);
+    const h=m.at(p[0]+u[0]*19,p[1]+u[1]*19,"H"); m.bd(R[i],h); RH.push(h);
+  });
+  m.dash(38,122,80,150); m.dash(164,150,206,122);
+  POLY.push({id:"ps",vb:"-66 -24 380 209",name:"PS（ポリスチレン）",sub:"–CH₂–CH(C₆H₅)–　ベンゼン環がぶら下がる",mol:m,
+    spec:[[3060,.5,18],[3026,.55,18],[2920,.5,22],[1601,.45,12],[1493,.6,12],[1452,.55,12],[1027,.4,10],[756,.85,12],[698,.95,12]],
+    tip:"3000より高波数にC–Hが出たら芳香族。PSの確定は 698 + 756 の2本組（単置換ベンゼン）。ABS・SBRもこの2本を持つので、2237や966の有無で切り分ける。",
+    groups:[
+      {label:"芳香族 C–H 伸縮 3060 / 3026",peaks:[3060,3026],mode:"伸縮",
+       text:"環に直接付いたH。<b>3000 cm⁻¹ より高波数に出るのが芳香族・不飽和の合図</b>（飽和CHは3000以下）。",
+       atoms:RH,anim:function(A){ return RH.map(function(h){ const u=unit([cx,cy],A[h]); return [h,u[0]*5,u[1]*5]; }); }},
+      {label:"ベンゼン環骨格 1601 / 1493 / 1452",peaks:[1601,1493,1452],mode:"環の骨格振動（環が伸び縮み・変形）",
+       text:"環そのものの C=C 骨格振動。<b>1601 と 1493 の組み合わせが「芳香環あり」の判定</b>に使える。",
+       atoms:R,anim:function(A){ return breathe(A,R,cx,cy,4.5); }},
+      {label:"単置換ベンゼン 面外変角 756 / 698",peaks:[756,698],mode:"面外変角（環のHが紙面の手前・奥へ振れる）",
+       text:"環上のHが環平面から外れる方向に揺れる。<b>この2本が揃えば単置換ベンゼン＝PS系</b>。置換パターンで位置が変わるため、置換数の判定にも使える。",
+       atoms:RH,anim:function(A){ return shift(RH,0,7); }}
+    ]});
+})();
+
+/* PMMA */
+(function(){
+  const m=new M();
+  const c0=m.at(70,140), c1=m.at(112,112), c2=m.at(154,140);
+  m.bd(c0,c1); m.bd(c1,c2);
+  const h0=addH2(m,c0,true), h2=addH2(m,c2,true);
+  const me=m.at(84,74,"C"); m.bd(c1,me);
+  const meH=[m.at(60,66,"H"),m.at(76,50,"H"),m.at(60,90,"H")]; meH.forEach(function(h){ m.bd(me,h); });
+  const cc=m.at(140,74,"C"); m.bd(c1,cc,1);
+  const o1=m.at(112,36,"O"); m.bd(cc,o1,2);
+  const o2=m.at(180,60,"O"); m.bd(cc,o2,1);
+  const me2=m.at(220,74,"C"); m.bd(o2,me2);
+  const me2H=[m.at(244,67,"H"),m.at(230,98,"H"),m.at(218,49,"H")]; me2H.forEach(function(h){ m.bd(me2,h); });
+  m.dash(28,112,70,140); m.dash(154,140,196,112);
+  POLY.push({id:"pmma",vb:"-50 17 380 158",name:"PMMA（アクリル）",sub:"–CH₂–C(CH₃)(COOCH₃)–　側鎖にエステル",mol:m,
+    spec:[[2995,.5,20],[2950,.55,20],[1725,1,16],[1435,.5,14],[1387,.45,12],[1240,.6,16],[1190,.82,16],[1145,.85,16],[987,.45,10],[841,.4,10],[750,.35,10]],
+    tip:"1725 の単一で鋭いC=Oと、1190/1145 の強いC–Oが組で出るのが典型。PCの1770、PETの1715+芳香環と比べると区別しやすい。",
+    groups:[
+      {label:"エステル C=O 伸縮 1725",peaks:[1725],mode:"伸縮（二重結合＝ばねが硬い）",
+       text:"C=O は<b>二重結合でばねが硬く、極性も大きい</b>ため、強く鋭いピークになる。IRで最も情報量が多い位置。",
+       atoms:[cc,o1],anim:function(A){ return stretch(A,cc,[o1],7).concat([[cc,0,1.5]]); }},
+      {label:"C–O–C 伸縮 1190 / 1145",peaks:[1190,1145],mode:"伸縮（単結合＋重いO）",
+       text:"同じC–O結合でも<b>単結合なので C=O よりずっと低波数</b>。エステル・エーテルはこの1300–1000領域に強いバンドを持つ。",
+       atoms:[o2,cc,me2],anim:function(A){ return [[o2,-6,-3],[cc,3,2],[me2,4,3]]; }},
+      {label:"CH₃ 変角 1435 / 1387",peaks:[1435,1387],mode:"変角（傘）",
+       text:"α-メチルとエステルメチルの変角。<b>PMMAはメチル基を2つ持つ</b>ため、この領域が混み合う。",
+       atoms:meH.concat(me2H),anim:function(A){ return stretch(A,me,meH,5).concat(stretch(A,me2,me2H,5)); }},
+      {label:"骨格 987 / 841 / 750",peaks:[987,841,750],mode:"骨格振動（指紋領域）",
+       text:"主鎖と側鎖が組み合わさった振動。<b>物質固有のパターン＝指紋</b>で、ライブラリ照合で効くのはこの領域。",
+       atoms:[c0,c1,c2],anim:function(A){ return [[c0,0,5],[c1,0,-5],[c2,0,5]]; }}
+    ]});
+})();
+
+/* PVC */
+(function(){
+  const m=new M(), C=zig(m,5,70,132,36,28);
+  const h0=addH2(m,C[0],true), h2=addH2(m,C[2],true), h4=addH2(m,C[4],true);
+  const hA=addH1(m,C[1],false,-16), hB=addH1(m,C[3],false,-16);
+  const cl1=m.at(m.a[C[1]][0]+24,m.a[C[1]][1]-30,"Cl"); m.bd(C[1],cl1);
+  const cl2=m.at(m.a[C[3]][0]+24,m.a[C[3]][1]-30,"Cl"); m.bd(C[3],cl2);
+  m.dash(34,104,70,132); m.dash(214,132,250,104);
+  POLY.push({id:"pvc",vb:"-48 53 380 114",name:"PVC（塩化ビニル）",sub:"–CH₂–CHCl–　塩素が付く",mol:m,
+    spec:[[2912,.45,22],[1427,.5,14],[1330,.35,12],[1255,.4,12],[960,.35,12],[690,.72,30],[635,.8,32]],
+    tip:"PVC自体にC=Oは無い。1720付近が出たら可塑剤（フタル酸エステル等）由来で、軟質PVCの確認に使える。脱HCl劣化ではポリエン生成により着色するが、IRでは1600付近にごく弱く現れる程度。",
+    groups:[
+      {label:"C–Cl 伸縮 690–610",peaks:[690,635],mode:"伸縮（重い塩素＝低波数）",
+       text:"<b>塩素は炭素の約3倍重いので、伸縮でも600台まで落ちる</b>。配座により複数成分が重なり幅広なバンドになる。PVCの決め手。",
+       atoms:[cl1,cl2],anim:function(A){ return stretch(A,C[1],[cl1],7).concat(stretch(A,C[3],[cl2],7)); }},
+      {label:"CH₂ 変角ほか 1427 / 1330 / 1255",peaks:[1427,1330,1255],mode:"変角",
+       text:"CH₂ の変角と、<b>塩素が隣にあるC–Hの変角</b>。塩素の電子求引で、PEのCH₂変角（1465）より少し高波数側にずれる。",
+       atoms:h0.concat(h2,h4,[hA,hB]),
+       anim:function(A){ return scissor(A,C[0],h0).concat(scissor(A,C[2],h2),scissor(A,C[4],h4)); }},
+      {label:"可塑剤の C=O 1720（軟質のみ）",peaks:[1720],mode:"伸縮（PVC分子にはない＝添加剤由来）",
+       text:"<b>この位置にピークがあれば可塑剤が入っている</b>。分子モデル上には対応する結合がなく、配合物のシグナルであることがポイント。種類の特定は熱分解GC-MSが確実。",
+       atoms:[],anim:function(){ return []; }}
+    ]});
+})();
+
+/* PC */
+(function(){
+  const m=new M();
+  const r1=ring(m,120,110,38,0), r2=ring(m,280,110,38,0);
+  const cq=m.at(200,110,"C"); m.bd(r1[1],cq); m.bd(r2[5],cq);
+  const mA=m.at(200,62,"C"), mB=m.at(200,158,"C"); m.bd(cq,mA); m.bd(cq,mB);
+  const mAH=[m.at(176,54,"H"),m.at(200,37,"H"),m.at(224,54,"H")]; mAH.forEach(function(h){ m.bd(mA,h); });
+  const mBH=[m.at(176,166,"H"),m.at(200,183,"H"),m.at(224,166,"H")]; mBH.forEach(function(h){ m.bd(mB,h); });
+  const oL=m.at(47,151,"O"); m.bd(r1[4],oL);
+  const oR=m.at(353,151,"O"); m.bd(r2[2],oR);
+  const cO=m.at(393,129,"C"); m.bd(oR,cO);
+  const dO=m.at(393,85,"O"); m.bd(cO,dO,2);
+  const oR2=m.at(433,151,"O"); m.bd(cO,oR2);
+  m.dash(47,151,7,173); m.dash(433,151,473,173);
+  const hs=[];
+  [[r1,[0,2,3,5]],[r2,[0,1,3,4]]].forEach(function(pair){
+    const R=pair[0], cx=(R===r1?120:280), cy=110;
+    pair[1].forEach(function(i){
+      const p=m.a[R[i]], u=unit([cx,cy],p);
+      const h=m.at(p[0]+u[0]*19,p[1]+u[1]*19,"H"); m.bd(R[i],h); hs.push(h);
+    });
+  });
+  POLY.push({id:"pc",vb:"-1 22 482 176",name:"PC（ポリカーボネート）",sub:"ビスフェノールA＋カーボネート結合",mol:m,
+    spec:[[2968,.35,20],[1770,1,14],[1602,.3,12],[1505,.62,12],[1220,.9,18],[1190,.8,18],[1160,.75,18],[1014,.4,12],[830,.72,12]],
+    tip:"1770 は他樹脂のエステル（1715–1740）より明確に高波数で、これだけでPCを疑える。830 のパラ二置換バンドとセットで確認する。",
+    groups:[
+      {label:"カーボネート C=O 伸縮 1770",peaks:[1770],mode:"伸縮",
+       text:"C=O の両隣に酸素が2つ付く構造のため、<b>普通のエステルより結合が強くなり高波数側にずれる</b>。PC同定の最短ルート。",
+       atoms:[cO,dO],anim:function(A){ return stretch(A,cO,[dO],7).concat([[cO,0,1.5]]); }},
+      {label:"C–O 伸縮 1220 / 1190 / 1160",peaks:[1220,1190,1160],mode:"伸縮（3本組）",
+       text:"芳香環–O–C(=O)–O– の単結合側。<b>3本がまとまって強く出る</b>のがPCらしい形。",
+       atoms:[oL,oR,oR2,cO],anim:function(A){ return [[oL,-6,-3],[oR,-6,-3],[oR2,5,4],[cO,3,2]]; }},
+      {label:"芳香環骨格 1505",peaks:[1505,1602],mode:"環の骨格振動",
+       text:"ビスフェノールAの環由来。<b>PSの1601+1493とは強度バランスが違い</b>、PCでは1505が目立つ。",
+       atoms:r1.concat(r2),
+       anim:function(A){ return breathe(A,r1,120,110,4).concat(breathe(A,r2,280,110,4)); }},
+      {label:"パラ二置換ベンゼン 830",peaks:[830],mode:"面外変角",
+       text:"環上のHが面外に揺れる位置は<b>置換のしかたで決まる</b>。830 は1,4-（パラ）二置換の目安で、単置換のPS（698/756）と対比できる。",
+       atoms:hs,anim:function(A){ return shift(hs,0,7); }}
+    ]});
+})();
+
+/* PA6 */
+(function(){
+  const m=new M();
+  const c1=m.at(60,120), c2=m.at(100,96);
+  const cO=m.at(146,118,"C"), o=m.at(146,70,"O"), n=m.at(192,96,"N"), hN=m.at(192,58,"H");
+  const c3=m.at(238,120), c4=m.at(278,96);
+  m.bd(c1,c2); m.bd(c2,cO); m.bd(cO,o,2); m.bd(cO,n); m.bd(n,hN); m.bd(n,c3); m.bd(c3,c4);
+  addH2(m,c1,true); addH2(m,c2,false); addH2(m,c3,true); addH2(m,c4,false);
+  m.dash(20,96,60,120); m.dash(278,96,318,120);
+  const cO2=m.at(214,16,"C"), o2=m.at(178,38,"O");
+  m.bd(cO2,o2,2);
+  m.dash(214,16,214,-18); m.dash(214,16,244,32);
+  m.hb(hN,182,44);
+  POLY.push({id:"pa6",vb:"-21 -26 380 181",name:"PA6（ナイロン6）",sub:"–(CH₂)₅–CO–NH–　アミド結合と水素結合",mol:m,
+    spec:[[3300,.78,60],[3080,.35,40],[2930,.6,25],[2860,.5,25],[1635,1,18],[1540,.9,18],[1265,.35,14],[930,.3,10]],
+    tip:"3300（幅広）+ 1635 + 1540 の3点セットでPA。PA6とPA66はスペクトルがほぼ同じなので、判別はDSCのTm（220 ℃ / 260 ℃）を併用する。吸湿でOHが重なり3300がさらに広がる点に注意。",
+    groups:[
+      {label:"N–H 伸縮 3300（幅広）",peaks:[3300],mode:"伸縮（水素結合でブロードになる）",
+       text:"隣の鎖のC=Oと<b>水素結合を作るためN–Hのばねが緩み、低波数側へ移動して幅が広がる</b>。3400台の鋭いピークではなく、なだらかな山になるのが特徴。",
+       atoms:[hN,n],anim:function(A){ return stretch(A,n,[hN],6); }},
+      {label:"アミドI 1635（C=O 伸縮）",peaks:[1635],mode:"伸縮",
+       text:"アミドのC=O。<b>水素結合でエステルの1720台より低波数</b>に出るのがアミドの目印。PA最強のピーク。",
+       atoms:[cO,o],anim:function(A){ return stretch(A,cO,[o],7).concat([[cO,0,1.5]]); }},
+      {label:"アミドII 1540",peaks:[1540],mode:"変角＋伸縮の混合（N–H変角とC–N伸縮）",
+       text:"<b>1つの動きではなく2つの振動が混じった振動</b>。1635 と 1540 がペアで出ることがアミド確定の条件。倍音が3080に現れる。",
+       atoms:[hN,n,cO],anim:function(A){ return [[hN,7,2],[n,-2,0],[cO,3,0]]; }}
+    ]});
+})();
+
+/* POM */
+(function(){
+  const m=new M();
+  const ids=[];
+  for(let i=0;i<6;i++){ ids.push(m.at(60+i*40,(i%2===0)?128:98, (i%2===0)?"C":"O")); }
+  for(let i=0;i<5;i++) m.bd(ids[i],ids[i+1]);
+  const H=[];
+  [0,2,4].forEach(function(i){ H.push.apply(H,addH2(m,ids[i],true)); });
+  m.dash(20,98,60,128); m.dash(260,98,300,128);
+  POLY.push({id:"pom",vb:"-30 79 380 84",name:"POM（ポリアセタール）",sub:"–CH₂–O–　主鎖に酸素が交互に入る",mol:m,
+    spec:[[2980,.4,25],[2920,.45,25],[1470,.4,14],[1238,.45,14],[1090,1,35],[935,.6,12],[895,.55,12]],
+    tip:"1100付近の極端に強いC–O–Cが単独でそびえる形。C–H系が相対的に弱く、C–O系が支配的というバランス自体がPOMらしさ。",
+    groups:[
+      {label:"C–O–C 伸縮 1120–1080",peaks:[1090],mode:"逆対称伸縮（酸素と炭素が逆向きに動く）",
+       text:"主鎖そのものがC–O結合の連続なので、<b>この1本が突出して強い</b>。酸素の電気陰性度が高く双極子変化が大きいためIRで非常に強く出る。",
+       atoms:ids,anim:function(A){ return ids.map(function(id,i){ return [id,(i%2?8:-8),0]; }); }},
+      {label:"骨格 935 / 895",peaks:[935,895],mode:"骨格振動",
+       text:"アセタール骨格の変形。<b>1090とセットで見る</b>と、エーテル系の他樹脂と区別しやすい。",
+       atoms:ids,anim:function(A){ return ids.map(function(id,i){ return [id,0,(i%2?-6:6)]; }); }},
+      {label:"C–H 伸縮 2920 / 2880（弱め）",peaks:[2980,2920],mode:"伸縮",
+       text:"CH₂は持っているが、<b>PE・PPに比べて明らかに弱い</b>。「CHが弱くC–Oが強い」という強度バランスがPOM判定のポイント。",
+       atoms:H,anim:function(A){ return antisym(A,ids[0],[H[0],H[1]]).concat(antisym(A,ids[2],[H[2],H[3]]),antisym(A,ids[4],[H[4],H[5]])); }}
+    ]});
+})();
+
+/* PET */
+(function(){
+  const m=new M();
+  const R=ring(m,210,104,38,0);
+  const RH=[];
+  [0,1,3,4].forEach(function(i){
+    const p=m.a[R[i]], u=unit([210,104],p);
+    const h=m.at(p[0]+u[0]*19,p[1]+u[1]*19,"H"); m.bd(R[i],h); RH.push(h);
+  });
+  const cL=m.at(137,62,"C"); m.bd(R[5],cL);
+  const oL1=m.at(137,18,"O"); m.bd(cL,oL1,2);
+  const oL2=m.at(97,84,"O"); m.bd(cL,oL2);
+  const e1=m.at(57,62,"C"), e2=m.at(17,84,"C"); m.bd(oL2,e1); m.bd(e1,e2);
+  addH2(m,e1,false); addH2(m,e2,true);
+  const cR=m.at(283,146,"C"); m.bd(R[2],cR);
+  const oR1=m.at(283,190,"O"); m.bd(cR,oR1,2);
+  const oR2=m.at(323,124,"O"); m.bd(cR,oR2);
+  m.dash(323,124,363,102); m.dash(17,84,-23,106);
+  POLY.push({id:"pet",vb:"-31 -1 402 210",name:"PET（ポリエステル）",sub:"芳香族エステル＋エチレングリコール鎖",mol:m,
+    spec:[[2960,.3,22],[1715,1,18],[1470,.35,14],[1410,.35,12],[1340,.42,14],[1240,.9,20],[1095,.7,18],[1015,.5,14],[970,.42,12],[870,.35,12],[720,.72,12]],
+    tip:"1715 + 1240 + 720 の組み合わせがPET系。PBTとは酷似するためDSC併用が実務的。1340/970 は結晶・配向の評価に使える。",
+    groups:[
+      {label:"エステル C=O 伸縮 1715",peaks:[1715],mode:"伸縮",
+       text:"芳香環と共役するぶん<b>PMMAの1725よりわずかに低波数</b>。最も強く目立つピーク。",
+       atoms:[cL,oL1,cR,oR1],
+       anim:function(A){ return stretch(A,cL,[oL1],7).concat(stretch(A,cR,[oR1],7),[[cL,0,1.5],[cR,0,-1.5]]); }},
+      {label:"C–O 伸縮 1240 / 1095",peaks:[1240,1095],mode:"伸縮",
+       text:"テレフタレートのC–O。<b>1240はPETで特に強く、C=Oとの2本立て</b>で覚えると判別が速い。",
+       atoms:[oL2,oR2,cL,cR,e1],
+       anim:function(A){ return [[oL2,-7,3],[oR2,7,-3],[cL,3,-1],[cR,-3,1],[e1,4,2]]; }},
+      {label:"trans配座 1340 / 970",peaks:[1340,970],mode:"骨格（グリコール鎖の配座に依存）",
+       text:"エチレングリコール鎖が<b>まっすぐ伸びたtrans形のときだけ強くなる</b>。延伸・結晶化で増えるので、配向や結晶化度の相対評価に使える。",
+       atoms:[e1,e2,oL2],anim:function(A){ return [[e1,0,-6],[e2,0,6],[oL2,0,-4]]; }},
+      {label:"芳香環 面外変角 720",peaks:[720],mode:"面外変角",
+       text:"パラ二置換ベンゼンのH面外変角。<b>PET・PBTに共通</b>で、芳香族エステルであることの裏づけになる。",
+       atoms:RH,anim:function(A){ return shift(RH,0,7); }}
+    ]});
+})();
+
+/* ABS */
+(function(){
+  const m=new M();
+  // A: アクリロニトリル単位
+  const a0=m.at(48,130), a1=m.at(86,104), a2=m.at(124,130);
+  m.bd(a0,a1); m.bd(a1,a2); addH2(m,a0,true); addH2(m,a2,true); addH1(m,a1,false,-16);
+  const cn=m.at(86,62,"C"), nn=m.at(86,24,"N"); m.bd(a1,cn); m.bd(cn,nn,3);
+  m.dash(18,110,48,130); m.dash(124,130,154,110);
+  // B: ブタジエン単位
+  const b0=m.at(196,130), b1=m.at(234,104), b2=m.at(272,104), b3=m.at(310,130);
+  m.bd(b0,b1); m.bd(b1,b2,2); m.bd(b2,b3);
+  addH2(m,b0,true); addH2(m,b3,true);
+  const hb1=m.at(226,66,"H"), hb2=m.at(280,66,"H"); m.bd(b1,hb1); m.bd(b2,hb2);
+  m.dash(166,110,196,130); m.dash(310,130,340,110);
+  // S: スチレン単位
+  const s0=m.at(382,130), s1=m.at(420,104), s2=m.at(458,130);
+  m.bd(s0,s1); m.bd(s1,s2); addH2(m,s0,true); addH2(m,s2,true); addH1(m,s1,false,-18);
+  const SR=ring(m,446,44,34,0); m.bd(s1,SR[4]);
+  const SH=[];
+  [0,1,2,3,5].forEach(function(i){
+    const p=m.a[SR[i]], u=unit([446,44],p);
+    const h=m.at(p[0]+u[0]*19,p[1]+u[1]*19,"H"); m.bd(SR[i],h); SH.push(h);
+  });
+  m.dash(352,110,382,130); m.dash(458,130,488,110);
+  POLY.push({id:"abs",vb:"10 -24 497 189",name:"ABS",sub:"アクリロニトリル／ブタジエン／スチレンの3成分",mol:m,
+    spec:[[3026,.35,18],[2922,.6,22],[2237,.5,12],[1601,.4,12],[1493,.5,12],[1452,.5,12],[966,.48,10],[911,.35,10],[758,.75,12],[698,.85,12]],
+    tip:"3成分それぞれのバンドが1枚のスペクトルに重なって出る。PSとの区別は2237、SBRとの区別は2237と1601の強度バランス。1720増加＋966減少はゴム相の酸化劣化で、衝撃値低下と対応する。",
+    groups:[
+      {label:"ニトリル C≡N 伸縮 2237",peaks:[2237],mode:"伸縮（三重結合＝最も硬いばね）",
+       text:"三重結合なので<b>C=Oよりさらに高波数</b>。2300–2100 は他の樹脂がほとんど吸収しない空白領域で、少量でも検出しやすい＝判別力が高い。",
+       atoms:[cn,nn],anim:function(A){ return stretch(A,cn,[nn],7).concat([[cn,0,1.5]]); }},
+      {label:"ブタジエン 966 / 911",peaks:[966,911],mode:"面外変角（二重結合上のH）",
+       text:"966 は trans-1,4 の =C–H、911 は 1,2-ビニル。<b>ゴム相の指標</b>で、酸化劣化すると減っていく。",
+       atoms:[hb1,hb2,b1,b2],anim:function(A){ return [[hb1,0,7],[hb2,0,7],[b1,0,-2],[b2,0,-2]]; }},
+      {label:"スチレン 1601 / 1493 / 758 / 698",peaks:[1601,1493,758,698],mode:"環の骨格振動＋面外変角",
+       text:"PSとまったく同じバンド。<b>ここだけ見るとPSと区別できない</b>ので、必ず2237の有無を確認する。",
+       atoms:SR.concat(SH),anim:function(A){ return breathe(A,SR,446,44,4).concat(shift(SH,0,5)); }},
+      {label:"劣化の C=O 1720",peaks:[1720],mode:"伸縮（劣化で新しく生成する結合）",
+       text:"元のABSには無い結合。<b>ブタジエン相の二重結合が酸化されてC=Oが生まれる</b>ため、1720の増加と966の減少が同時に進む。",
+       atoms:[],anim:function(){ return []; }}
+    ]});
+})();
+
+
+function drawMol(p){
+  const m=p.mol, A=m.a, vb=p.vb||"0 0 340 200";
+  let g="";
+  (m.d||[]).forEach(function(d){
+    g+='<line x1="'+d[0]+'" y1="'+d[1]+'" x2="'+d[2]+'" y2="'+d[3]+'" stroke="#9AA1AE" stroke-width="2" stroke-dasharray="4 4"/>';
+  });
+  (m.hbs||[]).forEach(function(h){
+    const p0=A[h[0]];
+    g+='<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+h[1]+'" y2="'+h[2]+'" stroke="#2E5FA3" stroke-width="1.6" stroke-dasharray="3 4"/>';
+    g+='<text x="'+((p0[0]+h[1])/2+8)+'" y="'+((p0[1]+h[2])/2)+'" font-size="10" fill="#2E5FA3" font-family="inherit">水素結合</text>';
+  });
+  m.b.forEach(function(b,i){
+    const P=A[b[0]], Q=A[b[1]], o=b[2];
+    const u=unit(P,Q), nx=-u[1], ny=u[0];
+    const w=(o===1)?0:(o===2?3.2:4.6);
+    const offs=(o===1)?[0]:(o===2?[-w,w]:[-w,0,w]);
+    offs.forEach(function(d){
+      g+='<line class="mx-bd" data-b="'+i+'" x1="'+(P[0]+nx*d)+'" y1="'+(P[1]+ny*d)+'" x2="'+(Q[0]+nx*d)+'" y2="'+(Q[1]+ny*d)+'" stroke="#8D93A0" stroke-width="2.6" stroke-linecap="round"/>';
+    });
+  });
+  A.forEach(function(a,i){
+    const e=EL[a[2]]||EL.C;
+    g+='<g class="mx-at" data-i="'+i+'" data-el="'+a[2]+'"><circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+e.r+'" fill="'+e.c+'" stroke="#fff" stroke-width="1.6"/>';
+    if(a[2]!=="H"&&a[2]!=="C") g+='<text x="'+a[0]+'" y="'+(a[1]+4)+'" text-anchor="middle" font-size="11" fill="#fff" font-family="inherit">'+a[2]+'</text>';
+    g+='</g>';
+  });
+  return '<svg viewBox="'+vb+'" data-poly="'+p.id+'" role="img" aria-label="'+p.name+'の繰り返し単位">'+g+'</svg>';
+}
+const SW=420, SH=214, SL=42, SR2=12, STOP=24, SBASE=172;
+function specX(v){ return SL+((4000-v)/(4000-400))*(SW-SL-SR2); }
+function drawSpec(p){
+  let d="", prev=null;
+  for(let v=4000;v>=400;v-=3){
+    let a=0;
+    p.spec.forEach(function(k){ const dv=(v-k[0])/k[2]; a+=k[1]*Math.exp(-dv*dv/2); });
+    a=0.94*(1-Math.exp(-a));
+    const y=STOP+a*(SBASE-STOP);
+    const x=specX(v);
+    d+=(prev===null?"M":"L")+x.toFixed(1)+" "+y.toFixed(1);
+    prev=1;
+  }
+  let g='<rect x="'+SL+'" y="'+STOP+'" width="'+(SW-SL-SR2)+'" height="'+(SBASE-STOP)+'" fill="#FBFAF7" stroke="#E6E3DA"/>';
+  [4000,3000,2000,1500,1000,600].forEach(function(v){
+    const x=specX(v);
+    g+='<line x1="'+x+'" y1="'+STOP+'" x2="'+x+'" y2="'+SBASE+'" stroke="#EDEAE1"/>';
+    g+='<text x="'+x+'" y="'+(SBASE+16)+'" text-anchor="middle" font-size="10.5" fill="#5B6373" font-family="inherit">'+v+'</text>';
+  });
+  g+='<g class="mx-hl"></g>';
+  g+='<path d="'+d+'" fill="none" stroke="#24365E" stroke-width="1.7" stroke-linejoin="round"/>';
+  g+='<line x1="'+SL+'" y1="'+STOP+'" x2="'+SL+'" y2="'+SBASE+'" stroke="#22293B"/>';
+  g+='<line x1="'+SL+'" y1="'+SBASE+'" x2="'+(SW-SR2)+'" y2="'+SBASE+'" stroke="#22293B"/>';
+  g+='<text x="'+(SL-8)+'" y="'+(STOP+8)+'" text-anchor="end" font-size="10" fill="#5B6373" font-family="inherit">透過</text>';
+  g+='<text x="'+(SL-8)+'" y="'+SBASE+'" text-anchor="end" font-size="10" fill="#5B6373" font-family="inherit">吸収</text>';
+  g+='<text x="'+(SW-SR2)+'" y="'+(SBASE+32)+'" text-anchor="end" font-size="10.5" fill="#5B6373" font-family="inherit">波数 (cm⁻¹)　※模式図・強度は相対</text>';
+  return '<svg viewBox="0 0 '+SW+' '+SH+'" data-spec="'+p.id+'" role="img" aria-label="'+p.name+'の模式IRスペクトル">'+g+'</svg>';
+}
+
+const ACTIVE={};
+function select(p,gi){
+  const g=p.groups[gi], root=document.querySelector('.mx-poly[data-id="'+p.id+'"]');
+  root.querySelectorAll(".mx-gbtn").forEach(function(b){ b.setAttribute("aria-pressed", String(+b.dataset.g===gi)); });
+  root.querySelector(".mx-desc").innerHTML=g.text+'<span class="mx-mode">振動のかたち：'+g.mode+'　／　'+(g.peaks.join(" ・ "))+' cm⁻¹</span>';
+  // 原子ハイライト
+  const svg=root.querySelector('svg[data-poly]');
+  const none=(g.atoms.length===0);
+  svg.querySelectorAll(".mx-at").forEach(function(a){
+    const e=EL[a.dataset.el]||EL.C, c=a.querySelector("circle");
+    const on=none||g.atoms.indexOf(+a.dataset.i)>=0;
+    c.setAttribute("fill", on?e.c:e.d);
+    c.setAttribute("stroke", (on&&!none)?"#B45309":"#fff");
+    c.setAttribute("stroke-width", (on&&!none)?"2.4":"1.6");
+    const t=a.querySelector("text"); if(t) t.setAttribute("fill", on?"#fff":"#F4F5F7");
+  });
+  // スペクトル側マーカー
+  const sp=root.querySelector('svg[data-spec]'), hl=sp.querySelector(".mx-hl");
+  let h="";
+  const pk=g.peaks.slice().sort(function(a,b){ return b-a; }).map(function(v){ return {v:v,x:specX(v)}; });
+  const cl=[];
+  pk.forEach(function(o){
+    const last=cl[cl.length-1];
+    if(last && Math.abs(o.x-last.x2)<34){ last.vs.push(o.v); last.x2=o.x; }
+    else cl.push({vs:[o.v],x1:o.x,x2:o.x});
+  });
+  cl.forEach(function(c){
+    const w=Math.max(c.x2-c.x1,0)+14;
+    h+='<rect x="'+(c.x1-7)+'" y="'+STOP+'" width="'+w+'" height="'+(SBASE-STOP)+'" fill="#FDF3E3"/>';
+    c.vs.forEach(function(v){
+      const x=specX(v);
+      h+='<line x1="'+x+'" y1="'+STOP+'" x2="'+x+'" y2="'+SBASE+'" stroke="#B45309" stroke-width="1.3"/>';
+    });
+    h+='<text x="'+((c.x1+c.x2)/2)+'" y="'+(STOP-5)+'" text-anchor="middle" font-size="10.5" fill="#B45309" font-family="inherit">'+c.vs.join(" / ")+'</text>';
+  });
+  hl.innerHTML=h;
+  ACTIVE[p.id]={poly:p,vec:g.anim(p.mol.a),svg:svg};
+}
+
+
+function buildPolys(){
+  const host=$m("mxPolys"); if(!host) return;
+  Object.keys(ACTIVE).forEach(function(k){ delete ACTIVE[k]; });
+  host.innerHTML="";
+  POLY.forEach(function(p){
+    const el=document.createElement("section");
+    el.className="mx-poly"; el.dataset.id=p.id; el.id="mx-"+p.id;
+    el.innerHTML=
+      '<h3>'+p.name+'<em>'+p.sub+'</em></h3>'+
+      '<div class="mx-pbody">'+
+        '<div class="mx-picks">'+p.groups.map(function(g,i){
+            return '<button class="mx-gbtn" data-g="'+i+'" aria-pressed="'+(i===0)+'">'+g.label+'</button>';
+          }).join("")+'</div>'+
+        '<div class="mx-desc"></div>'+
+        '<div class="mx-mol"><figure>'+drawMol(p)+'<figcaption>\u7e70\u308a\u8fd4\u3057\u5358\u4f4d\uff08\u6a21\u5f0f\uff09\uff0f\u7070\u8272\u306e\u7834\u7dda\u306f\u9396\u306e\u7d9a\u304d</figcaption></figure></div>'+
+        '<div class="mx-spec"><figure>'+drawSpec(p)+'<figcaption>\u6a21\u5f0f\u30b9\u30da\u30af\u30c8\u30eb\uff08\u4e0b\u306b\u51f8\uff1d\u5438\u53ce\uff09</figcaption></figure></div>'+
+        '<div class="mx-tip">'+p.tip+'</div>'+
+      '</div>';
+    host.appendChild(el);
+    el.querySelectorAll(".mx-gbtn").forEach(function(b){
+      b.onclick=function(){ select(p,+b.dataset.g); };
+    });
+    select(p,0);
+  });
+}
+let last=0, running=false;
+const REDUCE=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function loop(now){
+  if(!$m("mxPolys")){ running=false; return; }      /* 別ビューに切替わったら停止 */
+  const dt=Math.min((now-last)/1000,0.05); last=now;
+  tickSpring(REDUCE?0:dt);
+  const ph=Math.sin(now/1000*2*PI*1.1);
+  Object.keys(ACTIVE).forEach(function(id){
+    const a=ACTIVE[id];
+    a.svg.querySelectorAll(".mx-at").forEach(function(el){ el.removeAttribute("transform"); });
+    if(REDUCE) return;
+    a.vec.forEach(function(v){
+      const el=a.svg.querySelector('.mx-at[data-i="'+v[0]+'"]');
+      if(el) el.setAttribute("transform","translate("+(v[1]*ph).toFixed(2)+","+(v[2]*ph).toFixed(2)+")");
+    });
+  });
+  requestAnimationFrame(loop);
+}
+function bind(){
+  buildMap(); buildSpring(); bindSpring(); buildPolys();
+  if(!running){ running=true; last=performance.now(); requestAnimationFrame(loop); }
+}
+function focus(id){
+  const el=$m("mx-"+id); if(!el) return;
+  el.scrollIntoView({behavior:"smooth", block:"start"});
+  el.classList.add("mx-flash"); setTimeout(function(){ el.classList.remove("mx-flash"); },1700);
+}
+function has(id){ return POLY.some(function(p){ return p.id===id; }); }
+function html(){ return MOLIR_HTML; }
+return {html:html, bind:bind, has:has, focus:focus};
+})();
 
 /* ================= イベント ================= */
 $("#q").addEventListener("input", e=>{ query = e.target.value; render(); });
@@ -3263,6 +4042,14 @@ function openZoom(svg, title){
 }
 
 $("#list").addEventListener("click", e=>{
+  const ml = e.target.closest("[data-mol]");
+  if(ml){
+    view = "mol"; query=""; $("#q").value="";
+    document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on", x.dataset.v===view));
+    render();
+    MOLIR.focus(ml.dataset.mol);
+    e.stopPropagation(); return;
+  }
   const go = e.target.closest("[data-go]");
   if(go){ goToCard(go.dataset.go); e.stopPropagation(); return; }
   const sv = e.target.closest("svg");
