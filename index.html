@@ -296,7 +296,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 20px 30px;font-size:11px;color:v
 <header>
   <div class="hd-top">
     <h1>JIS プラスチック・ゴム試験 早見検索</h1>
-    <span class="hd-sub">試験片形状・測定条件リファレンス（オフライン・単一ファイル）　v2.2</span>
+    <span class="hd-sub">試験片形状・測定条件リファレンス（オフライン・単一ファイル）　v2.3</span>
   </div>
   <div class="hd-controls">
     <input id="q" type="search" placeholder="検索：試験名 / JIS番号 / 材料名（例: K 7171、曲げ、PP、K 6251、K 6850、接着、硬さ）" autocomplete="off">
@@ -2976,7 +2976,7 @@ const MFR_CHART = [
  ["PS","ps",200,5],["PE","pe",190,2.16,"HLMFR: 190 ℃ / 21.6 kg"],["POM","pom",190,2.16]
 ];
 function mfrChart(){
-  const L=110, R=190, ROWH=28, TOP=30, W=760;
+  const L=110, R=300, ROWH=28, TOP=30, W=760;
   const n=MFR_CHART.length, H=TOP+n*ROWH+16;
   const xmin=170, xmax=410;
   const x=v=>L+(W-L-R)*(v-xmin)/(xmax-xmin);
